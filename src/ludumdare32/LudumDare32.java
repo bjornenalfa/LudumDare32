@@ -197,6 +197,15 @@ public class LudumDare32 extends JFrame {
             getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
             getActionMap().put("exit", exit());
 
+            getInputMap().put(KeyStroke.getKeyStroke("1"), "sunny");
+            getActionMap().put("sunny", sunny());
+            
+            getInputMap().put(KeyStroke.getKeyStroke("2"), "cloudy");
+            getActionMap().put("cloudy", cloudy());
+            
+            
+            
+            getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "windEnd");
             getInputMap().put(KeyStroke.getKeyStroke("shift pressed SHIFT"), "windStart");
             getActionMap().put("windStart", windStart());
             getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "windEnd");
@@ -211,6 +220,38 @@ public class LudumDare32 extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     System.exit(0);
+                }
+            };
+        }
+
+        private Action sunny() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //Wheater = Sunny
+                }
+            };
+        }
+
+        private Action cloudy() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //Wheater = Cloudy
+                }
+            };
+        }
+
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                }
+            };
+        }
+
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
                 }
             };
         }
