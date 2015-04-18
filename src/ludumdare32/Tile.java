@@ -19,7 +19,7 @@ public class Tile {
     public static void loadTileSet(String path,int size,int margin) {
         BufferedImage img = null;
         try {
-            img = ImageIO.read(new File(path));
+            img = ImageIO.read(Tile.class.getResourceAsStream(path));
         } catch (IOException e) {
             System.out.println("Tiles not found");
             return;
