@@ -5,7 +5,8 @@ import ludumdare32.LudumDare32.MyPanel;
 public class Camera {
 
     double translateX, translateY;
-    int halfWidth = 400, halfHeight = 300;
+    int halfWidth = 400, halfHeight = 304;
+    int width = 800, height = 608;
 
     MyPanel panel;
 
@@ -18,8 +19,8 @@ public class Camera {
         if (centered) {
             translateX = player.getX() - halfWidth;
             translateY = player.getY() - halfHeight;
-            translateX = -Math.max(0, Math.min(World.width * 32 - 2*halfWidth, translateX));
-            translateY = -Math.max(0, Math.min(World.height * 32 - 2*halfHeight, translateY));
+            translateX = -Math.max(0, Math.min(World.pixelWidth - width, translateX));
+            translateY = -Math.max(0, Math.min(World.pixelHeight - height, translateY));
         }
     }
 }

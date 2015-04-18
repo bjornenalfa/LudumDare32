@@ -13,6 +13,8 @@ public class World {
     static int[][] textureMap;
     static int width = 0;
     static int height = 0;
+    static int pixelWidth = 0;
+    static int pixelHeight = 0;
 
     static ImageObserver nothing = new ImageObserver() {
         @Override
@@ -25,9 +27,9 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 g.drawImage(Tile.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
-                if (collisionMap[x][y]) {
-                    g.drawImage(Tile.images[549], x*32, y*32, nothing);
-                }
+//                if (collisionMap[x][y]) {
+//                    g.drawImage(Tile.images[549], x*32, y*32, nothing);
+//                }
             }
         }
         /*for (int y = 0;y<Tile.verticalTiles;y++) {
@@ -49,6 +51,8 @@ public class World {
         }
         width = img.getWidth();
         height = img.getHeight();
+        pixelWidth = width*32;
+        pixelHeight = height*32;
         textureMap = new int[width][height];
         collisionMap = new boolean[width][height];
         for (int x = 0; x < width; x++) {

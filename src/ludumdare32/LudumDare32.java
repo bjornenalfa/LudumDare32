@@ -30,49 +30,49 @@ public class LudumDare32 extends JFrame {
     MyPanel panel;
     Camera camera;
     
-    BufferedImage image;
+//    BufferedImage image;
 
     public LudumDare32() {
         Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
         World.loadFromFile("levels/test.png");
 
-        image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
-        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
-        Graphics2D g2d = (Graphics2D) image.getGraphics();
-        g2d.setComposite(composite);
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.fillRect(0, 0, 500, 500);
-
-        g2d = image.createGraphics();
-
-        for (int x = 0; x < 500; x++) {
-            for (int y = 0; y < 500; y++) {
-                ArrayList<Point> tiles = new ArrayList();
-                int tx = (int) (x + 16) / 32;
-                int ty = (int) (y + 16) / 32;
-                try {
-                    for (int x2 = tx - 1; x2 < tx + 2; x2++) {
-                        for (int y2 = ty - 1; y2 < ty + 2; y2++) {
-                            if (World.collisionMap[x2][y2]) {
-                                tiles.add(new Point(x2 * 32, y2 * 32));
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                }
-                for (Point tile : tiles) {
-                    double cx = x - tile.x;
-                    double cy = y - tile.y;
-                    cx = Math.max(0, Math.min(32, cx));
-                    cy = Math.max(0, Math.min(32, cy));
-                    Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
-                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
-                        g2d.setColor(new Color(255, 255, 255, 128));
-                        g2d.fillRect(x, y, 1, 1);
-                    }
-                }
-            }
-        }
+//        image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+//        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
+//        Graphics2D g2d = (Graphics2D) image.getGraphics();
+//        g2d.setComposite(composite);
+//        g2d.setColor(new Color(0, 0, 0, 0));
+//        g2d.fillRect(0, 0, 500, 500);
+//
+//        g2d = image.createGraphics();
+//
+//        for (int x = 0; x < 500; x++) {
+//            for (int y = 0; y < 500; y++) {
+//                ArrayList<Point> tiles = new ArrayList();
+//                int tx = (int) (x + 16) / 32;
+//                int ty = (int) (y + 16) / 32;
+//                try {
+//                    for (int x2 = tx - 1; x2 < tx + 2; x2++) {
+//                        for (int y2 = ty - 1; y2 < ty + 2; y2++) {
+//                            if (World.collisionMap[x2][y2]) {
+//                                tiles.add(new Point(x2 * 32, y2 * 32));
+//                            }
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                }
+//                for (Point tile : tiles) {
+//                    double cx = x - tile.x;
+//                    double cy = y - tile.y;
+//                    cx = Math.max(0, Math.min(32, cx));
+//                    cy = Math.max(0, Math.min(32, cy));
+//                    Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
+//                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
+//                        g2d.setColor(new Color(255, 255, 255, 128));
+//                        g2d.fillRect(x, y, 1, 1);
+//                    }
+//                }
+//            }
+//        }
         //
         setTitle("LudumDare32");
 
@@ -81,10 +81,10 @@ public class LudumDare32 extends JFrame {
         MyThread thread = new MyThread();
 
         setContentPane(panel);
-        getContentPane().setPreferredSize(new Dimension(800, 600));
+        getContentPane().setPreferredSize(new Dimension(800, 608));
+        setResizable(false);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
         //
@@ -166,10 +166,13 @@ public class LudumDare32 extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(Color.DARK_GRAY);
+            g2.fillRect(0, 0, World.width*32+100, World.width*32+100);
             g2.translate(camera.translateX, camera.translateY);
+            //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
             World.paint(g2);
             player.paint(g2);
-            g.drawImage(image, 0, 0, this);
+//            g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
         }
 
