@@ -35,6 +35,22 @@ public class LudumDare32 extends JFrame {
     public LudumDare32() {
         Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
         World.loadFromFile("levels/test.png");
+        
+        Enemy foe = new Enemy(250,250,10,13,0.5);
+        foe.setTarget(70, 550);
+        foe.moveToTarget(true);
+        
+        foe = new Enemy(250,250,10,13,0.5);
+        foe.setTarget(150, 500);
+        foe.moveToTarget(true);
+        
+        foe = new Enemy(280,250,10,13,0.5);
+        foe.setTarget(250, 550);
+        foe.moveToTarget(true);
+        
+        foe = new Enemy(810,250,10,13,0.5);
+        foe.setTarget(300, 600);
+        foe.moveToTarget(true);
 
 //        image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
 //        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
@@ -134,8 +150,9 @@ public class LudumDare32 extends JFrame {
             while (true) {
                 player.changeVx((leftDown ? -player.acceleration : 0) + (rightDown ? player.acceleration : 0));
                 player.changeVy((upDown ? -player.acceleration : 0) + (downDown ? player.acceleration : 0));
-                player.move();
-                player.checkCollision();
+
+                Wind.update();
+                Character.updateCharacters();
 
                 camera.update(player, true);
                 
@@ -171,7 +188,7 @@ public class LudumDare32 extends JFrame {
             g2.translate(camera.translateX, camera.translateY);
             //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
             World.paint(g2);
-            player.paint(g2);
+            Character.paintCharacters(g2);
 //            g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
         }
