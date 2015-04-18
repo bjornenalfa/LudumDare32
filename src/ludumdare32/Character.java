@@ -5,7 +5,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 public class Character {
-    
+
     static ArrayList<Character> characters = new ArrayList();
 
     private double x, y, vx, vy, hp, r;
@@ -18,11 +18,11 @@ public class Character {
         this.r = r;
     }
 
-    public void move(){
+    public void move() {
         setX(getX() + getVx());
         setY(getY() + getVy());
     }
-    
+
     public void paint(Graphics2D g) {
     }
 
@@ -64,36 +64,44 @@ public class Character {
 
     public void setHp(double hp) {
         this.hp = hp;
-        if(this.hp > maxhp){
+        if (this.hp > maxhp) {
             this.hp = maxhp;
         }
-        if(this.hp < 0){
+        if (this.hp < 0) {
             //die
         }
     }
-    
-    public double getMaxHp(){
+
+    public double getMaxHp() {
         return maxhp;
     }
-    
+
     public void checkCollision() {
         ArrayList<Point> tiles = new ArrayList();
-        int tx = (int)(x)/32;
-        int ty = (int)(x)/32;
+        int tx = (int) (x) / 32;
+        int ty = (int) (x) / 32;
         try {
-            for (int x = tx-1;x<tx+2;x++) {
-                for (int y = ty-1;y<ty+2;y++) {
+            for (int x = tx - 1; x < tx + 2; x++) {
+                for (int y = ty - 1; y < ty + 2; y++) {
                     if (World.collisionMap[x][y]) {
-                        tiles.add(new Point(x*32,y*32));
+                        tiles.add(new Point(x * 32, y * 32));
                     }
                 }
             }
-        } catch( Exception e) {
+        } catch (Exception e) {
         }
         for (Point tile : tiles) {
-            double cx = x-tile.x;
-            double cy = y-tile.y;
-            vector.point.x = Math.max(0, Math.min(1,vector.point.x))
+            double cx = x - tile.x;
+            double cy = y - tile.y;
+            cx = Math.max(0, Math.min(32, cx));
+            cy = Math.max(0, Math.min(32, cy));
+            Vector2D collisionVector = new Vector2D(new Point.Double(x - cx + tile.x, y - cy + tile.y));
+            Vector2D velocityVector = new Vector2D(new Point.Double(vx, vy));
+            if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < r * r) {
+                Vector2D projectionVector = Vector2D.OrthogonalProjection(velocityVector, collisionVector);
+                vx -= projectionVector.point.x * 1.1;
+                vy -= projectionVector.point.y * 1.1;
+            }
         }
     }
 }

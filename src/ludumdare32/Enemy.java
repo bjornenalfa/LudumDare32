@@ -4,8 +4,8 @@ import java.awt.Graphics2D;
 
 public class Enemy extends Character {
 
-    public Enemy(double x, double y, double hp) {
-        super(x, y, hp);
+    public Enemy(double x, double y, double hp, double r) {
+        super(x, y, hp, r);
     }
 
     public void update() {
