@@ -197,6 +197,11 @@ public class LudumDare32 extends JFrame {
             getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
             getActionMap().put("exit", exit());
 
+            getInputMap().put(KeyStroke.getKeyStroke("shift pressed SHIFT"), "windStart");
+            getActionMap().put("windStart", windStart());
+            getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "windEnd");
+            getActionMap().put("windEnd", windEnd());
+
             getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "jump");
             getActionMap().put("jump", jump());
         }
@@ -210,6 +215,39 @@ public class LudumDare32 extends JFrame {
             };
         }
 
+        double windstartX;
+        double windstartY;
+        
+        private Action windStart() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    windstartX = player.getX();
+                    windstartY = player.getY();
+                }
+            };
+        }
+        
+        private Action windEnd() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    double dx = player.getX()-windstartX;
+                    double dy = player.getY()-windstartY;
+                    Wind.direction = Math.atan2(dy, dx);
+                    double length = Math.sqrt(dx*dx+dy*dy);
+                    if (length < 10){
+                        Wind.power = 0;
+                    } else if (length > 60) {
+                        Wind.power = 1.0;
+                    } else {
+                        Wind.power = Math.sqrt(dx*dx+dy*dy)/60;
+                    }
+                    System.out.println(length + " : " + Wind.power);
+                }
+            };
+        }
+        
         private Action jump() {
             return new AbstractAction() {
                 @Override

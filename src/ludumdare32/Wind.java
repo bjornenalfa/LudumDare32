@@ -3,7 +3,7 @@ package ludumdare32;
 
 public class Wind {
     static double direction = 0;
-    static double power = 0.1;
+    static double power = 0;
     
     public static void update() {
         if (power > 0) {
