@@ -1,11 +1,16 @@
 package ludumdare32;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -14,18 +19,58 @@ import javax.swing.KeyStroke;
 
 public class LudumDare32 extends JFrame {
 
-    Player player = new Player(200, 200, 0);
+    Player player = new Player(200, 250, 0);
     MyPanel panel;
     
+    BufferedImage image;
+
     public LudumDare32() {
         Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
         World.loadFromFile("levels/test.png");
+        
+        image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
+        Graphics2D g2d = (Graphics2D) image.getGraphics();
+        g2d.setComposite(composite);
+        g2d.setColor(new Color(0, 0, 0, 0));
+        g2d.fillRect(0, 0, 500, 500);
+        
+        g2d = image.createGraphics();
+        
+        for (int x = 0; x < 500; x++) {
+            for (int y = 0; y < 500; y++) {
+                ArrayList<Point> tiles = new ArrayList();
+                int tx = (int) (x + 16) / 32;
+                int ty = (int) (y + 16) / 32;
+                try {
+                    for (int x2 = tx - 1; x2 < tx + 2; x2++) {
+                        for (int y2 = ty - 1; y2 < ty + 2; y2++) {
+                            if (World.collisionMap[x2][y2]) {
+                                tiles.add(new Point(x2 * 32, y2 * 32));
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                }
+                for (Point tile : tiles) {
+                    double cx = x - tile.x;
+                    double cy = y - tile.y;
+                    cx = Math.max(0, Math.min(32, cx));
+                    cy = Math.max(0, Math.min(32, cy));
+                    Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
+                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13*13) {
+                        g2d.setColor(new Color(255,255,255,128));
+                        g2d.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+        }
         //
         setTitle("LudumDare32");
 
         panel = new MyPanel();
         MyThread thread = new MyThread();
-        
+
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(800, 600));
         pack();
@@ -49,10 +94,10 @@ public class LudumDare32 extends JFrame {
             while (true) {
                 player.move();
                 player.checkCollision();
-                
+
                 panel.repaint();
                 try {
-                    sleep(50);
+                    sleep(16);
                 } catch (Exception e) {
                 }
             }
@@ -81,6 +126,7 @@ public class LudumDare32 extends JFrame {
             Graphics2D g2 = (Graphics2D) g;
             World.paint(g2);
             player.paint(g2);
+            g.drawImage(image, 0, 0, this);
         }
 
         private void addKeyBindings() {
@@ -126,7 +172,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (rightDown == false) {
                         leftDown = true;
-                        player.setVx(-1);
+                        player.changeVx(-1);
                     }
                 }
             };
@@ -138,7 +184,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (leftDown == true) {
                         leftDown = false;
-                        player.setVx(0);
+                        player.changeVx(0);
                     }
                 }
             };
@@ -150,7 +196,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (leftDown == false) {
                         rightDown = true;
-                        player.setVx(1);
+                        player.changeVx(1);
                     }
                 }
             };
@@ -162,7 +208,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (rightDown == true) {
                         rightDown = false;
-                        player.setVx(0);
+                        player.changeVx(0);
                     }
                 }
             };
@@ -174,7 +220,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (downDown == false) {
                         upDown = true;
-                        player.setVy(-1);
+                        player.changeVy(-1);
                     }
                 }
             };
@@ -186,7 +232,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (upDown == true) {
                         upDown = false;
-                        player.setVy(0);
+                        player.changeVy(0);
                     }
                 }
             };
@@ -198,7 +244,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (upDown == false) {
                         downDown = true;
-                        player.setVy(1);
+                        player.changeVy(1);
                     }
                 }
             };
@@ -210,7 +256,7 @@ public class LudumDare32 extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if (downDown == true) {
                         downDown = false;
-                        player.setVy(0);
+                        player.changeVy(0);
                     }
                 }
             };

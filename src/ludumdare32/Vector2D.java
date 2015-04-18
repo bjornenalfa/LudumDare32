@@ -109,6 +109,7 @@ public class Vector2D {
     }
 
     public Vector2D print() {
+        System.out.println(this.show());
         return this;
     }
 
