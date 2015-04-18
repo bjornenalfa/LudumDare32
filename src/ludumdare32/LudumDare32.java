@@ -288,9 +288,9 @@ public class LudumDare32 extends JFrame {
                     if (length < 10){
                         Wind.power = 0;
                     } else if (length > 60) {
-                        Wind.power = 1.0;
+                        Wind.power = 0.5;
                     } else {
-                        Wind.power = Math.sqrt(dx*dx+dy*dy)/60;
+                        Wind.power = Math.sqrt(dx*dx+dy*dy)/120;
                     }
                     System.out.println(length + " : " + Wind.power);
                 }
