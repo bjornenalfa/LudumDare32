@@ -34,6 +34,8 @@ public class LudumDare32 extends JFrame {
 
     class MyPanel extends JPanel {
 
+        Player player;
+        
         public MyPanel() {
             addKeyBindings();
 
@@ -55,6 +57,10 @@ public class LudumDare32 extends JFrame {
             getActionMap().put("left", left());
             getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "right");
             getActionMap().put("right", right());
+            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), "up");
+            getActionMap().put("up", up());
+            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "down");
+            getActionMap().put("down", down());
             getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "jump");
             getActionMap().put("jump", jump());
         }
@@ -72,7 +78,7 @@ public class LudumDare32 extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    
+                    player.setVx(-1);
                 }
             };
         }
@@ -81,7 +87,25 @@ public class LudumDare32 extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                
+                    player.setVx(1);
+                }
+            };
+        }
+        
+        private Action up() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    player.setVx(-1);
+                }
+            };
+        }
+
+        private Action down() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    player.setVx(1);
                 }
             };
         }
