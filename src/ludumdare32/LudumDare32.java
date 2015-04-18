@@ -26,6 +26,9 @@ public class LudumDare32 extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
+        //
+        
+        Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
     }
 
     class MyPanel extends JPanel {

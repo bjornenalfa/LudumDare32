@@ -21,6 +21,8 @@ public class Tile {
         try {
             img = ImageIO.read(new File(path));
         } catch (IOException e) {
+            System.out.println("Tiles not found");
+            return;
         }
         int width = img.getWidth();
         int height = img.getHeight();
