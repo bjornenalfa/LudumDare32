@@ -10,6 +10,6 @@ public class Player extends Character {
 
     @Override
     public void paint(Graphics2D g) {
-
+        g.fillOval((int)getX(), (int)getY(), (int)getR()*2, (int)getR()*2);
     }
 }

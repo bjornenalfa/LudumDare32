@@ -76,6 +76,10 @@ public class Character {
         return maxhp;
     }
 
+    public double getR(){
+        return r;
+    }
+    
     public void checkCollision() {
         ArrayList<Point> tiles = new ArrayList();
         int tx = (int) (x) / 32;
