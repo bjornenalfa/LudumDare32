@@ -58,10 +58,19 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int argb = img.getRGB(x, y);
-                int alpha = 0xFF & (argb >> 24);
-                int red = 0xFF & (argb >> 16);
-                int green = 0xFF & (argb >> 8);
-                int blue = 0xFF & (argb >> 0);
+                /*boolean cloudy = 1 == (1 & (argb >> 31));
+                boolean rainy = 1 == (1 & (argb >> 30));
+                boolean sunny = 1 == (1 & (argb >> 29));
+                boolean snowy = 1 == (1 & (argb >> 28));
+                int texture1 = 4095 & (argb >> 12);
+                int textre2 = 4095 & argb;
+                
+                int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;*/
+                
+                int alpha = 255 & (argb >> 24);
+                int red = 255 & (argb >> 16);
+                int green = 255 & (argb >> 8);
+                int blue = 255 & (argb >> 0);
                 textureMap[x][y] = red + green * 256;
                 collisionMap[x][y] = blue == 1;
             }
