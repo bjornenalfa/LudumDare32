@@ -137,8 +137,8 @@ public class Character {
         int tx = (int) (x + 16) / 32;
         int ty = (int) (y + 16) / 32;
         try {
-            for (int x = tx - 1; x < tx + 2; x++) {
-                for (int y = ty - 1; y < ty + 2; y++) {
+            for (int x = Math.max(tx-1, 0); x < Math.min(tx + 2,World.width); x++) {
+                for (int y = Math.max(ty-1, 0); y < Math.min(ty + 2,World.height); y++) {
                     if (World.collisionMap[x][y]) {
                         tiles.add(new Point(x * 32, y * 32));
                     }
