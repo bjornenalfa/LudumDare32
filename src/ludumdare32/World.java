@@ -11,6 +11,7 @@ public class World {
 
     static boolean[][] collisionMap;
     static int[][] textureMap;
+    static int[][] textureMap2;
     static int width = 0;
     static int height = 0;
     static int pixelWidth = 0;
@@ -63,7 +64,7 @@ public class World {
                 boolean sunny = 1 == (1 & (argb >> 29));
                 boolean snowy = 1 == (1 & (argb >> 28));
                 int texture1 = 4095 & (argb >> 12);
-                int textre2 = 4095 & argb;
+                int texture2 = 4095 & argb;
                 
                 int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;*/
                 
@@ -72,6 +73,8 @@ public class World {
                 int green = 255 & (argb >> 8);
                 int blue = 255 & (argb >> 0);
                 textureMap[x][y] = red + green * 256;
+                //textureMap[x][y] = texture1;
+                //textureMap2[x][y] = texture2;
                 collisionMap[x][y] = blue == 1;
             }
         }
