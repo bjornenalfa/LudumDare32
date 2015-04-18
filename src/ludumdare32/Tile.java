@@ -11,6 +11,9 @@ public class Tile {
     static BufferedImage[] images;
     static HashMap<String,Tile> tiles = new HashMap();
     
+    static int horizontalTiles = 0;
+    static int verticalTiles = 0;
+    
     int imageID;
     BufferedImage image;
     String name;
@@ -26,8 +29,8 @@ public class Tile {
         }
         int width = img.getWidth();
         int height = img.getHeight();
-        int horizontalTiles = (int) Math.ceil((double)width/(size+margin));
-        int verticalTiles = (int) Math.ceil((double)height/(size+margin));
+        horizontalTiles = (int) Math.ceil((double)width/(size+margin));
+        verticalTiles = (int) Math.ceil((double)height/(size+margin));
         
         System.out.println("width:"+width);
         
