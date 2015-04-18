@@ -28,6 +28,7 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 g.drawImage(Tile.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
+                g.drawImage(Tile.images[textureMap2[x][y]], x * 32, y * 32, 32, 32, nothing);
 //                if (collisionMap[x][y]) {
 //                    g.drawImage(Tile.images[549], x*32, y*32, nothing);
 //                }
@@ -55,27 +56,30 @@ public class World {
         pixelWidth = width*32;
         pixelHeight = height*32;
         textureMap = new int[width][height];
+        textureMap2 = new int[width][height];
         collisionMap = new boolean[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int argb = img.getRGB(x, y);
-                /*boolean cloudy = 1 == (1 & (argb >> 31));
+                boolean cloudy = 1 == (1 & (argb >> 31));
                 boolean rainy = 1 == (1 & (argb >> 30));
                 boolean sunny = 1 == (1 & (argb >> 29));
                 boolean snowy = 1 == (1 & (argb >> 28));
                 int texture1 = 4095 & (argb >> 12);
                 int texture2 = 4095 & argb;
+                textureMap[x][y] = texture1;
+                textureMap2[x][y] = texture2;
+                collisionMap[x][y] = cloudy;
                 
-                int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;*/
+                /*int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;
                 
                 int alpha = 255 & (argb >> 24);
                 int red = 255 & (argb >> 16);
                 int green = 255 & (argb >> 8);
                 int blue = 255 & (argb >> 0);
-                textureMap[x][y] = red + green * 256;
-                //textureMap[x][y] = texture1;
-                //textureMap2[x][y] = texture2;
-                collisionMap[x][y] = blue == 1;
+                textureMap[x][y] = red + green * 256;*/
+                
+                
             }
         }
     }
