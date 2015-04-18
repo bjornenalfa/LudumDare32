@@ -28,7 +28,8 @@ public class LudumDare32 extends JFrame {
 
     Player player = new Player(200, 250, 0);
     MyPanel panel;
-
+    Camera camera;
+    
     BufferedImage image;
 
     public LudumDare32() {
@@ -76,6 +77,7 @@ public class LudumDare32 extends JFrame {
         setTitle("LudumDare32");
 
         panel = new MyPanel();
+        camera = new Camera();
         MyThread thread = new MyThread();
 
         setContentPane(panel);
@@ -135,6 +137,8 @@ public class LudumDare32 extends JFrame {
                 player.move();
                 player.checkCollision();
 
+                camera.update(player, true);
+                
                 panel.repaint();
                 try {
                     sleep((int)(1000/60d));
@@ -162,9 +166,11 @@ public class LudumDare32 extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
+            g2.translate(camera.translateX, camera.translateY);
             World.paint(g2);
             player.paint(g2);
             g.drawImage(image, 0, 0, this);
+            g2.translate(-camera.translateX, -camera.translateY);
         }
 
         private void addKeyBindings() {
