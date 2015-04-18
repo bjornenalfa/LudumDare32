@@ -12,12 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-/**
- *
- * @author bjornenalfa
- */
 public class LudumDare32 extends JFrame {
-
+    
     public LudumDare32() {
         setTitle("");
 
