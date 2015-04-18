@@ -3,6 +3,8 @@ package ludumdare32;
 import java.awt.Graphics2D;
 
 public class Player extends Character {
+    
+    double acceleration = 0.5;
 
     public Player(double x, double y, double hp) {
         super(x, y, hp, 13);
