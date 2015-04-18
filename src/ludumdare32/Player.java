@@ -13,11 +13,6 @@ public class Player extends Character {
     }
 
     @Override
-    public void move() {
-
-    }
-
-    @Override
     public void paint(Graphics2D g) {
 
     }
