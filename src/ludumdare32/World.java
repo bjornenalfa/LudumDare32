@@ -17,7 +17,8 @@ public class World {
     static void paint(Graphics2D g) {
         for (int y = 0;y<Tile.verticalTiles;y++) {
             for (int x = 0;x<Tile.horizontalTiles;x++) {
-                g.drawImage(Tile.images[y*Tile.horizontalTiles+x], x*16, y*16, nothing);
+                //g.drawImage(Tile.images[y*Tile.horizontalTiles+x], x*16, y*16, nothing);
+                g.drawImage(Tile.images[y*Tile.horizontalTiles+x], x*32, y*32, 32, 32, nothing);
             }
         }
         g.drawImage(Tile.images[0], 0, 0, nothing);
