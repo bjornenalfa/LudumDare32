@@ -19,10 +19,10 @@ public class Character {
     }
 
     public void move() {
-        setX(getX() + getVx());
-        setY(getY() + getVy());
         vx *= 0.9;
         vy *= 0.9;
+        setX(getX() + getVx());
+        setY(getY() + getVy());
     }
 
     public void paint(Graphics2D g) {
@@ -51,9 +51,9 @@ public class Character {
     public void setVx(double vx) {
         this.vx = vx;
     }
-    
+
     public void changeVx(double dv) {
-        this.vx+=dv;
+        this.vx += dv;
     }
 
     public double getVy() {
@@ -63,9 +63,9 @@ public class Character {
     public void setVy(double vy) {
         this.vy = vy;
     }
-    
+
     public void changeVy(double dv) {
-        this.vy+=dv;
+        this.vy += dv;
     }
 
     public double getHp() {
@@ -113,10 +113,12 @@ public class Character {
             Vector2D velocityVector = new Vector2D(new Point.Double(vx, vy));
             if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < r * r) {
                 Vector2D projectionVector = Vector2D.OrthogonalProjection(velocityVector, collisionVector);
-                x -= projectionVector.point.x;
-                y -= projectionVector.point.y;
-                vx -= projectionVector.point.x * 1;
-                vy -= projectionVector.point.y * 1;
+                if (Vector2D.scalarProductCoordinates(projectionVector, collisionVector) < 0) {
+                    x -= projectionVector.point.x * 1;
+                    y -= projectionVector.point.y * 1;
+                    vx -= projectionVector.point.x * 1;
+                    vy -= projectionVector.point.y * 1;
+                }
             }
         }
     }

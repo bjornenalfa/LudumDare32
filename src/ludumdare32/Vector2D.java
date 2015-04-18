@@ -174,6 +174,9 @@ public class Vector2D {
     }
 
     public static Vector2D OrthogonalProjection(Vector2D vector, Vector2D base) {
+        if (base.getLength() == 0) {
+            return zero;
+        }
         return multiply(new Vector2D(base), scalarProductCoordinates(vector, base) / (Math.pow(base.getLength(), 2)));
     }
 
