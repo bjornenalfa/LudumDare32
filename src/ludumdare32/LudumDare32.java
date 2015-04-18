@@ -17,6 +17,7 @@ public class LudumDare32 extends JFrame {
     
     public LudumDare32() {
         Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
+        World.loadFromFile("levels/test.png");
         //
         setTitle("LudumDare32");
 
