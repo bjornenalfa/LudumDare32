@@ -7,6 +7,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -19,24 +21,29 @@ import javax.swing.KeyStroke;
 
 public class LudumDare32 extends JFrame {
 
+    private boolean leftDown = false;
+    private boolean rightDown = false;
+    private boolean upDown = false;
+    private boolean downDown = false;
+
     Player player = new Player(200, 250, 0);
     MyPanel panel;
-    
+
     BufferedImage image;
 
     public LudumDare32() {
         Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
         World.loadFromFile("levels/test.png");
-        
+
         image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
         AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
         Graphics2D g2d = (Graphics2D) image.getGraphics();
         g2d.setComposite(composite);
         g2d.setColor(new Color(0, 0, 0, 0));
         g2d.fillRect(0, 0, 500, 500);
-        
+
         g2d = image.createGraphics();
-        
+
         for (int x = 0; x < 500; x++) {
             for (int y = 0; y < 500; y++) {
                 ArrayList<Point> tiles = new ArrayList();
@@ -58,8 +65,8 @@ public class LudumDare32 extends JFrame {
                     cx = Math.max(0, Math.min(32, cx));
                     cy = Math.max(0, Math.min(32, cy));
                     Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
-                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13*13) {
-                        g2d.setColor(new Color(255,255,255,128));
+                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
+                        g2d.setColor(new Color(255, 255, 255, 128));
                         g2d.fillRect(x, y, 1, 1);
                     }
                 }
@@ -82,6 +89,37 @@ public class LudumDare32 extends JFrame {
 
     }
 
+    public class KeyHandler extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent k) {
+            int key = k.getKeyCode();
+            if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
+                leftDown = true;
+            } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
+                rightDown = true;
+            } else if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+                upDown = true;
+            } else if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                downDown = true;
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent k) {
+            int key = k.getKeyCode();
+            if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) {
+                leftDown = false;
+            } else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) {
+                rightDown = false;
+            } else if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) {
+                upDown = false;
+            } else if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) {
+                downDown = false;
+            }
+        }
+    }
+
     class MyThread extends Thread {
 
         public MyThread() {
@@ -92,12 +130,14 @@ public class LudumDare32 extends JFrame {
         public void run() {
 
             while (true) {
+                player.changeVx((leftDown ? -1 : 0) + (rightDown ? 1 : 0));
+                player.changeVy((upDown ? -1 : 0) + (downDown ? 1 : 0));
                 player.move();
                 player.checkCollision();
 
                 panel.repaint();
                 try {
-                    sleep(16);
+                    sleep((int)(1000/60d));
                 } catch (Exception e) {
                 }
             }
@@ -107,11 +147,6 @@ public class LudumDare32 extends JFrame {
 
     class MyPanel extends JPanel {
 
-        private boolean leftDown = false;
-        private boolean rightDown = false;
-        private boolean upDown = false;
-        private boolean downDown = false;
-
         public MyPanel() {
             addKeyBindings();
 
@@ -119,6 +154,9 @@ public class LudumDare32 extends JFrame {
             addMouseListener(ma);
             addMouseMotionListener(ma);
             addMouseWheelListener(ma);
+
+            addKeyListener(new KeyHandler());
+
         }
 
         @Override
@@ -133,26 +171,6 @@ public class LudumDare32 extends JFrame {
             getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
             getActionMap().put("exit", exit());
 
-            getInputMap().put(KeyStroke.getKeyStroke("A"), "left");
-            getActionMap().put("left", left());
-            getInputMap().put(KeyStroke.getKeyStroke("released A"), "releaseLeft");
-            getActionMap().put("releaseLeft", releaseLeft());
-
-            getInputMap().put(KeyStroke.getKeyStroke("D"), "right");
-            getActionMap().put("right", right());
-            getInputMap().put(KeyStroke.getKeyStroke("released D"), "releaseRight");
-            getActionMap().put("releaseRight", releaseRight());
-
-            getInputMap().put(KeyStroke.getKeyStroke("W"), "up");
-            getActionMap().put("up", up());
-            getInputMap().put(KeyStroke.getKeyStroke("released W"), "releaseUp");
-            getActionMap().put("releaseUp", releaseUp());
-
-            getInputMap().put(KeyStroke.getKeyStroke("S"), "down");
-            getActionMap().put("down", down());
-            getInputMap().put(KeyStroke.getKeyStroke("released S"), "releaseDown");
-            getActionMap().put("releaseDown", releaseDown());
-
             getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "jump");
             getActionMap().put("jump", jump());
         }
@@ -162,102 +180,6 @@ public class LudumDare32 extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     System.exit(0);
-                }
-            };
-        }
-
-        private Action left() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (rightDown == false) {
-                        leftDown = true;
-                        player.changeVx(-1);
-                    }
-                }
-            };
-        }
-
-        private Action releaseLeft() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (leftDown == true) {
-                        leftDown = false;
-                        player.changeVx(0);
-                    }
-                }
-            };
-        }
-
-        private Action right() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (leftDown == false) {
-                        rightDown = true;
-                        player.changeVx(1);
-                    }
-                }
-            };
-        }
-
-        private Action releaseRight() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (rightDown == true) {
-                        rightDown = false;
-                        player.changeVx(0);
-                    }
-                }
-            };
-        }
-
-        private Action up() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (downDown == false) {
-                        upDown = true;
-                        player.changeVy(-1);
-                    }
-                }
-            };
-        }
-
-        private Action releaseUp() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (upDown == true) {
-                        upDown = false;
-                        player.changeVy(0);
-                    }
-                }
-            };
-        }
-
-        private Action down() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (upDown == false) {
-                        downDown = true;
-                        player.changeVy(1);
-                    }
-                }
-            };
-        }
-
-        private Action releaseDown() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (downDown == true) {
-                        downDown = false;
-                        player.changeVy(0);
-                    }
                 }
             };
         }

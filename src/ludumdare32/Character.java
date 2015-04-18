@@ -113,8 +113,10 @@ public class Character {
             Vector2D velocityVector = new Vector2D(new Point.Double(vx, vy));
             if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < r * r) {
                 Vector2D projectionVector = Vector2D.OrthogonalProjection(velocityVector, collisionVector);
-                vx -= projectionVector.point.x * 1.1;
-                vy -= projectionVector.point.y * 1.1;
+                x -= projectionVector.point.x;
+                y -= projectionVector.point.y;
+                vx -= projectionVector.point.x * 1;
+                vy -= projectionVector.point.y * 1;
             }
         }
     }
