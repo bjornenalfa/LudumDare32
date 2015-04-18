@@ -132,8 +132,8 @@ public class LudumDare32 extends JFrame {
         public void run() {
 
             while (true) {
-                player.changeVx((leftDown ? -1 : 0) + (rightDown ? 1 : 0));
-                player.changeVy((upDown ? -1 : 0) + (downDown ? 1 : 0));
+                player.changeVx((leftDown ? -player.acceleration : 0) + (rightDown ? player.acceleration : 0));
+                player.changeVy((upDown ? -player.acceleration : 0) + (downDown ? player.acceleration : 0));
                 player.move();
                 player.checkCollision();
 
