@@ -8,8 +8,8 @@ import java.awt.Graphics2D;
  */
 public class Character {
 
-    private double x, y, vx, vy;
-    private double hp, maxhp;
+    private double x, y, vx, vy, hp;
+    private final double maxhp;
 
     public Character(double x, double y, double hp) {
         this.x = x;
@@ -65,6 +65,9 @@ public class Character {
         this.hp = hp;
         if(this.hp > maxhp){
             this.hp = maxhp;
+        }
+        if(this.hp < 0){
+            //die
         }
     }
     
