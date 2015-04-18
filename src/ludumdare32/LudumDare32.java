@@ -2,6 +2,7 @@ package ludumdare32;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -15,7 +16,9 @@ import javax.swing.KeyStroke;
 public class LudumDare32 extends JFrame {
     
     public LudumDare32() {
-        setTitle("");
+        Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
+        //
+        setTitle("LudumDare32");
 
         MyPanel panel = new MyPanel();
 
@@ -28,7 +31,8 @@ public class LudumDare32 extends JFrame {
         setVisible(true);
         //
         
-        Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
+        
+        
     }
 
     class MyPanel extends JPanel {
@@ -46,7 +50,8 @@ public class LudumDare32 extends JFrame {
 
         @Override
         protected void paintComponent(Graphics g) {
-
+            Graphics2D g2 = (Graphics2D)g;
+            World.paint(g2);
         }
 
         private void addKeyBindings() {

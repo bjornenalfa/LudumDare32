@@ -29,6 +29,8 @@ public class Tile {
         int horizontalTiles = (int) Math.ceil((double)width/(size+margin));
         int verticalTiles = (int) Math.ceil((double)height/(size+margin));
         
+        System.out.println("width:"+width);
+        
         images = new BufferedImage[horizontalTiles*verticalTiles];
         int iterator = 0;
         
@@ -41,9 +43,9 @@ public class Tile {
         }
     }
     
-    public Tile(String name, int tileImage, boolean collision) {
+    public Tile(String nam, int tileImage, boolean collision) {
         collides = collision;
-        name = name;
+        name = nam;
         imageID = tileImage;
         image = images[tileImage];
         
