@@ -49,14 +49,48 @@ public class LudumDare32 extends JFrame {
         }
 
         private void addKeyBindings() {
-            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_0, 0), "keyBinding");
-            getActionMap().put("keyBinding", keyBinding());
+            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "exit");
+            getActionMap().put("exit", exit());
+            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "left");
+            getActionMap().put("left", left());
+            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "right");
+            getActionMap().put("right", right());
+            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "jump");
+            getActionMap().put("jump", jump());
         }
 
-        private Action keyBinding() {
+        private Action exit() {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            };
+        }
+
+        private Action left() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    
+                }
+            };
+        }
+
+        private Action right() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                
+                }
+            };
+        }
+
+        private Action jump() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    
                 }
             };
         }
