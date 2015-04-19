@@ -11,6 +11,9 @@ import javax.imageio.ImageIO;
 
 public class World {
 
+    static int worldNumber = 0;
+    static String[] worlds = {"test", "test2"};
+
     static boolean[][] collisionMap;
     static int[][] textureMap;
     static int[][] textureMap2;
@@ -42,10 +45,10 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 g2d.drawImage(Tile.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
-                
+
             }
         }
-        
+
         layer2 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D) layer2.getGraphics();
         g2d.setComposite(composite);
@@ -57,7 +60,7 @@ public class World {
                 g2d.drawImage(Tile.images[textureMap2[x][y]], x * 32, y * 32, 32, 32, nothing);
             }
         }
-        
+
         layer3 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D) layer3.getGraphics();
         g2d.setComposite(composite);
@@ -72,9 +75,9 @@ public class World {
     }
 
     static void paint(Graphics2D g) {
-        g.drawImage(layer1,0,0,nothing);
-        g.drawImage(layer2,0,0,nothing);
-        
+        g.drawImage(layer1, 0, 0, nothing);
+        g.drawImage(layer2, 0, 0, nothing);
+
 //        for (int x = 0; x < width; x++) {
 //            for (int y = 0; y < height; y++) {
 //                g.drawImage(Tile.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
@@ -82,9 +85,19 @@ public class World {
 //            }
 //        }
     }
-    
+
     static void paint2(Graphics2D g) {
-        g.drawImage(layer3,0,0,nothing);
+        g.drawImage(layer3, 0, 0, nothing);
+    }
+
+    public static void loadWorld(int ID) {
+        try {
+            loadFromFile("levels/" + worlds[ID] + ".png");
+            worldNumber = ID;
+        } catch (Exception e) {
+            System.out.println("Unknown world");
+            System.out.println(e);
+        }
     }
 
     public static void loadFromFile(String path) {
@@ -133,5 +146,28 @@ public class World {
             }
         }
         renderMap();
+    }
+
+    public static void update(Player player) {
+        int playerTileX = (int) (player.getX() / 32);
+        int playerTileY = (int) (player.getY() / 32);
+        switch (worldNumber) {
+            case 0:
+                if (playerTileX == 11 && playerTileY == 6) {
+                    loadWorld(1);
+                    player.setX(9*32+16);
+                    player.setY(5*32+16);
+                    player.setVy(player.getVy()*-1);
+                }
+                break;
+            case 1:
+                if (playerTileX == 9 && playerTileY == 4) {
+                    loadWorld(0);
+                    player.setX(11*32+16);
+                    player.setY(7*32+16);
+                    player.setVy(player.getVy()*-1);
+                }
+                break;
+        }
     }
 }

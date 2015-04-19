@@ -154,6 +154,8 @@ public class LudumDare32 extends JFrame {
                 Weather.updateTransition();
                 Wind.update();
                 Character.updateCharacters();
+                
+                World.update(player);
 
                 camera.update(player, true);
 
