@@ -22,7 +22,7 @@ public class TileHelper extends JFrame {
     MyPanel drawPanel;
 
     public TileHelper() {
-        Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
+        Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
 
         setTitle("TileHelper");
 
