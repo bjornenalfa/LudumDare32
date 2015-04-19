@@ -8,6 +8,7 @@ import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Weather {
 
@@ -18,6 +19,8 @@ public class Weather {
 
     static int current = 0;
     static int old = 0;
+    
+    static ArrayList<Particles> currentWeatherParticles = new ArrayList();
 
     static BufferedImage oldLayer1;
     static BufferedImage oldLayer2;

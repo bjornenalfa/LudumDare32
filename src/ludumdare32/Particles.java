@@ -13,14 +13,15 @@ public class Particles {
     Color color;
 
     public static void updateAll() {
-        for (Particles particle : Particles.particleList) {
+        for (Particles particle : particleList) {
             particle.update();
         }
-        Particles.particleList.removeAll(Particles.removeList);
+        particleList.removeAll(removeList);
+        removeList.clear();
     }
 
     public static void paintAll(Graphics2D g) {
-        for (Particles particle : Particles.particleList) {
+        for (Particles particle : particleList) {
             particle.paint(g);
         }
     }
@@ -35,6 +36,10 @@ public class Particles {
     }
 
     public void paint(Graphics2D g) {
+    }
+    
+    public void remove() {
+        removeList.add(this);
     }
 
 }
