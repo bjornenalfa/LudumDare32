@@ -53,7 +53,6 @@ public class Weather {
             if (transitionTime > 20) {
                 transitioning = false;
             }
-            System.out.println("Transition: "+transitionTime);
         }
     }
     
