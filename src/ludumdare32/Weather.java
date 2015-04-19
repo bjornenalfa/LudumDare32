@@ -11,13 +11,13 @@ import java.awt.image.BufferedImage;
 
 public class Weather {
 
-    static final int CLOUDY = 1;
-    static final int SUNNY = 2;
-    static final int RAINY = 3;
-    static final int SNOWY = 4;
+    static final int CLOUDY = 0;
+    static final int SUNNY = 1;
+    static final int RAINY = 2;
+    static final int SNOWY = 3;
 
-    static int current = 1;
-    static int old = 1;
+    static int current = 0;
+    static int old = 0;
 
     static BufferedImage oldLayer1;
     static BufferedImage oldLayer2;
@@ -96,16 +96,16 @@ public class Weather {
             outside.subtract(new Area(transitionCircle));
             g.setClip(outside);
             switch (old) {
-                case 1:
+                case CLOUDY:
                     //Cloudy.paint(g);
                     break;
-                case 2:
+                case SUNNY:
                     //Sunny.paint(g);
                     break;
-                case 3:
+                case RAINY:
                     Rainy.paint(g);
                     break;
-                case 4:
+                case SNOWY:
                     //Snowy.paint(g);
                     break;
             }
@@ -115,16 +115,16 @@ public class Weather {
 
     public static void paint(Graphics2D g) {
         switch (current) {
-            case 1:
+            case CLOUDY:
                 //Cloudy.paint(g);
                 break;
-            case 2:
+            case SUNNY:
                 //Sunny.paint(g);
                 break;
-            case 3:
+            case RAINY:
                 Rainy.paint(g);
                 break;
-            case 4:
+            case SNOWY:
                 //Snowy.paint(g);
                 break;
         }

@@ -34,8 +34,8 @@ public class Tile {
         horizontalTiles = (int) Math.ceil((double)width/(size+margin));
         verticalTiles = (int) Math.ceil((double)height/(size+margin));
         
-        System.out.println("horizontalTiles:"+horizontalTiles);
-        System.out.println("verticalTiles:"+verticalTiles);
+//        System.out.println("horizontalTiles:"+horizontalTiles);
+//        System.out.println("verticalTiles:"+verticalTiles);
         
         images = new BufferedImage[horizontalTiles*verticalTiles];
         int iterator = 0;

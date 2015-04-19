@@ -147,7 +147,7 @@ public class Character {
         try {
             for (int x = Math.max(tx - 1, 0); x < Math.min(tx + 2, World.width); x++) {
                 for (int y = Math.max(ty - 1, 0); y < Math.min(ty + 2, World.height); y++) {
-                    if (World.collisionMap[x][y]) {
+                    if (World.collisionMap[x][y][Weather.current]) {
                         tiles.add(new Point(x * 32, y * 32));
                     }
                 }

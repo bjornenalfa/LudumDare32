@@ -14,7 +14,7 @@ public class World {
     static int worldNumber = 0;
     static String[] worlds = {"test", "test2"};
 
-    static boolean[][] collisionMap;
+    static boolean[][][] collisionMap;
     static int[][] textureMap;
     static int[][] textureMap2;
     static int[][] textureMap3;
@@ -117,7 +117,7 @@ public class World {
         textureMap = new int[width][height];
         textureMap2 = new int[width][height];
         textureMap3 = new int[width][height];
-        collisionMap = new boolean[width][height];
+        collisionMap = new boolean[width][height][4];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 int argb = img.getRGB(x, y);
@@ -136,7 +136,10 @@ public class World {
                     textureMap2[x][y] = texture2;
                     textureMap3[x][y] = Tile.INVISIBLE;
                 }
-                collisionMap[x][y] = cloudy;
+                collisionMap[x][y][Weather.CLOUDY] = cloudy;
+                collisionMap[x][y][Weather.SUNNY] = sunny;
+                collisionMap[x][y][Weather.RAINY] = rainy;
+                collisionMap[x][y][Weather.SNOWY] = snowy;
 
                 /*int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;
                 

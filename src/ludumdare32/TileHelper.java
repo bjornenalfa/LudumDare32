@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -121,6 +124,9 @@ public class TileHelper extends JFrame {
                 int green = 0xFF & (argbBackwards >> 8);
                 int blue = 0xFF & (argbBackwards);
                 label.setText("Red:" + red + ",Green:" + green + ",Blue:" + blue + ",Alpha:" + alpha);
+                StringSelection selection = new StringSelection(Integer.toHexString((first.x/32 + first.y/32 * 57 << 12) | second.x/32 + second.y/32 * 57));
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(selection, selection);
             }
         }
 
