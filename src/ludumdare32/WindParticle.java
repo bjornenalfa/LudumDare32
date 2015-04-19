@@ -17,18 +17,19 @@ public class WindParticle extends Particles {
     private final ArrayList<Integer> yList = new ArrayList();
     double distance = 10 * Wind.power;
     double angle = Wind.direction;
-    private int spiralLength = 0;
+    private int spiralLengthCounter = 0;
+    private int spiralLength = (int) (Math.random() * 10 + 20);
 
     @Override
     public void update() {
-        if (Math.random() < 0.2 / 60 && counter > spiralLength) {
-            spiralLength = counter + (int) (Math.random() * 10 + 20);
+        if (Math.random() < 0.5 / 60 && counter > spiralLengthCounter) {
+            spiralLengthCounter = counter + spiralLength;
         }
 
         if (counter == 0) {
             xList.add((int) x);
             yList.add((int) y);
-        } else if (counter < spiralLength) {
+        } else if (counter < spiralLengthCounter) {
             angle += (Math.PI * 2) / (double) (spiralLength);
             xList.add((int) (xList.get(xList.size() - 1) + Math.cos(angle) * distance));
             yList.add((int) (yList.get(yList.size() - 1) + Math.sin(angle) * distance));
@@ -39,9 +40,9 @@ public class WindParticle extends Particles {
         
         counter++;
         
-        if (counter > 100) {
+        if (counter > 50) {
             xList.remove(0);
-            xList.remove(0);
+            yList.remove(0);
         }
         if (!Objects.equals(xList, null) && xList.isEmpty()) {
             Particles.removeList.add(this);
