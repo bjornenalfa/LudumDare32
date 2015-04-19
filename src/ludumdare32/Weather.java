@@ -34,6 +34,10 @@ public class Weather {
         transitionCircle = new Ellipse2D.Double(transitionPoint.x, transitionPoint.y, 0, 0);
         transitioning = true;
     }
+    
+    public static void stopTransition() {
+        transitioning = false;
+    }
 
     public static void paintTransition(Graphics2D g) {
         if (transitioning) {
@@ -70,7 +74,7 @@ public class Weather {
             g.fill(transitionCircle);
 
             if ((transitionPoint.x + diameter * 0.71 > World.pixelWidth) && (transitionPoint.y + diameter * 0.71 > World.pixelHeight) && (transitionPoint.x - diameter * 0.71 < 0) && (transitionPoint.y - diameter * 0.71 < 0)) {
-                transitioning = false;
+                stopTransition();
             }
 //            if (transitionTime > 5) {
 //                transitioning = false;

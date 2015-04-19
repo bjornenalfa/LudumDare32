@@ -97,7 +97,9 @@ public class World {
         } catch (Exception e) {
             System.out.println("Unknown world");
             System.out.println(e);
+            return;
         }
+        Weather.stopTransition();
     }
 
     public static void loadFromFile(String path) {
