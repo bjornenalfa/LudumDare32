@@ -30,7 +30,7 @@ public class LudumDare32 extends JFrame {
 
     Player player = new Player(200, 250, 0);
     MyPanel panel;
-    Camera camera;
+    static Camera camera;
 
 //    BufferedImage image;
     public LudumDare32() {
