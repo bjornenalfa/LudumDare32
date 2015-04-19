@@ -56,6 +56,7 @@ public class TileHelper extends JFrame {
         JCheckBox rainyBox;
         JCheckBox sunnyBox;
         JCheckBox snowyBox;
+        JCheckBox aboveBox;
 
         public MyCheckBoxPanel() {
             setLayout(new GridLayout(1, 4));
@@ -63,16 +64,19 @@ public class TileHelper extends JFrame {
             rainyBox = new JCheckBox("RainyCollision", false);
             sunnyBox = new JCheckBox("SunnyCollision", false);
             snowyBox = new JCheckBox("SnowyCollision", false);
+            aboveBox = new JCheckBox("RenderAboveCharacters", false);
 
             cloudyBox.addItemListener(this);
             rainyBox.addItemListener(this);
             sunnyBox.addItemListener(this);
             snowyBox.addItemListener(this);
+            aboveBox.addItemListener(this);
 
             add(cloudyBox);
             add(rainyBox);
             add(sunnyBox);
             add(snowyBox);
+            add(aboveBox);
         }
 
         @Override
@@ -87,6 +91,8 @@ public class TileHelper extends JFrame {
                 sunny = 2 - e.getStateChange();
             } else if (source == snowyBox) {
                 snowy = 2 - e.getStateChange();
+            } else if (source == aboveBox) {
+                renderAbove = 2 - e.getStateChange();
             }
             drawPanel.calcColor();
         }
@@ -96,6 +102,7 @@ public class TileHelper extends JFrame {
     int rainy = 0;
     int sunny = 0;
     int snowy = 0;
+    int renderAbove = 0;
 
     class MyPanel extends JPanel {
 
@@ -108,12 +115,12 @@ public class TileHelper extends JFrame {
 
         public void calcColor() {
             if (!Objects.equals(first, null) && !Objects.equals(second, null)) {
-                int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (first.x/32 + first.y/32 * 57 << 12) | second.x/32 + second.y/32 * 57;
+                int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (renderAbove << 25) | (first.x/32 + first.y/32 * 57 << 12) | second.x/32 + second.y/32 * 57;
                 int alpha = 0xFF & (argbBackwards >> 24);
                 int red = 0xFF & (argbBackwards >> 16);
                 int green = 0xFF & (argbBackwards >> 8);
                 int blue = 0xFF & (argbBackwards);
-                label.setText("Alpha:" + alpha + ",Red:" + red + ",Green:" + green + ",Blue:" + blue);
+                label.setText("Red:" + red + ",Green:" + green + ",Blue:" + blue + ",Alpha:" + alpha);
             }
         }
 

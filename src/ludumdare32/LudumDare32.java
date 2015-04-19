@@ -189,6 +189,7 @@ public class LudumDare32 extends JFrame {
             //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
             World.paint(g2);
             Character.paintCharacters(g2);
+            World.paint2(g2);
 //            g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
         }

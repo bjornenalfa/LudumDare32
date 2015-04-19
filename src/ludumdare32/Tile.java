@@ -14,6 +14,8 @@ public class Tile {
     static int horizontalTiles = 0;
     static int verticalTiles = 0;
     
+    static final int INVISIBLE = 285;
+    
     int imageID;
     BufferedImage image;
     String name;
