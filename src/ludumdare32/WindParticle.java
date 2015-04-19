@@ -2,6 +2,8 @@ package ludumdare32;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class WindParticle extends Particles {
 
@@ -10,58 +12,48 @@ public class WindParticle extends Particles {
     }
 
     private int counter = 0;
-    private int lineLength;
-    private int spiralLength;
-    private int[] xList;
-    private int[] yList;
 
-    public void calcSpiral() {
-        double distance = 10 * Wind.power;
-        double angle = Wind.direction;
-
-        lineLength = (int) (Math.random() * 10 + 20);
-        spiralLength = (int) (Math.random() * 10 + 20);
-
-        xList = new int[2 * lineLength + spiralLength];
-        yList = new int[2 * lineLength + spiralLength];
-
-        xList[0] = (int) x;
-        yList[0] = (int) y;
-
-        for (int i = 1; i < lineLength; i++) {
-            xList[i] = (int) (xList[i - 1] + Math.cos(angle) * distance);
-            yList[i] = (int) (yList[i - 1] + Math.sin(angle) * distance);
-        }
-        for (int i = lineLength; i < lineLength + spiralLength; i++) {
-            angle += (Math.PI * 2) / (double) (spiralLength);
-            xList[i] = (int) (xList[i - 1] + Math.cos(angle) * distance);
-            yList[i] = (int) (yList[i - 1] + Math.sin(angle) * distance);
-        }
-        for (int i = lineLength + spiralLength; i < 2 * lineLength + spiralLength; i++) {
-            xList[i] = (int) (xList[i - 1] + Math.cos(angle) * distance);
-            yList[i] = (int) (yList[i - 1] + Math.sin(angle) * distance);
-        }
-    }
+    private ArrayList<Integer> xList = new ArrayList();
+    private ArrayList<Integer> yList = new ArrayList();
+    double distance = 10 * Wind.power;
+    double angle = Wind.direction;
+    private int spiralLength = 0;
 
     @Override
     public void update() {
-        if (counter > 2 * lineLength + spiralLength + (2 * lineLength + spiralLength) / 2) {
-            Particles.removeList.add(this);
-        } else if (counter > (2 * lineLength + spiralLength) / 2) {
-            System.arraycopy(xList, 1, xList, 0, xList.length - 1);
-            System.arraycopy(yList, 1, yList, 0, yList.length - 1);
+        if (Math.random() < 0.2 / 60 && counter > spiralLength) {
+            spiralLength = counter + (int) (Math.random() * 10 + 20);
         }
+
         if (counter == 0) {
-            calcSpiral();
+            xList.add((int) x);
+            yList.add((int) y);
+        } else if (counter < spiralLength) {
+            angle += (Math.PI * 2) / (double) (spiralLength);
+            xList.add((int) (xList.get(xList.size() - 1) + Math.cos(angle) * distance));
+            yList.add((int) (yList.get(yList.size() - 1) + Math.sin(angle) * distance));
+        } else {
+            xList.add((int) (xList.get(xList.size() - 1) + Math.cos(angle) * distance));
+            yList.add((int) (yList.get(yList.size() - 1) + Math.sin(angle) * distance));
         }
         counter++;
+        if (counter > 100) {
+            xList.remove(0);
+            xList.remove(0);
+        }
+        if (!Objects.equals(xList, null) && xList.isEmpty()) {
+            Particles.removeList.add(this);
+            System.out.println("REMOVING");
+        }
     }
 
     @Override
     public void paint(Graphics2D g) {
         if (Wind.power > 0) {
             g.setColor(color);
-            g.drawPolyline(xList, yList, Math.min(counter, 2 * lineLength + spiralLength));
+            for (int i = 1; i < xList.size(); i++) {
+                g.drawLine(xList.get(i - 1), yList.get(i - 1), yList.get(i), yList.get(i));
+            }
         }
     }
 }
