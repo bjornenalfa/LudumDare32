@@ -186,6 +186,7 @@ public class LudumDare32 extends JFrame {
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.DARK_GRAY);
             g2.fillRect(0, 0, World.width * 32 + 100, World.width * 32 + 100);
+            Wind.paint(g2);
             g2.translate(camera.translateX, camera.translateY);
             //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
             Weather.paintTransition(g2);
@@ -203,6 +204,7 @@ public class LudumDare32 extends JFrame {
             Weather.paintTransitionClearClip(g2);
 //            g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
+            
         }
 
         private void addKeyBindings() {
