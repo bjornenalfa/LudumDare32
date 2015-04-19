@@ -38,9 +38,12 @@ public class WindParticle extends Particles {
             yList.add((int) (yList.get(yList.size() - 1) + Math.sin(angle) * distance));
         }
         
+        //angle -= (angle-Wind.direction);
         counter++;
         
-        if (counter > 50) {
+        if (counter > 100) {
+            xList.remove(0);
+            yList.remove(0);
             xList.remove(0);
             yList.remove(0);
         }
