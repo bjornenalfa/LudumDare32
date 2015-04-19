@@ -1,5 +1,7 @@
 package ludumdare32;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
@@ -49,8 +51,13 @@ public class Weather {
     public static void updateTransition() {
         if (transitioning) {
             transitionTime += 1/60d;
-            transitionCircle.setFrame(transitionPoint.x-transitionTime*transitionSpeed*0.5, transitionPoint.y-transitionTime*transitionSpeed*0.5, transitionTime*transitionSpeed, transitionTime*transitionSpeed);
-            if (transitionTime > 20) {
+            transitionCircle.setFrame(transitionPoint.x-transitionTime*transitionTime*transitionSpeed*0.5, transitionPoint.y-transitionTime*transitionTime*transitionSpeed*0.5, transitionTime*transitionTime*transitionSpeed, transitionTime*transitionTime*transitionSpeed);
+            Graphics2D g = oldLayer3.createGraphics();
+            AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
+            g.setComposite(composite);
+            g.setColor(new Color(0, 0, 0, 0));
+            g.fill(transitionCircle);
+            if (transitionTime > 5) {
                 transitioning = false;
             }
         }
