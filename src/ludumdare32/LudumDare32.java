@@ -157,6 +157,11 @@ public class LudumDare32 extends JFrame {
                 
                 World.update(player);
 
+                for (Particles particle : Particles.particleList) {
+                    particle.update();
+                }
+                Particles.particleList.removeAll(Particles.removeList);
+                
                 camera.update(player, true);
 
                 panel.repaint();
@@ -188,7 +193,6 @@ public class LudumDare32 extends JFrame {
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.DARK_GRAY);
             g2.fillRect(0, 0, World.width * 32 + 100, World.width * 32 + 100);
-            Wind.paint(g2);
             g2.translate(camera.translateX, camera.translateY);
             //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
             Weather.paintTransition(g2);
@@ -200,7 +204,9 @@ public class LudumDare32 extends JFrame {
                 g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
             }
             Character.paintCharacters(g2);
-            
+            for (Particles particle : Particles.particleList) {
+                particle.paint(g2);
+            }
             Weather.paintTransition2(g2);
             World.paint2(g2);
             Weather.paint(g2);
@@ -313,6 +319,7 @@ public class LudumDare32 extends JFrame {
                         Wind.power = Math.sqrt(dx * dx + dy * dy) / 120;
                     }
                     System.out.println(length + " : " + Wind.power);
+                    Particles.particleList.add(new WindParticle(windstartX,windstartY));
                 }
             };
         }
