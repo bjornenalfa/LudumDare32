@@ -4,8 +4,11 @@ import java.awt.geom.Point2D;
 
 public class Snowy extends Weather {
 
-    static void activate(Point2D.Double aDouble) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static void activate(Point2D.Double point) {
+        Weather.startTransition(point);
+        Tile.loadTileSet("img/Spritesheet/snowy.png", 16, 1);
+        World.renderMap();
+        Weather.current = Weather.SNOWY;
     }
     
 }
