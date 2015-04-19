@@ -284,6 +284,9 @@ public class LudumDare32 extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    if (changingWind) {
+                        return;
+                    }
                     changingWind = true;
                     windstartX = player.getX();
                     windstartY = player.getY();
