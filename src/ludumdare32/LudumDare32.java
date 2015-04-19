@@ -33,7 +33,7 @@ public class LudumDare32 extends JFrame {
 //    BufferedImage image;
 
     public LudumDare32() {
-        Tile.loadTileSet("img/Spritesheet/roguelikeSheet_transparent.png", 16, 1);
+        Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.loadFromFile("levels/test.png");
         
         Enemy foe = new Enemy(250,250,10,13,0.5);
@@ -151,6 +151,7 @@ public class LudumDare32 extends JFrame {
                 player.changeVx((leftDown ? -player.acceleration : 0) + (rightDown ? player.acceleration : 0));
                 player.changeVy((upDown ? -player.acceleration : 0) + (downDown ? player.acceleration : 0));
 
+                Weather.updateTransition();
                 Wind.update();
                 Character.updateCharacters();
 
@@ -187,9 +188,13 @@ public class LudumDare32 extends JFrame {
             g2.fillRect(0, 0, World.width*32+100, World.width*32+100);
             g2.translate(camera.translateX, camera.translateY);
             //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
+            Weather.paintTransition(g2);
             World.paint(g2);
+            Weather.paintTransitionClearClip(g2);
             Character.paintCharacters(g2);
+            Weather.paintTransition2(g2);
             World.paint2(g2);
+            Weather.paintTransitionClearClip(g2);
 //            g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
         }
@@ -233,7 +238,7 @@ public class LudumDare32 extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //Wheater = Sunny
+                    Sunny.activate(new Point.Double(player.getX(),player.getY()));
                 }
             };
         }
@@ -242,7 +247,7 @@ public class LudumDare32 extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //Wheater = Cloudy
+                    Cloudy.activate(new Point.Double(player.getX(),player.getY()));
                 }
             };
         }
