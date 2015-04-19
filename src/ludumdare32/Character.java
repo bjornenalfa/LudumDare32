@@ -19,29 +19,29 @@ public class Character {
         this.hp = maxhp = hp;
         this.r = r;
         this.acceleration = acceleration;
-        
+
         characters.add(this);
     }
-    
+
     public static void updateCharacters() {
         for (Character character : characters) {
             character.update();
         }
     }
-    
+
     public static void paintCharacters(Graphics2D g) {
         for (Character character : characters) {
             character.paint(g);
         }
     }
-    
+
     public void update() {
         if (moveToTarget) {
-            double angle = Math.atan2(targetY-y,targetX-x);
-            double distance = Math.sqrt((targetX-x)*(targetX-x)+(targetY-y)*(targetY-y));
-            double acc = Math.min(distance/100, acceleration);
-            changeVx(Math.cos(angle)*acc);
-            changeVy(Math.sin(angle)*acc);
+            double angle = Math.atan2(targetY - y, targetX - x);
+            double distance = Math.sqrt((targetX - x) * (targetX - x) + (targetY - y) * (targetY - y));
+            double acc = Math.min(distance / 100, acceleration);
+            changeVx(Math.cos(angle) * acc);
+            changeVy(Math.sin(angle) * acc);
         }
         move();
         checkCollision();
@@ -97,6 +97,14 @@ public class Character {
         this.vy += dv;
     }
 
+    public void changeV(double dx, double dy, double acc) {
+        if (Math.abs(dx) + Math.abs(dy) > 0) {
+            double angle = Math.atan2(dy, dx);
+            vx += Math.cos(angle) * acc;
+            vy += Math.sin(angle) * acc;
+        }
+    }
+
     public double getHp() {
         return hp;
     }
@@ -118,16 +126,16 @@ public class Character {
     public double getR() {
         return r;
     }
-    
+
     public void delete() {
         characters.remove(this);
     }
-    
+
     public void setTarget(double x, double y) {
         targetX = x;
         targetY = y;
     }
-    
+
     public void moveToTarget(boolean yes) {
         moveToTarget = yes;
     }
@@ -137,8 +145,8 @@ public class Character {
         int tx = (int) (x + 16) / 32;
         int ty = (int) (y + 16) / 32;
         try {
-            for (int x = Math.max(tx-1, 0); x < Math.min(tx + 2,World.width); x++) {
-                for (int y = Math.max(ty-1, 0); y < Math.min(ty + 2,World.height); y++) {
+            for (int x = Math.max(tx - 1, 0); x < Math.min(tx + 2, World.width); x++) {
+                for (int y = Math.max(ty - 1, 0); y < Math.min(ty + 2, World.height); y++) {
                     if (World.collisionMap[x][y]) {
                         tiles.add(new Point(x * 32, y * 32));
                     }

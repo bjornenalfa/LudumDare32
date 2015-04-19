@@ -8,6 +8,13 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 
 public class Weather {
+    
+    static final int CLOUDY = 1;
+    static final int SUNNY = 2;
+    static final int RAINY = 3;
+    static final int SNOWY = 4;
+    
+    static int current = 1;
 
     static BufferedImage oldLayer1;
     static BufferedImage oldLayer2;

@@ -7,5 +7,6 @@ public class Cloudy extends Weather{
         Weather.startTransition(point);
         Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.renderMap();
+        Weather.current = Weather.CLOUDY;
     }
 }

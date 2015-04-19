@@ -1,6 +1,5 @@
 package ludumdare32;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -11,8 +10,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -26,29 +23,33 @@ public class LudumDare32 extends JFrame {
     private boolean upDown = false;
     private boolean downDown = false;
 
+    private boolean changingWind = false;
+
+    double windstartX;
+    double windstartY;
+
     Player player = new Player(200, 250, 0);
     MyPanel panel;
     Camera camera;
-    
-//    BufferedImage image;
 
+//    BufferedImage image;
     public LudumDare32() {
         Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.loadFromFile("levels/test.png");
-        
-        Enemy foe = new Enemy(250,250,10,13,0.5);
+
+        Enemy foe = new Enemy(250, 250, 10, 13, 0.5);
         foe.setTarget(70, 550);
         foe.moveToTarget(true);
-        
-        foe = new Enemy(250,250,10,13,0.5);
+
+        foe = new Enemy(250, 250, 10, 13, 0.5);
         foe.setTarget(150, 500);
         foe.moveToTarget(true);
-        
-        foe = new Enemy(280,250,10,13,0.5);
+
+        foe = new Enemy(280, 250, 10, 13, 0.5);
         foe.setTarget(250, 550);
         foe.moveToTarget(true);
-        
-        foe = new Enemy(810,250,10,13,0.5);
+
+        foe = new Enemy(810, 250, 10, 13, 0.5);
         foe.setTarget(300, 600);
         foe.moveToTarget(true);
 
@@ -148,18 +149,17 @@ public class LudumDare32 extends JFrame {
         public void run() {
 
             while (true) {
-                player.changeVx((leftDown ? -player.acceleration : 0) + (rightDown ? player.acceleration : 0));
-                player.changeVy((upDown ? -player.acceleration : 0) + (downDown ? player.acceleration : 0));
+                player.changeV((leftDown ? -1 : 0) + (rightDown ? 1 : 0),(upDown ? -1 : 0) + (downDown ? 1 : 0),player.acceleration);
 
                 Weather.updateTransition();
                 Wind.update();
                 Character.updateCharacters();
 
                 camera.update(player, true);
-                
+
                 panel.repaint();
                 try {
-                    sleep((int)(1000/60d));
+                    sleep((int) (1000 / 60d));
                 } catch (Exception e) {
                 }
             }
@@ -185,13 +185,19 @@ public class LudumDare32 extends JFrame {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.DARK_GRAY);
-            g2.fillRect(0, 0, World.width*32+100, World.width*32+100);
+            g2.fillRect(0, 0, World.width * 32 + 100, World.width * 32 + 100);
             g2.translate(camera.translateX, camera.translateY);
             //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
             Weather.paintTransition(g2);
             World.paint(g2);
             Weather.paintTransitionClearClip(g2);
+            
+            if(changingWind) {
+                g2.setColor(Color.RED);
+                g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
+            }
             Character.paintCharacters(g2);
+            
             Weather.paintTransition2(g2);
             World.paint2(g2);
             Weather.paintTransitionClearClip(g2);
@@ -203,18 +209,18 @@ public class LudumDare32 extends JFrame {
             getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
             getActionMap().put("exit", exit());
 
-            getInputMap().put(KeyStroke.getKeyStroke("1"), "sunny");
-            getActionMap().put("sunny", sunny());
-            
-            getInputMap().put(KeyStroke.getKeyStroke("2"), "cloudy");
+            getInputMap().put(KeyStroke.getKeyStroke("1"), "cloudy");
             getActionMap().put("cloudy", cloudy());
-            
+
+            getInputMap().put(KeyStroke.getKeyStroke("2"), "sunny");
+            getActionMap().put("sunny", sunny());
+
             getInputMap().put(KeyStroke.getKeyStroke("3"), "rainy");
             getActionMap().put("rainy", rainy());
-            
+
             getInputMap().put(KeyStroke.getKeyStroke("4"), "snowy");
             getActionMap().put("snowy", snowy());
-            
+
             getInputMap().put(KeyStroke.getKeyStroke("released SHIFT"), "windEnd");
             getInputMap().put(KeyStroke.getKeyStroke("shift pressed SHIFT"), "windStart");
             getActionMap().put("windStart", windStart());
@@ -234,20 +240,20 @@ public class LudumDare32 extends JFrame {
             };
         }
 
-        private Action sunny() {
-            return new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    Sunny.activate(new Point.Double(player.getX(),player.getY()));
-                }
-            };
-        }
-
         private Action cloudy() {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Cloudy.activate(new Point.Double(player.getX(),player.getY()));
+                    Cloudy.activate(new Point.Double(player.getX(), player.getY()));
+                }
+            };
+        }
+
+        private Action sunny() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Sunny.activate(new Point.Double(player.getX(), player.getY()));
                 }
             };
         }
@@ -256,7 +262,7 @@ public class LudumDare32 extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //Wheater = Rainy
+                    Rainy.activate(new Point.Double(player.getX(), player.getY()));
                 }
             };
         }
@@ -265,44 +271,43 @@ public class LudumDare32 extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    //Wheater = Snowy
+                    Snowy.activate(new Point.Double(player.getX(), player.getY()));
                 }
             };
         }
 
-        double windstartX;
-        double windstartY;
-        
         private Action windStart() {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    changingWind = true;
                     windstartX = player.getX();
                     windstartY = player.getY();
                 }
             };
         }
-        
+
         private Action windEnd() {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    double dx = player.getX()-windstartX;
-                    double dy = player.getY()-windstartY;
+                    changingWind = false;
+                    double dx = player.getX() - windstartX;
+                    double dy = player.getY() - windstartY;
                     Wind.direction = Math.atan2(dy, dx);
-                    double length = Math.sqrt(dx*dx+dy*dy);
-                    if (length < 10){
+                    double length = Math.sqrt(dx * dx + dy * dy);
+                    if (length < 10) {
                         Wind.power = 0;
                     } else if (length > 60) {
                         Wind.power = 0.5;
                     } else {
-                        Wind.power = Math.sqrt(dx*dx+dy*dy)/120;
+                        Wind.power = Math.sqrt(dx * dx + dy * dy) / 120;
                     }
                     System.out.println(length + " : " + Wind.power);
                 }
             };
         }
-        
+
         private Action jump() {
             return new AbstractAction() {
                 @Override
