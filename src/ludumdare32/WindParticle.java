@@ -13,8 +13,8 @@ public class WindParticle extends Particles {
 
     private int counter = 0;
 
-    private ArrayList<Integer> xList = new ArrayList();
-    private ArrayList<Integer> yList = new ArrayList();
+    private final ArrayList<Integer> xList = new ArrayList();
+    private final ArrayList<Integer> yList = new ArrayList();
     double distance = 10 * Wind.power;
     double angle = Wind.direction;
     private int spiralLength = 0;
@@ -36,7 +36,9 @@ public class WindParticle extends Particles {
             xList.add((int) (xList.get(xList.size() - 1) + Math.cos(angle) * distance));
             yList.add((int) (yList.get(yList.size() - 1) + Math.sin(angle) * distance));
         }
+        
         counter++;
+        
         if (counter > 100) {
             xList.remove(0);
             xList.remove(0);
@@ -52,7 +54,8 @@ public class WindParticle extends Particles {
         if (Wind.power > 0) {
             g.setColor(color);
             for (int i = 1; i < xList.size(); i++) {
-                g.drawLine(xList.get(i - 1), yList.get(i - 1), yList.get(i), yList.get(i));
+                g.drawLine(xList.get(i - 1), yList.get(i - 1), xList.get(i), yList.get(i));
+                //System.out.println(xList.get(i-1)+":"+yList.get+"->");
             }
         }
     }
