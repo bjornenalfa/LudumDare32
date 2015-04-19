@@ -201,9 +201,9 @@ public class LudumDare32 extends JFrame {
                 g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
             }
             Character.paintCharacters(g2);
-            Particles.paintAll(g2);
             Weather.paintTransition2(g2);
             World.paint2(g2);
+            Particles.paintAll(g2);
             Weather.paint(g2);
             Weather.transitionClearClip(g2);
             Weather.paintOldWeather(g2);

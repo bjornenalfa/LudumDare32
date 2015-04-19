@@ -20,7 +20,7 @@ public class Weather {
     static int current = 0;
     static int old = 0;
     
-    static ArrayList<Particles> currentWeatherParticles = new ArrayList();
+    static ArrayList<Particles> oldWeatherParticles = new ArrayList();
 
     static BufferedImage oldLayer1;
     static BufferedImage oldLayer2;
@@ -58,6 +58,12 @@ public class Weather {
         if (transitioning) {
             g.drawImage(oldLayer3, 0, 0, null);
             g.setClip(transitionCircle);
+        }
+    }
+    
+    public static void paintOldParticles(Graphics2D g) {
+        for (Particles particle : oldWeatherParticles) {
+            particle.paint(g);
         }
     }
 
@@ -98,6 +104,7 @@ public class Weather {
             Area outside = new Area(new Rectangle2D.Double(0,0,World.pixelWidth,World.pixelHeight));
             outside.subtract(new Area(transitionCircle));
             g.setClip(outside);
+            paintOldParticles(g);
             switch (old) {
                 case CLOUDY:
                     //Cloudy.paint(g);
