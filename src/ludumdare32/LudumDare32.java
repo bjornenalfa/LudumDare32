@@ -157,10 +157,7 @@ public class LudumDare32 extends JFrame {
                 
                 World.update(player);
 
-                for (Particles particle : Particles.particleList) {
-                    particle.update();
-                }
-                Particles.particleList.removeAll(Particles.removeList);
+                Particles.updateAll();
                 
                 camera.update(player, true);
 
@@ -204,9 +201,7 @@ public class LudumDare32 extends JFrame {
                 g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
             }
             Character.paintCharacters(g2);
-            for (Particles particle : Particles.particleList) {
-                particle.paint(g2);
-            }
+            Particles.paintAll(g2);
             Weather.paintTransition2(g2);
             World.paint2(g2);
             Weather.paint(g2);
