@@ -156,6 +156,7 @@ public class LudumDare32 extends JFrame {
                 Character.updateCharacters();
                 
                 World.update(player);
+                Weather.update();
 
                 Particles.updateAll();
                 
@@ -314,7 +315,6 @@ public class LudumDare32 extends JFrame {
                         Wind.power = Math.sqrt(dx * dx + dy * dy) / 120;
                     }
                     System.out.println(length + " : " + Wind.power);
-                    Particles.particleList.add(new WindParticle(windstartX,windstartY));
                 }
             };
         }

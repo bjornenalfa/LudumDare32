@@ -48,7 +48,7 @@ public class WindParticle extends Particles {
             yList.remove(0);
         }
         if (!Objects.equals(xList, null) && xList.isEmpty()) {
-            Particles.removeList.add(this);
+            remove();
             System.out.println("REMOVING");
         }
     }

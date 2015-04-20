@@ -19,7 +19,8 @@ public class Weather {
 
     static int current = 0;
     static int old = 0;
-    
+
+    static ArrayList<Particles> currentWeatherParticles = new ArrayList();
     static ArrayList<Particles> oldWeatherParticles = new ArrayList();
 
     static BufferedImage oldLayer1;
@@ -40,10 +41,16 @@ public class Weather {
         transitionPoint = point;
         transitionCircle = new Ellipse2D.Double(transitionPoint.x, transitionPoint.y, 0, 0);
         transitioning = true;
+        oldWeatherParticles = (ArrayList<Particles>) currentWeatherParticles.clone();
+        currentWeatherParticles.clear();
     }
 
     public static void stopTransition() {
         transitioning = false;
+        for (Particles particle : oldWeatherParticles) {
+            particle.remove();
+        }
+        oldWeatherParticles.clear();
     }
 
     public static void paintTransition(Graphics2D g) {
@@ -60,10 +67,27 @@ public class Weather {
             g.setClip(transitionCircle);
         }
     }
-    
+
+    public static void paintCurrentParticles(Graphics2D g) {
+        for (Particles particle : currentWeatherParticles) {
+            particle.paint(g);
+        }
+    }
+
     public static void paintOldParticles(Graphics2D g) {
         for (Particles particle : oldWeatherParticles) {
             particle.paint(g);
+        }
+    }
+
+    public static void updateParticles() {
+        ArrayList<Particles> updatingParticles = (ArrayList<Particles>) currentWeatherParticles.clone();
+        for (Particles particle : updatingParticles) {
+            particle.update();
+        }
+        updatingParticles = (ArrayList<Particles>) oldWeatherParticles.clone();
+        for (Particles particle : updatingParticles) {
+            particle.update();
         }
     }
 
@@ -96,12 +120,42 @@ public class Weather {
     }
 
     public static void update() {
-
+        updateParticles();
+        switch (current) {
+            case CLOUDY:
+                //Cloudy.paint(g);
+                break;
+            case SUNNY:
+                //Sunny.paint(g);
+                break;
+            case RAINY:
+                Rainy.update();
+                break;
+            case SNOWY:
+                //Snowy.paint(g);
+                break;
+        }
+        if (transitioning) {
+            switch (old) {
+                case CLOUDY:
+                    //Cloudy.paint(g);
+                    break;
+                case SUNNY:
+                    //Sunny.paint(g);
+                    break;
+                case RAINY:
+                    Rainy.update();
+                    break;
+                case SNOWY:
+                    //Snowy.paint(g);
+                    break;
+            }
+        }
     }
-    
+
     public static void paintOldWeather(Graphics2D g) {
         if (transitioning) {
-            Area outside = new Area(new Rectangle2D.Double(0,0,World.pixelWidth,World.pixelHeight));
+            Area outside = new Area(new Rectangle2D.Double(0, 0, World.pixelWidth, World.pixelHeight));
             outside.subtract(new Area(transitionCircle));
             g.setClip(outside);
             paintOldParticles(g);
@@ -124,6 +178,7 @@ public class Weather {
     }
 
     public static void paint(Graphics2D g) {
+        paintCurrentParticles(g);
         switch (current) {
             case CLOUDY:
                 //Cloudy.paint(g);
