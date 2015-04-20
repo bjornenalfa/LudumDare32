@@ -3,7 +3,6 @@ package ludumdare32;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class WindParticle extends Particles {
 
@@ -46,10 +45,9 @@ public class WindParticle extends Particles {
             yList.remove(0);
             xList.remove(0);
             yList.remove(0);
-        }
-        if (!Objects.equals(xList, null) && xList.isEmpty()) {
-            remove();
-            System.out.println("REMOVING");
+            if(xList.isEmpty()){
+                remove();
+            }
         }
     }
 
@@ -59,7 +57,6 @@ public class WindParticle extends Particles {
             g.setColor(color);
             for (int i = 1; i < xList.size(); i++) {
                 g.drawLine(xList.get(i - 1), yList.get(i - 1), xList.get(i), yList.get(i));
-                //System.out.println(xList.get(i-1)+":"+yList.get+"->");
             }
         }
     }
