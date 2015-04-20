@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 
 public class RainParticle extends Particles {
 
-    static BasicStroke rainStroke = new BasicStroke(1.5f);
+    static BasicStroke rainStroke = new BasicStroke(0.5f);
     static BasicStroke normalStroke = new BasicStroke();
 
     double length = 10;
