@@ -18,7 +18,7 @@ public class RainParticle extends Particles {
 
     public RainParticle(double x, double y, int type) {
         super(x, y, type == 1 ? new Color(0, 100, 255, 100) : new Color(255, 255, 255, 255));
-        if (Weather.old == Weather.RAINY) {
+        if (Weather.transitioning && Weather.old == Weather.RAINY) {
             Weather.oldWeatherParticles.add(this);
         } else {
             Weather.currentWeatherParticles.add(this);
