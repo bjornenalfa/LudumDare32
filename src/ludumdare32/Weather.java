@@ -30,7 +30,7 @@ public class Weather {
     static double transitionTime = 0;
     static Point.Double transitionPoint;
     static boolean transitioning = false;
-    static double transitionSpeed = 200; // Pixels per second^2
+    static double transitionSpeed = 100; // Pixels per second^2
 
     public static void startTransition(Point.Double point) {
         old = current;
@@ -100,7 +100,7 @@ public class Weather {
     public static void updateTransition() {
         if (transitioning) {
             transitionTime += 1 / 60d;
-            double diameter = transitionTime * transitionTime * transitionSpeed * 0.5;
+            double diameter = transitionTime * transitionTime * transitionTime * transitionTime * transitionSpeed * 0.5;
             transitionCircle.setFrame(transitionPoint.x - diameter, transitionPoint.y - diameter, diameter * 2, diameter * 2);
             //SHAKY
             //transitionCircle.setFrame(transitionPoint.x - diameter-Math.cos(transitionTime*20)*diameter*0.1, transitionPoint.y - diameter-Math.sin(transitionTime*20)*diameter*0.1, diameter*2+Math.cos(transitionTime*20)*diameter*0.2, diameter*2+Math.sin(transitionTime*20)*diameter*0.2);
