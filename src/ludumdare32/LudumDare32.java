@@ -157,7 +157,11 @@ public class LudumDare32 extends JFrame {
                 
                 World.update(player);
                 Weather.update();
-
+                
+                if (Math.random() < 1.0 / 60.0) {
+                    Particles.particleList.add(new WindParticle(Math.random()*World.pixelWidth, Math.random()*World.pixelHeight));
+                }
+                
                 Particles.updateAll();
                 
                 camera.update(player, true);
