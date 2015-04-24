@@ -65,6 +65,7 @@ public class Camera {
     }
 
     public void resetTransform(Graphics2D g) {
+        g.scale(1,1);
         g.translate(0, 0);
     }
 
