@@ -149,21 +149,21 @@ public class LudumDare32 extends JFrame {
         public void run() {
 
             while (true) {
-                player.changeV((leftDown ? -1 : 0) + (rightDown ? 1 : 0),(upDown ? -1 : 0) + (downDown ? 1 : 0),player.acceleration);
+                player.changeV((leftDown ? -1 : 0) + (rightDown ? 1 : 0), (upDown ? -1 : 0) + (downDown ? 1 : 0), player.acceleration);
 
                 Weather.updateTransition();
                 Wind.update();
                 Character.updateCharacters();
-                
+
                 World.update(player);
                 Weather.update();
-                
+
                 if (Math.random() < 1.0 / 60.0) {
-                    Particles.particleList.add(new WindParticle(Math.random()*World.pixelWidth, Math.random()*World.pixelHeight));
+                    Particles.particleList.add(new WindParticle(Math.random() * World.pixelWidth, Math.random() * World.pixelHeight));
                 }
-                
+
                 Particles.updateAll();
-                
+
                 camera.update(player, true);
 
                 panel.repaint();
@@ -194,14 +194,14 @@ public class LudumDare32 extends JFrame {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.DARK_GRAY);
-            g2.fillRect(0, 0, World.width * 32 + 100, World.width * 32 + 100);
+            g2.fillRect(0, 0, World.width * 32, World.width * 32);
             g2.translate(camera.translateX, camera.translateY);
             //g2.drawRect(0, 0, World.width*32+2000, World.width*32+2000);
             Weather.paintTransition(g2);
             World.paint(g2);
             Weather.transitionClearClip(g2);
-            
-            if(changingWind) {
+
+            if (changingWind) {
                 g2.setColor(Color.RED);
                 g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
             }
@@ -214,7 +214,7 @@ public class LudumDare32 extends JFrame {
             Weather.paintOldWeather(g2);
 //            g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
-            
+
         }
 
         private void addKeyBindings() {
