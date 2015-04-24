@@ -34,7 +34,7 @@ public class LudumDare32MapEditor extends JFrame {
         setTitle("LudumDare32 Map Editor");
 
         panel = new MyPanel();
-        camera = new Camera();
+        camera = new Camera(800,608);
         //MyThread thread = new MyThread();
 
         setContentPane(panel);

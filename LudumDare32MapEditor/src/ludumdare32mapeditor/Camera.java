@@ -29,6 +29,8 @@ public class Camera {
     }
 
     public void zoomCenter(double scaleMultiplier) {
+        //res = 1 ger en utzoomning med 10%;
+        //res = -1 get en inzoomning med 10%;
         double x = -res * ((halfWidth) / scale - translateX);
         double y = -res * ((halfHeight) / scale - translateY);
         scale -= res * (scale * 0.1);
@@ -58,8 +60,8 @@ public class Camera {
     }
 
     public void transformGraphics(Graphics2D g) {
-        g.translate(translateX, translateY);
         g.scale(scale, scale);
+        g.translate(translateX, translateY);
     }
 
     public void resetTransform(Graphics2D g) {
