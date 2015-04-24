@@ -6,13 +6,22 @@ import java.awt.Point;
 public class Camera {
 
     private double translateX = 0, translateY = 0;
-    int halfWidth = 400, halfHeight = 304;
+    private double halfWidth = 400, halfHeight = 304;
     int width = 800, height = 608;
     private double scale = 1;
 
-    public Camera() {
-//        halfWidth = panel.getWidth() / 2;
-//        halfHeight = panel.getHeight() / 2;
+    public Camera(int width, int height) {
+        this.width = width;
+        this.height = height;
+        halfWidth = width / 2d;
+        halfHeight = height / 2d;
+    }
+    
+    public void changeSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        halfWidth = width / 2d;
+        halfHeight = height / 2d;
     }
 
     public void zoom(double scaleMultiplier, Point.Double point) {
@@ -20,7 +29,13 @@ public class Camera {
     }
 
     public void zoomCenter(double scaleMultiplier) {
-        
+        double x = -res * ((halfWidth) / scale - translateX);
+        double y = -res * ((halfHeight) / scale - translateY);
+        scale -= res * (scale * 0.1);
+        translateX -= x * 0.1;
+        translateY -= y * 0.1;
+        translateX *= 1 / (1 - res * 0.1);
+        translateY *= 1 / (1 - res * 0.1);
     }
 
     public void move(double dx, double dy) {
