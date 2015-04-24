@@ -28,7 +28,7 @@ public class LudumDare32MapEditor extends JFrame {
     static Camera camera;
 
     public LudumDare32MapEditor() {
-        Tile.loadTileSet("../../../src/ludumdare/img/Spritesheet/cloudy.png", 16, 1); //funkar inte :(
+        Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.loadFromFile("levels/test.png");
 
         setTitle("LudumDare32 Map Editor");
@@ -112,15 +112,16 @@ public class LudumDare32MapEditor extends JFrame {
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setColor(Color.DARK_GRAY);
-            g2.fillRect(0, 0, World.width * 32, World.width * 32);
-            g2.translate(camera.translateX, camera.translateY);
-            World.paint(g2);
+        protected void paintComponent(Graphics g1) {
+            Graphics2D g = (Graphics2D) g1;
+            g.setColor(Color.DARK_GRAY);
+            g.fillRect(0, 0, World.width * 32, World.width * 32);
+            camera.transformGraphics(g);
             
-            World.paint2(g2);
-            g2.translate(-camera.translateX, -camera.translateY);
+            World.paint(g);
+            
+            World.paint2(g);
+            camera.resetTransform(g);
         }
 
         private void addKeyBindings() {
