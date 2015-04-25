@@ -34,7 +34,8 @@ public class LudumDare32 extends JFrame {
 
 //    BufferedImage image;
     public LudumDare32() {
-        Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
+        //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
+        World.setTileSet(Cloudy.tileSet);
         World.loadFromFile("levels/test.png");
 
         Enemy foe = new Enemy(250, 250, 10, 13, 0.5);

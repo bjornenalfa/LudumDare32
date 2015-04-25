@@ -23,9 +23,11 @@ public class TileHelper extends JFrame {
 
     JLabel label = new JLabel("");
     MyPanel drawPanel;
+    
+    TileSet tileSet = new TileSet("img/Spritesheet/cloudy.png", 16, 1);
 
     public TileHelper() {
-        Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
+        //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
 
         setTitle("TileHelper");
 
@@ -133,9 +135,9 @@ public class TileHelper extends JFrame {
         @Override
         protected void paintComponent(Graphics g) {
             g.fillRect(0, 0, 1824, 992);
-            for (int y = 0; y < Tile.verticalTiles; y++) {
-                for (int x = 0; x < Tile.horizontalTiles; x++) {
-                    g.drawImage(Tile.images[y * Tile.horizontalTiles + x], x * 32, y * 32, 32, 32, null);
+            for (int y = 0; y < tileSet.verticalTiles; y++) {
+                for (int x = 0; x < tileSet.horizontalTiles; x++) {
+                    g.drawImage(tileSet.images[y * tileSet.horizontalTiles + x], x * 32, y * 32, 32, 32, null);
                 }
             }
             if (!Objects.equals(first, null)) {

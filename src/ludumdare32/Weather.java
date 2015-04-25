@@ -16,6 +16,8 @@ public class Weather {
     static final int SUNNY = 1;
     static final int RAINY = 2;
     static final int SNOWY = 3;
+    
+    //static TileSet tileSet;
 
     static int current = 0;
     static int old = 0;

@@ -14,6 +14,8 @@ public class World {
     static int worldNumber = 0;
     static String[] worlds = {"test", "test2"};
 
+    static TileSet currentTileSet;
+    
     static boolean[][][] collisionMap;
     static int[][] textureMap;
     static int[][] textureMap2;
@@ -33,6 +35,15 @@ public class World {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     };
+    
+    static void setTileSet(TileSet tileSet) {
+        currentTileSet = tileSet;
+    }
+    
+    static void changeTileSet(TileSet tileSet) {
+        setTileSet(tileSet);
+        renderMap();
+    }
 
     static void renderMap() {
         layer1 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
@@ -45,9 +56,9 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 try {
-                    g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+                    g2d.drawImage(currentTileSet.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
                 } catch (Exception e) {
-                    g2d.drawImage(Tile.images[0], x * 16, y * 16, 16, 16, nothing);
+                    g2d.drawImage(currentTileSet.images[0], x * 16, y * 16, 16, 16, nothing);
                 }
             }
         }
@@ -61,9 +72,9 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 try {
-                    g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+                    g2d.drawImage(currentTileSet.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
                 } catch (Exception e) {
-                    g2d.drawImage(Tile.images[0], x * 16, y * 16, 16, 16, nothing);
+                    g2d.drawImage(currentTileSet.images[0], x * 16, y * 16, 16, 16, nothing);
                 }
             }
         }
@@ -77,9 +88,9 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 try {
-                    g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+                    g2d.drawImage(currentTileSet.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
                 } catch (Exception e) {
-                    g2d.drawImage(Tile.images[0], x * 16, y * 16, 16, 16, nothing);
+                    g2d.drawImage(currentTileSet.images[0], x * 16, y * 16, 16, 16, nothing);
                 }
             }
         }
@@ -87,13 +98,13 @@ public class World {
 
     static void changeMap(int x, int y) {
         Graphics2D g2d = layer1.createGraphics();
-        g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+        g2d.drawImage(currentTileSet.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
 
         g2d = layer2.createGraphics();
-        g2d.drawImage(Tile.images[textureMap2[x][y]], x * 16, y * 16, 16, 16, nothing);
+        g2d.drawImage(currentTileSet.images[textureMap2[x][y]], x * 16, y * 16, 16, 16, nothing);
 
         g2d = layer3.createGraphics();
-        g2d.drawImage(Tile.images[textureMap3[x][y]], x * 16, y * 16, 16, 16, nothing);
+        g2d.drawImage(currentTileSet.images[textureMap3[x][y]], x * 16, y * 16, 16, 16, nothing);
 
     }
 
@@ -158,10 +169,10 @@ public class World {
                 textureMap[x][y] = texture1;
                 if (aboveCharacters) {
                     textureMap3[x][y] = texture2;
-                    textureMap2[x][y] = Tile.INVISIBLE;
+                    textureMap2[x][y] = TileSet.INVISIBLE;
                 } else {
                     textureMap2[x][y] = texture2;
-                    textureMap3[x][y] = Tile.INVISIBLE;
+                    textureMap3[x][y] = TileSet.INVISIBLE;
                 }
 //                collisionMap[x][y][Weather.CLOUDY] = cloudy;
 //                collisionMap[x][y][Weather.SUNNY] = sunny;

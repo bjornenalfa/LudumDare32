@@ -40,6 +40,8 @@ public class LudumDare32MapEditor extends JFrame {
     boolean mouseDown2 = false;
     Point lastPoint;
     Point lastPoint2;
+    
+    static TileSet tileSet = new TileSet("img/Spritesheet/cloudy.png", 16, 1);
 
     MyPanel mapPanel;
     MyTilePanel tilePanel;
@@ -49,7 +51,8 @@ public class LudumDare32MapEditor extends JFrame {
     static Camera camera2;
 
     public LudumDare32MapEditor() {
-        Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
+        //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
+        World.setTileSet(tileSet);
         World.loadFromFile("levels/test3.png");
 
         setTitle("LudumDare32 Map Editor");
@@ -211,10 +214,10 @@ public class LudumDare32MapEditor extends JFrame {
                         textureMap[x][y] = 4095 & (argbBackwards >> 12);
                         if (renderAbove == 1) {
                             textureMap3[x][y] = 4095 & argbBackwards;
-                            textureMap2[x][y] = Tile.INVISIBLE;
+                            textureMap2[x][y] = TileSet.INVISIBLE;
                         } else {
                             textureMap2[x][y] = 4095 & argbBackwards;
-                            textureMap3[x][y] = Tile.INVISIBLE;
+                            textureMap3[x][y] = TileSet.INVISIBLE;
                         }
                         World.renderMap();
                         World.changeImg(x, y, argbBackwards);
@@ -237,10 +240,10 @@ public class LudumDare32MapEditor extends JFrame {
                         textureMap[x][y] = 4095 & (argbBackwards >> 12);
                         if (renderAbove == 1) {
                             textureMap3[x][y] = 4095 & argbBackwards;
-                            textureMap2[x][y] = Tile.INVISIBLE;
+                            textureMap2[x][y] = TileSet.INVISIBLE;
                         } else {
                             textureMap2[x][y] = 4095 & argbBackwards;
-                            textureMap3[x][y] = Tile.INVISIBLE;
+                            textureMap3[x][y] = TileSet.INVISIBLE;
                         }
                         World.renderMap();
                         World.changeImg(x, y, argbBackwards);
@@ -353,9 +356,9 @@ public class LudumDare32MapEditor extends JFrame {
             g.fillRect(0, 0, 1824, 992);
 
             camera2.transformGraphics(g);
-            for (int y = 0; y < Tile.verticalTiles; y++) {
-                for (int x = 0; x < Tile.horizontalTiles; x++) {
-                    g.drawImage(Tile.images[y * Tile.horizontalTiles + x], x * 32, y * 32, 32, 32, null);
+            for (int y = 0; y < tileSet.verticalTiles; y++) {
+                for (int x = 0; x < tileSet.horizontalTiles; x++) {
+                    g.drawImage(tileSet.images[y * tileSet.horizontalTiles + x], x * 32, y * 32, 32, 32, null);
                 }
             }
             if (Objects.nonNull(first)) {
