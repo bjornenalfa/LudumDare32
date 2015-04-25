@@ -16,13 +16,18 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
+import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import static ludumdare32mapeditor.World.textureMap;
@@ -45,7 +50,7 @@ public class LudumDare32MapEditor extends JFrame {
 
     public LudumDare32MapEditor() {
         Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
-        World.loadFromFile("levels/test.png");
+        World.loadFromFile("levels/test3.png");
 
         setTitle("LudumDare32 Map Editor");
 
@@ -90,6 +95,17 @@ public class LudumDare32MapEditor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("saving");
+                String s = JOptionPane.showInputDialog(mapPanel, "", "Save as", JOptionPane.QUESTION_MESSAGE);
+                String path = "levels/" + s + ".png";
+                BufferedImage img = new BufferedImage(World.width, World.height, BufferedImage.TYPE_INT_ARGB);
+                //String string = getClass().getResource(path).getPath();
+                //System.out.println(string);
+                File file = new File(path);
+                try {
+                    ImageIO.write(img, "png", file);
+                } catch (IOException ex) {
+                }
+
             }
         };
     }
@@ -175,6 +191,8 @@ public class LudumDare32MapEditor extends JFrame {
             };
         }
 
+        int button;
+
         private MouseAdapter mouseAdapter() {
             return new MouseAdapter() {
                 @Override
@@ -186,35 +204,46 @@ public class LudumDare32MapEditor extends JFrame {
 
                 @Override
                 public void mouseReleased(MouseEvent me) {
-                    if (me.getButton() == 3) {
-                        if (Objects.nonNull(first) && Objects.nonNull(second)) {
-                            Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
-                            int x = (int) (p.getX() - p.getX() % 16) / 16;
-                            int y = (int) (p.getY() - p.getY() % 16) / 16;
-                            textureMap[x][y] = 4095 & (argbBackwards >> 12);
-                            if (renderAbove == 1) {
-                                textureMap3[x][y] = 4095 & argbBackwards;
-                                textureMap2[x][y] = Tile.INVISIBLE;
-                            } else {
-                                textureMap2[x][y] = 4095 & argbBackwards;
-                                textureMap3[x][y] = Tile.INVISIBLE;
-                            }
-                            World.changeMap(x, y);
-                            repaint();
+                    if (button == 1 && Objects.nonNull(first) && Objects.nonNull(second)) {
+                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                        int x = (int) (p.getX() - p.getX() % 16) / 16;
+                        int y = (int) (p.getY() - p.getY() % 16) / 16;
+                        textureMap[x][y] = 4095 & (argbBackwards >> 12);
+                        if (renderAbove == 1) {
+                            textureMap3[x][y] = 4095 & argbBackwards;
+                            textureMap2[x][y] = Tile.INVISIBLE;
+                        } else {
+                            textureMap2[x][y] = 4095 & argbBackwards;
+                            textureMap3[x][y] = Tile.INVISIBLE;
                         }
+                        World.renderMap();
+                        World.changeImg(x, y, argbBackwards);
+                        repaint();
                     }
                     mouseDown = false;
                 }
 
                 @Override
                 public void mouseDragged(MouseEvent me) {
-                    if (!mouseDown) {
-                        lastPoint = me.getPoint();
-                        mouseDown = true;
-                    } else {
+                    if (mouseDown && button == 3) {
                         Point newPoint = me.getPoint();
                         camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
                         lastPoint = newPoint;
+                        repaint();
+                    } else if (button == 1 && Objects.nonNull(first) && Objects.nonNull(second)) {
+                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                        int x = (int) (p.getX() - p.getX() % 16) / 16;
+                        int y = (int) (p.getY() - p.getY() % 16) / 16;
+                        textureMap[x][y] = 4095 & (argbBackwards >> 12);
+                        if (renderAbove == 1) {
+                            textureMap3[x][y] = 4095 & argbBackwards;
+                            textureMap2[x][y] = Tile.INVISIBLE;
+                        } else {
+                            textureMap2[x][y] = 4095 & argbBackwards;
+                            textureMap3[x][y] = Tile.INVISIBLE;
+                        }
+                        World.renderMap();
+                        World.changeImg(x, y, argbBackwards);
                         repaint();
                     }
                 }
@@ -226,6 +255,7 @@ public class LudumDare32MapEditor extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent me) {
                     if (!mouseDown) {
+                        button = me.getButton();
                         lastPoint = me.getPoint();
                         mouseDown = true;
                     }
@@ -344,9 +374,11 @@ public class LudumDare32MapEditor extends JFrame {
         }
 
         boolean bFirst = true;
+        int button;
 
         private MouseAdapter mouseAdapter() {
             return new MouseAdapter() {
+
                 @Override
                 public void mouseWheelMoved(MouseWheelEvent e) {
                     int scrolls = e.getWheelRotation(); //negative if scroll upwards
@@ -356,15 +388,33 @@ public class LudumDare32MapEditor extends JFrame {
 
                 @Override
                 public void mouseReleased(MouseEvent me) {
+                    if (button == 1) {
+                        if (bFirst) {
+                            if (Objects.isNull(first)) {
+                                first = new Point();
+                            }
+                            Point.Double p = camera2.windowToWorldCoordinates(me.getX(), me.getY());
+                            first.x = (int) (p.x - p.x % 32);
+                            first.y = (int) (p.y - p.y % 32);
+                            bFirst = false;
+                        } else {
+                            if (Objects.isNull(second)) {
+                                second = new Point();
+                            }
+                            Point.Double p = camera2.windowToWorldCoordinates(me.getX(), me.getY());
+                            second.x = (int) (p.x - p.x % 32);
+                            second.y = (int) (p.y - p.y % 32);
+                            bFirst = true;
+                        }
+                        calcColor();
+                        repaint();
+                    }
                     mouseDown2 = false;
                 }
 
                 @Override
                 public void mouseDragged(MouseEvent me) {
-                    if (!mouseDown2) {
-                        lastPoint2 = me.getPoint();
-                        mouseDown2 = true;
-                    } else {
+                    if (mouseDown2 && button == 3) {
                         Point newPoint = me.getPoint();
                         camera2.moveWindowPixels(lastPoint2.x - newPoint.x, lastPoint2.y - newPoint.y);
                         lastPoint2 = newPoint;
@@ -379,29 +429,9 @@ public class LudumDare32MapEditor extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent me) {
                     if (!mouseDown2) {
+                        button = me.getButton();
                         lastPoint2 = me.getPoint();
                         mouseDown2 = true;
-                    }
-                    if (me.getButton() == 3) {
-                        if (bFirst) {
-                            if(Objects.isNull(first)){
-                                first = new Point();
-                            }
-                            Point.Double p = camera2.windowToWorldCoordinates(me.getX(),me.getY());
-                            first.x = (int)(p.x - p.x % 32);
-                            first.y = (int)(p.y - p.y % 32);
-                            bFirst = false;
-                        } else {
-                            if(Objects.isNull(second)){
-                                second = new Point();
-                            }
-                            Point.Double p = camera2.windowToWorldCoordinates(me.getX(),me.getY());
-                            second.x = (int)(p.x - p.x % 32);
-                            second.y = (int)(p.y - p.y % 32);
-                            bFirst = true;
-                        }
-                        calcColor();
-                        repaint();
                     }
                 }
             };
