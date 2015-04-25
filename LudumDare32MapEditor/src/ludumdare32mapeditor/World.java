@@ -44,8 +44,11 @@ public class World {
         g2d = layer1.createGraphics();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
-                
+                try {
+                    g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+                } catch (Exception e) {
+                    g2d.drawImage(Tile.images[0], x * 16, y * 16, 16, 16, nothing);
+                }
             }
         }
 
@@ -57,7 +60,11 @@ public class World {
         g2d = layer2.createGraphics();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                g2d.drawImage(Tile.images[textureMap2[x][y]], x * 16, y * 16, 16, 16, nothing);
+                try {
+                    g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+                } catch (Exception e) {
+                    g2d.drawImage(Tile.images[0], x * 16, y * 16, 16, 16, nothing);
+                }
             }
         }
 
@@ -69,7 +76,11 @@ public class World {
         g2d = layer3.createGraphics();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                g2d.drawImage(Tile.images[textureMap3[x][y]], x * 16, y * 16, 16, 16, nothing);
+                try {
+                    g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+                } catch (Exception e) {
+                    g2d.drawImage(Tile.images[0], x * 16, y * 16, 16, 16, nothing);
+                }
             }
         }
     }
@@ -114,11 +125,11 @@ public class World {
     }
 
     static BufferedImage img = null;
-    
-    static void changeImg(int x, int y, int argb){
+
+    static void changeImg(int x, int y, int argb) {
         img.setRGB(x, y, argb);
     }
-    
+
     public static void loadFromFile(String path) {
         try {
             img = ImageIO.read(World.class.getResourceAsStream(path));
