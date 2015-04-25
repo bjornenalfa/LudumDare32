@@ -44,7 +44,7 @@ public class World {
         g2d = layer1.createGraphics();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                g2d.drawImage(Tile.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
+                g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
 
             }
         }
@@ -57,7 +57,7 @@ public class World {
         g2d = layer2.createGraphics();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                g2d.drawImage(Tile.images[textureMap2[x][y]], x * 32, y * 32, 32, 32, nothing);
+                g2d.drawImage(Tile.images[textureMap2[x][y]], x * 16, y * 16, 16, 16, nothing);
             }
         }
 
@@ -69,7 +69,7 @@ public class World {
         g2d = layer3.createGraphics();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                g2d.drawImage(Tile.images[textureMap3[x][y]], x * 32, y * 32, 32, 32, nothing);
+                g2d.drawImage(Tile.images[textureMap3[x][y]], x * 16, y * 16, 16, 16, nothing);
             }
         }
     }
@@ -111,8 +111,8 @@ public class World {
         }
         width = img.getWidth();
         height = img.getHeight();
-        pixelWidth = width * 32;
-        pixelHeight = height * 32;
+        pixelWidth = width * 16;
+        pixelHeight = height * 16;
         textureMap = new int[width][height];
         textureMap2 = new int[width][height];
         textureMap3 = new int[width][height];

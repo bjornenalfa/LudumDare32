@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import static java.lang.Thread.sleep;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -18,11 +19,14 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
 public class LudumDare32MapEditor extends JFrame {
-    
+
     private boolean leftDown = false;
     private boolean rightDown = false;
     private boolean upDown = false;
     private boolean downDown = false;
+    
+    boolean mouseDown = false;
+    Point lastPoint;
 
     MyPanel panel;
     static Camera camera;
@@ -34,7 +38,7 @@ public class LudumDare32MapEditor extends JFrame {
         setTitle("LudumDare32 Map Editor");
 
         panel = new MyPanel();
-        camera = new Camera(800,608);
+        camera = new Camera(800, 608);
         //MyThread thread = new MyThread();
 
         setContentPane(panel);
@@ -96,7 +100,6 @@ public class LudumDare32MapEditor extends JFrame {
 //
 //        }
 //    }
-
     class MyPanel extends JPanel {
 
         public MyPanel() {
@@ -117,10 +120,15 @@ public class LudumDare32MapEditor extends JFrame {
             g.setColor(Color.DARK_GRAY);
             g.fillRect(0, 0, World.width * 32, World.width * 32);
             camera.transformGraphics(g);
-            
+
             World.paint(g);
-            
             World.paint2(g);
+            
+//            if (mouseDown) {
+//                Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
+//                g.fillOval((int)(worldPoint.x-5), (int)(worldPoint.y-5), 10, 10);
+//            }
+            
             camera.resetTransform(g);
         }
 
@@ -163,6 +171,8 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    camera.setScale(0.5);
+                    repaint();
                 }
             };
         }
@@ -171,6 +181,8 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    camera.setScale(1);
+                    repaint();
                 }
             };
         }
@@ -179,6 +191,8 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    camera.setScale(2);
+                    repaint();
                 }
             };
         }
@@ -219,8 +233,46 @@ public class LudumDare32MapEditor extends JFrame {
         private MouseAdapter mouseAdapter() {
             return new MouseAdapter() {
                 @Override
+                public void mouseWheelMoved(MouseWheelEvent e){
+                    int scrolls = e.getWheelRotation(); //negative if scroll upwards
+                    camera.zoomOnWindowPoint(Math.pow(1.1,-scrolls),e.getPoint());
+                    repaint();
+                }
+                
+                @Override
                 public void mouseReleased(MouseEvent me) {
+                    mouseDown = false;
+                }
 
+                @Override
+                public void mouseDragged(MouseEvent me) {
+                    if (!mouseDown) {
+                        lastPoint = me.getPoint();
+                        mouseDown = true;
+                    } else {
+                        Point newPoint = me.getPoint();
+                        camera.moveWindowPixels(lastPoint.x-newPoint.x,lastPoint.y-newPoint.y);
+                        lastPoint = newPoint;
+                        panel.repaint();
+                    }
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent me) {
+                    if (mouseDown) {
+                        Point newPoint = me.getPoint();
+                        camera.moveWindowPixels(lastPoint.x-newPoint.x,lastPoint.y-newPoint.y);
+                        lastPoint = newPoint;
+                        panel.repaint();
+                    }
+                }
+
+                @Override
+                public void mousePressed(MouseEvent me) {
+                    if (!mouseDown) {
+                        lastPoint = me.getPoint();
+                        mouseDown = true;
+                    }
                 }
             };
         }
