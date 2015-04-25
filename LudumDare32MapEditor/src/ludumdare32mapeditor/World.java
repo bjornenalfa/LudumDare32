@@ -74,6 +74,18 @@ public class World {
         }
     }
 
+    static void changeMap(int x, int y) {
+        Graphics2D g2d = layer1.createGraphics();
+        g2d.drawImage(Tile.images[textureMap[x][y]], x * 16, y * 16, 16, 16, nothing);
+
+        g2d = layer2.createGraphics();
+        g2d.drawImage(Tile.images[textureMap2[x][y]], x * 16, y * 16, 16, 16, nothing);
+
+        g2d = layer3.createGraphics();
+        g2d.drawImage(Tile.images[textureMap3[x][y]], x * 16, y * 16, 16, 16, nothing);
+
+    }
+
     static void paint(Graphics2D g) {
         g.drawImage(layer1, 0, 0, nothing);
         g.drawImage(layer2, 0, 0, nothing);
