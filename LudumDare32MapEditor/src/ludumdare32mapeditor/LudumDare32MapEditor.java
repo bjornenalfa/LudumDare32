@@ -221,12 +221,6 @@ public class LudumDare32MapEditor extends JFrame {
 
                 @Override
                 public void mouseMoved(MouseEvent me) {
-                    if (mouseDown) {
-                        Point newPoint = me.getPoint();
-                        camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
-                        lastPoint = newPoint;
-                        repaint();
-                    }
                 }
 
                 @Override
@@ -373,19 +367,13 @@ public class LudumDare32MapEditor extends JFrame {
                     } else {
                         Point newPoint = me.getPoint();
                         camera2.moveWindowPixels(lastPoint2.x - newPoint.x, lastPoint2.y - newPoint.y);
-                        lastPoint = newPoint;
+                        lastPoint2 = newPoint;
                         repaint();
                     }
                 }
 
                 @Override
                 public void mouseMoved(MouseEvent me) {
-                    if (mouseDown2) {
-                        Point newPoint = me.getPoint();
-                        camera2.moveWindowPixels(lastPoint2.x - newPoint.x, lastPoint2.y - newPoint.y);
-                        lastPoint2 = newPoint;
-                        repaint();
-                    }
                 }
 
                 @Override
