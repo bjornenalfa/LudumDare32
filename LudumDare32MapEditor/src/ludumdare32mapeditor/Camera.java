@@ -1,5 +1,6 @@
 package ludumdare32mapeditor;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
@@ -71,6 +72,11 @@ public class Camera {
     public void resetTransform(Graphics2D g) {
         g.scale(1, 1);
         g.translate(0, 0);
+    }
+    
+    public void clearScreen(Graphics2D g, Color color) {
+        g.setColor(color);
+        g.fillRect(0,0,width,height);
     }
 
 //    public void update(Player player, boolean centered) {
