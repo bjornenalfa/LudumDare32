@@ -228,7 +228,7 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    tileSet = new TileSet("img/Spritesheet/snowy.png", 16, 1);
+                    tileSet = new TileSet("img/Spritesheet/sunny.png", 16, 1);
                     World.changeTileSet(tileSet);
                     repaint();
                 }
@@ -239,7 +239,6 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("SKOGSSWAG");
                     repaint();
                 }
             };
