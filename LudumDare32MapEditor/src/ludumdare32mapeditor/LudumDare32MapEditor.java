@@ -126,7 +126,7 @@ public class LudumDare32MapEditor extends JFrame {
                     File file = chooser.getSelectedFile();
                     String fname = file.getAbsolutePath();
 
-                    if (!fname.endsWith(".png") || !fname.endsWith(".PNG")) {
+                    if (!fname.toLowerCase().endsWith(".png")) {
                         file = new File(fname + ".png");
                     }
                     try {
@@ -134,9 +134,7 @@ public class LudumDare32MapEditor extends JFrame {
                     } catch (IOException ex) {
                         System.out.println(ex);
                     }
-                    System.out.println("Saving: " + file.getName());
-                } else {
-                    System.out.println("Save command cancelled by user.");
+                    System.out.println("Saving: " + file);
                 }
             }
         };
