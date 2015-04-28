@@ -35,7 +35,7 @@ import static ludumdare32mapeditor.World.textureMap2;
 import static ludumdare32mapeditor.World.textureMap3;
 
 public class LudumDare32MapEditor extends JFrame {
-    
+
     boolean cloudyCollision = false;
     boolean sunnyCollision = false;
     boolean rainyCollision = false;
@@ -48,7 +48,7 @@ public class LudumDare32MapEditor extends JFrame {
     boolean mouseDown2 = false;
     Point lastPoint;
     Point lastPoint2;
-    
+
     static TileSet tileSet = new TileSet("img/Spritesheet/cloudy.png", 16, 1);
 
     MyPanel mapPanel;
@@ -214,7 +214,7 @@ public class LudumDare32MapEditor extends JFrame {
 
                 @Override
                 public void mouseReleased(MouseEvent me) {
-                    if (button == 1 && Objects.nonNull(first) && Objects.nonNull(second)) {
+                    if (button == 1) {
                         Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
                         int x = (int) (p.getX()) / World.squareSize;
                         int y = (int) (p.getY()) / World.squareSize;
@@ -241,7 +241,7 @@ public class LudumDare32MapEditor extends JFrame {
                         camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
                         lastPoint = newPoint;
                         repaint();
-                    } else if (button == 1 && Objects.nonNull(first) && Objects.nonNull(second)) {
+                    } else if (button == 1) {
                         Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
                         int x = (int) (p.getX() - p.getX() % World.squareSize) / World.squareSize;
                         int y = (int) (p.getY() - p.getY() % World.squareSize) / World.squareSize;
@@ -333,8 +333,8 @@ public class LudumDare32MapEditor extends JFrame {
 
     int argbBackwards = 0;
 
-    Point first = new Point(0,0);
-    Point second = new Point(0,0);
+    Point first = new Point(0, 0);
+    Point second = new Point(0, 0);
 
     class MyTilePanel extends JPanel {
 
@@ -346,24 +346,22 @@ public class LudumDare32MapEditor extends JFrame {
         }
 
         public final void calcColor() {
-            if (Objects.nonNull(first) && Objects.nonNull(second)) {
-                argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (renderAbove << 25) | (first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles << 12) | second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles;
-                int alpha = 0xFF & (argbBackwards >> 24);
-                int red = 0xFF & (argbBackwards >> 16);
-                int green = 0xFF & (argbBackwards >> 8);
-                int blue = 0xFF & (argbBackwards);
-                label.setText(" - Red:" + red + ",Green:" + green + ",Blue:" + blue + ",Alpha:" + alpha);
+            argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (renderAbove << 25) | (first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles << 12) | second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles;
+            int alpha = 0xFF & (argbBackwards >> 24);
+            int red = 0xFF & (argbBackwards >> 16);
+            int green = 0xFF & (argbBackwards >> 8);
+            int blue = 0xFF & (argbBackwards);
+            label.setText(" - Red:" + red + ",Green:" + green + ",Blue:" + blue + ",Alpha:" + alpha);
 //                StringSelection selection = new StringSelection(Integer.toHexString((first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles << 12) | second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles));
 //                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 //                clipboard.setContents(selection, selection);
-                cloudyCollision = cloudy == 1;
-                sunnyCollision = sunny == 1;
-                rainyCollision = rainy == 1;
-                snowyCollision = snowy == 1;
-                renderAboveCharacters = renderAbove == 1;
-                tile1 = first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles;
-                tile2 = second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles;
-            }
+            cloudyCollision = cloudy == 1;
+            sunnyCollision = sunny == 1;
+            rainyCollision = rainy == 1;
+            snowyCollision = snowy == 1;
+            renderAboveCharacters = renderAbove == 1;
+            tile1 = first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles;
+            tile2 = second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles;
         }
 
         @Override
@@ -371,7 +369,7 @@ public class LudumDare32MapEditor extends JFrame {
             Graphics2D g = (Graphics2D) g1;
             g.setColor(Color.BLACK);
             //g.fillRect(0, 0, 1824, 992);
-            camera2.clearScreen(g,Color.BLACK);
+            camera2.clearScreen(g, Color.BLACK);
 
             camera2.transformGraphics(g);
             for (int y = 0; y < tileSet.verticalTiles; y++) {
@@ -379,17 +377,13 @@ public class LudumDare32MapEditor extends JFrame {
                     g.drawImage(tileSet.images[y * tileSet.horizontalTiles + x], x * World.squareSize, y * World.squareSize, World.squareSize, World.squareSize, null);
                 }
             }
-            if (Objects.nonNull(first)) {
-                g.setColor(Color.YELLOW);
+            g.setColor(Color.YELLOW);
+            g.drawRect(first.x, first.y, World.squareSize, World.squareSize);
+            g.setColor(Color.MAGENTA);
+            g.drawRect(second.x, second.y, World.squareSize, World.squareSize);
+            if (Objects.equals(first, second)) {
+                g.setColor(Color.GREEN);
                 g.drawRect(first.x, first.y, World.squareSize, World.squareSize);
-            }
-            if (Objects.nonNull(second)) {
-                g.setColor(Color.MAGENTA);
-                g.drawRect(second.x, second.y, World.squareSize, World.squareSize);
-                if (Objects.equals(first, second)) {
-                    g.setColor(Color.GREEN);
-                    g.drawRect(first.x, first.y, World.squareSize, World.squareSize);
-                }
             }
             camera2.resetTransform(g);
         }
@@ -411,17 +405,13 @@ public class LudumDare32MapEditor extends JFrame {
                 public void mouseReleased(MouseEvent me) {
                     if (button == 1) {
                         if (bFirst) {
-                            if (Objects.isNull(first)) {
-                                first = new Point();
-                            }
+                            first = new Point();
                             Point.Double p = camera2.windowToWorldCoordinates(me.getX(), me.getY());
                             first.x = (int) (p.x - p.x % World.squareSize);
                             first.y = (int) (p.y - p.y % World.squareSize);
                             bFirst = false;
                         } else {
-                            if (Objects.isNull(second)) {
-                                second = new Point();
-                            }
+                            second = new Point();
                             Point.Double p = camera2.windowToWorldCoordinates(me.getX(), me.getY());
                             second.x = (int) (p.x - p.x % World.squareSize);
                             second.y = (int) (p.y - p.y % World.squareSize);
