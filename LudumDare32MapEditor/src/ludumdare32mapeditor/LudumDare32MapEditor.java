@@ -11,6 +11,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -450,6 +452,13 @@ public class LudumDare32MapEditor extends JFrame {
     }
 
     public static void main(String[] args) {
-        new LudumDare32MapEditor();
+        final LudumDare32MapEditor frame = new LudumDare32MapEditor();
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent evt) {
+                LudumDare32MapEditor.camera=new Camera(frame.getWidth(), frame.getHeight());
+                LudumDare32MapEditor.camera2=new Camera(frame.getWidth(), frame.getHeight());
+            }
+        });
     }
 }
