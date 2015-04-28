@@ -9,6 +9,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -17,18 +20,25 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class LudumDare32MapEditor extends JFrame {
 
@@ -131,21 +141,25 @@ public class LudumDare32MapEditor extends JFrame {
 //                } catch (IOException ex) {
 //                    System.out.println(ex);
 //                }
-                FileDialog fd = new FileDialog(new JFrame(), "Save file", FileDialog.SAVE);
-                fd.setFile("*.png");
-                fd.setVisible(true);
-                File file = new File(fd.getDirectory()+fd.getFile());
-                if (!file.getAbsolutePath().toLowerCase().endsWith(".png")) {
-                    file = new File(file.getAbsolutePath() + ".png");
-                }
                 try {
-                    ImageIO.write(World.img, "png", file);
-                } catch (IOException ex) {
-                    System.out.println(ex);
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println("Saving: " + file);
+                JFileChooser chooser = new JFileChooser();
+                if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+                    if (!file.getAbsolutePath().toLowerCase().endsWith(".png")) {
+                        file = new File(file.getAbsolutePath() + ".png");
+                    }
+                    try {
+                        ImageIO.write(World.img, "png", file);
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
+                    System.out.println("Saving: " + file);
+                } 
             }
-
         };
     }
 
