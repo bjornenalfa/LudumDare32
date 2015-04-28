@@ -447,13 +447,6 @@ public class LudumDare32MapEditor extends JFrame {
     }
 
     public static void main(String[] args) {
-        final LudumDare32MapEditor frame = new LudumDare32MapEditor();
-        frame.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent evt) {
-                LudumDare32MapEditor.camera = new Camera(frame.getWidth(), frame.getHeight());
-                LudumDare32MapEditor.camera2 = new Camera(frame.getWidth(), frame.getHeight());
-            }
-        });
+        new LudumDare32MapEditor();
     }
 }
