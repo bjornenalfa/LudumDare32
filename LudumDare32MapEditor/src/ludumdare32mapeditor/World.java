@@ -50,7 +50,7 @@ public class World {
     }
     
     static BufferedImage getImage() {
-        throw new UnsupportedOperationException("Dario pls call this!");
+        return img;
     }
 
     static void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
