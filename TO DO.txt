@@ -24,3 +24,4 @@ Stuff Dario & Theodor thought of:
 + View one layer at a time.
 + Undo (not super important)
 + Metadata editor (teleports, monsters, objects, triggers, etc)
++ Change size of world - Björn on this
