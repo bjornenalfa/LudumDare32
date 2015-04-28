@@ -211,7 +211,8 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    camera.setScale(0.5);
+                    tileSet = new TileSet("img/Spritesheet/snowy.png", 16, 1);
+                    World.changeTileSet(tileSet);
                     repaint();
                 }
             };
@@ -221,7 +222,7 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    camera.setScale(1);
+                    System.out.println("SKOGSSWAG");
                     repaint();
                 }
             };
@@ -254,6 +255,7 @@ public class LudumDare32MapEditor extends JFrame {
                 public void mouseWheelMoved(MouseWheelEvent e) {
                     int scrolls = e.getWheelRotation(); //negative if scroll upwards
                     camera.zoomOnWindowPoint(Math.pow(1.1, -scrolls), e.getPoint());
+                    camera.constrainToWorld();
                     repaint();
                 }
 
@@ -270,6 +272,7 @@ public class LudumDare32MapEditor extends JFrame {
                     if (mouseDown && button == 3) {
                         Point newPoint = me.getPoint();
                         camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
+                        camera.constrainToWorld();
                         lastPoint = newPoint;
                         repaint();
                     } else if (button == 1) {
@@ -279,6 +282,7 @@ public class LudumDare32MapEditor extends JFrame {
 
                 @Override
                 public void mouseMoved(MouseEvent me) {
+                    requestFocus();
                 }
 
                 @Override
@@ -415,6 +419,7 @@ public class LudumDare32MapEditor extends JFrame {
                 public void mouseWheelMoved(MouseWheelEvent e) {
                     int scrolls = e.getWheelRotation(); //negative if scroll upwards
                     camera2.zoomOnWindowPoint(Math.pow(1.1, -scrolls), e.getPoint());
+                    camera2.constrainToTileSet();
                     repaint();
                 }
 
@@ -445,6 +450,7 @@ public class LudumDare32MapEditor extends JFrame {
                     if (mouseDown2 && button == 3) {
                         Point newPoint = me.getPoint();
                         camera2.moveWindowPixels(lastPoint2.x - newPoint.x, lastPoint2.y - newPoint.y);
+                        camera2.constrainToTileSet();
                         lastPoint2 = newPoint;
                         repaint();
                     }
@@ -452,6 +458,7 @@ public class LudumDare32MapEditor extends JFrame {
 
                 @Override
                 public void mouseMoved(MouseEvent me) {
+                    requestFocus();
                 }
 
                 @Override
