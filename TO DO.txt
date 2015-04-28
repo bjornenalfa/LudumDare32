@@ -4,3 +4,23 @@ Stuff Dario & Theodor thought of:
 + wind animation thingy has to come back
 + kill mosters with traps
 + certain monsters can only be killed on certain seasons
+
+# Game
+
++ Character sprites + animation (files already in repository)
++ Dynamic objects
++ Special tile information (different collision shapes, stairs, teleports, etc)
++ Character rolling
+
+# Map editor
+
++ Multiple worlds at the same time. -Björn on this
++ Edit one layer at a time.
++ Filechooser for loading files.
++ Default filechooser to the level directory.
++ Floodfill
++ Advanced brushes
++ Templates
++ View one layer at a time.
++ Undo (not super important)
++ Metadata editor (teleports, monsters, objects, triggers, etc)
