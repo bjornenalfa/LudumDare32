@@ -11,6 +11,8 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
@@ -25,6 +27,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -105,18 +108,36 @@ public class LudumDare32MapEditor extends JFrame {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("saving");
-                String s = JOptionPane.showInputDialog(mapPanel, "", "Save as", JOptionPane.QUESTION_MESSAGE);
-                String path = "levels/" + s + ".png";
-                BufferedImage img = new BufferedImage(World.width, World.height, BufferedImage.TYPE_INT_ARGB);
-                //String string = getClass().getResource(path).getPath();
-                //System.out.println(string);
-                File file = new File(path);
-                try {
-                    ImageIO.write(img, "png", file);
-                } catch (IOException ex) {
-                }
+//                System.out.println("saving");
+//                String s = JOptionPane.showInputDialog(mapPanel, "", "Save as", JOptionPane.QUESTION_MESSAGE);
+//                String path = "levels/" + s + ".png";
+//                BufferedImage img = new BufferedImage(World.width, World.height, BufferedImage.TYPE_INT_ARGB);
+//                //String string = getClass().getResource(path).getPath();
+//                //System.out.println(string);
+//                File file = new File(path);
+//                try {
+//                    ImageIO.write(img, "png", file);
+//                } catch (IOException ex) {
+//                    System.out.println(ex);
+//                }
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showSaveDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+                    String fname = file.getAbsolutePath();
 
+                    if (!fname.endsWith(".png") || !fname.endsWith(".PNG")) {
+                        file = new File(fname + ".png");
+                    }
+                    try {
+                        ImageIO.write(World.img, "png", file);
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
+                    System.out.println("Saving: " + file.getName());
+                } else {
+                    System.out.println("Save command cancelled by user.");
+                }
             }
         };
     }
@@ -450,6 +471,13 @@ public class LudumDare32MapEditor extends JFrame {
     }
 
     public static void main(String[] args) {
-        new LudumDare32MapEditor();
+        final LudumDare32MapEditor frame = new LudumDare32MapEditor();
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent evt) {
+                LudumDare32MapEditor.camera = new Camera(frame.getWidth(), frame.getHeight());
+                LudumDare32MapEditor.camera2 = new Camera(frame.getWidth(), frame.getHeight());
+            }
+        });
     }
 }
