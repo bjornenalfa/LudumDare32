@@ -33,9 +33,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import static ludumdare32mapeditor.World.textureMap;
-import static ludumdare32mapeditor.World.textureMap2;
-import static ludumdare32mapeditor.World.textureMap3;
 
 public class LudumDare32MapEditor extends JFrame {
 
@@ -222,6 +219,15 @@ public class LudumDare32MapEditor extends JFrame {
 
         int button;
 
+        public void changeTile(Point screenPoint) {
+            Point.Double p = camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
+            //int x = (int) (screenPoint.x) / World.squareSize;
+            //int y = (int) (screenPoint.y) / World.squareSize;
+            World.changeTile((int)(p.x/World.squareSize), (int)(p.y/World.squareSize), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
+            //World.changeTile(x, y, tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
+            repaint();
+        }
+
         private MouseAdapter mouseAdapter() {
             return new MouseAdapter() {
                 @Override
@@ -234,21 +240,7 @@ public class LudumDare32MapEditor extends JFrame {
                 @Override
                 public void mouseReleased(MouseEvent me) {
                     if (button == 1) {
-                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
-                        int x = (int) (p.getX()) / World.squareSize;
-                        int y = (int) (p.getY()) / World.squareSize;
-                        World.changeTile(x, y, tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
-//                        textureMap[x][y] = 4095 & (argbBackwards >> 12);
-//                        if (renderAbove == 1) {
-//                            textureMap3[x][y] = 4095 & argbBackwards;
-//                            textureMap2[x][y] = TileSet.INVISIBLE;
-//                        } else {
-//                            textureMap2[x][y] = 4095 & argbBackwards;
-//                            textureMap3[x][y] = TileSet.INVISIBLE;
-//                        }
-//                        World.renderMap();
-                        World.changeImg(x, y, argbBackwards);
-                        repaint();
+                        changeTile(me.getPoint());
                     }
                     mouseDown = false;
                 }
@@ -261,21 +253,7 @@ public class LudumDare32MapEditor extends JFrame {
                         lastPoint = newPoint;
                         repaint();
                     } else if (button == 1) {
-                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
-                        int x = (int) (p.getX() - p.getX() % World.squareSize) / World.squareSize;
-                        int y = (int) (p.getY() - p.getY() % World.squareSize) / World.squareSize;
-                        World.changeTile(x, y, tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
-//                        textureMap[x][y] = 4095 & (argbBackwards >> 12);
-//                        if (renderAbove == 1) {
-//                            textureMap3[x][y] = 4095 & argbBackwards;
-//                            textureMap2[x][y] = TileSet.INVISIBLE;
-//                        } else {
-//                            textureMap2[x][y] = 4095 & argbBackwards;
-//                            textureMap3[x][y] = TileSet.INVISIBLE;
-//                        }
-//                        World.renderMap();
-                        World.changeImg(x, y, argbBackwards);
-                        repaint();
+                        changeTile(me.getPoint());
                     }
                 }
 
@@ -365,12 +343,12 @@ public class LudumDare32MapEditor extends JFrame {
         }
 
         public final void calcColor() {
-            argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (renderAbove << 25) | (first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles << 12) | second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles;
-            int alpha = 0xFF & (argbBackwards >> 24);
-            int red = 0xFF & (argbBackwards >> 16);
-            int green = 0xFF & (argbBackwards >> 8);
-            int blue = 0xFF & (argbBackwards);
-            label.setText(" - Red:" + red + ",Green:" + green + ",Blue:" + blue + ",Alpha:" + alpha);
+//            argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (renderAbove << 25) | (first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles << 12) | second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles;
+//            int alpha = 0xFF & (argbBackwards >> 24);
+//            int red = 0xFF & (argbBackwards >> 16);
+//            int green = 0xFF & (argbBackwards >> 8);
+//            int blue = 0xFF & (argbBackwards);
+//            label.setText(" - Red:" + red + ",Green:" + green + ",Blue:" + blue + ",Alpha:" + alpha);
 //                StringSelection selection = new StringSelection(Integer.toHexString((first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles << 12) | second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles));
 //                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 //                clipboard.setContents(selection, selection);

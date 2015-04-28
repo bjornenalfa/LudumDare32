@@ -19,9 +19,10 @@ public class World {
     static final int squareSize = 16;
 
     static boolean[][][] collisionMap;
+    static boolean[][] renderAbove;
     static int[][] textureMap;
     static int[][] textureMap2;
-    static int[][] textureMap3;
+    //sstatic int[][] textureMap3;
     static int width = 0;
     static int height = 0;
     static int pixelWidth = 0;
@@ -29,7 +30,7 @@ public class World {
 
     static BufferedImage layer1;
     static BufferedImage layer2;
-    static BufferedImage layer3;
+    //static BufferedImage layer3;
 
     static AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
     static ImageObserver nothing = new ImageObserver() {
@@ -48,19 +49,23 @@ public class World {
         renderMap();
     }
 
-    static void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbove) {
+    static void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
+        if (x < 0 | x > width | y < 0 | y > height) {
+            return;
+        }
         collisionMap[x][y][0] = cloudy;
         collisionMap[x][y][1] = sunny;
         collisionMap[x][y][2] = rainy;
         collisionMap[x][y][3] = snowy;
         textureMap[x][y] = tile1;
-        if (renderAbove) {
-            textureMap3[x][y] = tile2;
-            textureMap2[x][y] = TileSet.INVISIBLE;
-        } else {
-            textureMap2[x][y] = tile2;
-            textureMap3[x][y] = TileSet.INVISIBLE;
-        }
+        //if (renderAbove) {
+        //    textureMap3[x][y] = tile2;
+        //    textureMap2[x][y] = TileSet.INVISIBLE;
+        //} else {
+        textureMap2[x][y] = tile2;
+        renderAbove[x][y] = renderAbov;
+        //    textureMap3[x][y] = TileSet.INVISIBLE;
+        //}
         Graphics2D g2d = (Graphics2D) layer1.getGraphics();
         g2d.setComposite(composite);
         g2d.setColor(new Color(0, 0, 0, 0));
@@ -70,14 +75,14 @@ public class World {
         g2d = (Graphics2D) layer2.getGraphics();
         g2d.setComposite(composite);
         g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
+        g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
         layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
 
-        g2d = (Graphics2D) layer3.getGraphics();
-        g2d.setComposite(composite);
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
-        layer3.createGraphics().drawImage(currentTileSet.images[textureMap3[x][y]], x * squareSize, y * squareSize, nothing);
+//        g2d = (Graphics2D) layer3.getGraphics();
+//        g2d.setComposite(composite);
+//        g2d.setColor(new Color(0, 0, 0, 0));
+//        g2d.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
+//        layer3.createGraphics().drawImage(currentTileSet.images[textureMap3[x][y]], x * squareSize, y * squareSize, nothing);
     }
 
     static void renderMap() {
@@ -113,39 +118,25 @@ public class World {
             }
         }
 
-        layer3 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
-        g2d = (Graphics2D) layer3.getGraphics();
-        g2d.setComposite(composite);
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.fillRect(0, 0, pixelWidth, pixelHeight);
-        g2d = layer3.createGraphics();
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                try {
-                    g2d.drawImage(currentTileSet.images[textureMap3[x][y]], x * squareSize, y * squareSize, nothing);
-                } catch (Exception e) {
-                    g2d.drawImage(currentTileSet.images[0], x * squareSize, y * squareSize, nothing);
-                }
-            }
-        }
-    }
-
-    static void changeMap(int x, int y) {
-        Graphics2D g2d = layer1.createGraphics();
-        g2d.drawImage(currentTileSet.images[textureMap[x][y]], x * squareSize, y * squareSize, nothing);
-
-        g2d = layer2.createGraphics();
-        g2d.drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
-
-        g2d = layer3.createGraphics();
-        g2d.drawImage(currentTileSet.images[textureMap3[x][y]], x * squareSize, y * squareSize, nothing);
-
+//        layer3 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
+//        g2d = (Graphics2D) layer3.getGraphics();
+//        g2d.setComposite(composite);
+//        g2d.setColor(new Color(0, 0, 0, 0));
+//        g2d.fillRect(0, 0, pixelWidth, pixelHeight);
+//        g2d = layer3.createGraphics();
+//        for (int x = 0; x < width; x++) {
+//            for (int y = 0; y < height; y++) {
+//                try {
+//                    g2d.drawImage(currentTileSet.images[textureMap3[x][y]], x * squareSize, y * squareSize, nothing);
+//                } catch (Exception e) {
+//                    g2d.drawImage(currentTileSet.images[0], x * squareSize, y * squareSize, nothing);
+//                }
+//            }
+//        }
     }
 
     static void paint(Graphics2D g) {
         g.drawImage(layer1, 0, 0, nothing);
-        g.drawImage(layer2, 0, 0, nothing);
-
 //        for (int x = 0; x < width; x++) {
 //            for (int y = 0; y < height; y++) {
 //                g.drawImage(Tile.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
@@ -155,7 +146,7 @@ public class World {
     }
 
     static void paint2(Graphics2D g) {
-        g.drawImage(layer3, 0, 0, nothing);
+        g.drawImage(layer2, 0, 0, nothing);
     }
 
     public static void loadWorld(int ID) {
@@ -188,7 +179,7 @@ public class World {
         pixelHeight = height * squareSize;
         textureMap = new int[width][height];
         textureMap2 = new int[width][height];
-        textureMap3 = new int[width][height];
+        renderAbove = new boolean[width][height];
         collisionMap = new boolean[width][height][4];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -198,20 +189,22 @@ public class World {
                 boolean sunny = 1 == (1 & (argb >> 29));
                 boolean snowy = 1 == (1 & (argb >> 28));
                 boolean aboveCharacters = 1 == (1 & (argb >> 25));
+
                 int texture1 = 4095 & (argb >> 12);
                 int texture2 = 4095 & argb;
                 textureMap[x][y] = texture1;
-                if (aboveCharacters) {
-                    textureMap3[x][y] = texture2;
-                    textureMap2[x][y] = TileSet.INVISIBLE;
-                } else {
-                    textureMap2[x][y] = texture2;
-                    textureMap3[x][y] = TileSet.INVISIBLE;
-                }
-//                collisionMap[x][y][Weather.CLOUDY] = cloudy;
-//                collisionMap[x][y][Weather.SUNNY] = sunny;
-//                collisionMap[x][y][Weather.RAINY] = rainy;
-//                collisionMap[x][y][Weather.SNOWY] = snowy;
+//                if (aboveCharacters) {
+//                    textureMap3[x][y] = texture2;
+//                    textureMap2[x][y] = TileSet.INVISIBLE;
+//                } else {
+                textureMap2[x][y] = texture2;
+                renderAbove[x][y] = aboveCharacters;
+//                    textureMap3[x][y] = TileSet.INVISIBLE;
+//                }
+                collisionMap[x][y][0] = cloudy;
+                collisionMap[x][y][1] = sunny;
+                collisionMap[x][y][2] = rainy;
+                collisionMap[x][y][3] = snowy;
 
                 /*int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;
                 
