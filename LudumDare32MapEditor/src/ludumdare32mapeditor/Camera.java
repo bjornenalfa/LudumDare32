@@ -78,6 +78,11 @@ public class Camera {
         g.setColor(color);
         g.fillRect(0,0,width,height);
     }
+    
+    public void constrain() {
+        x = Math.max(World.squareSize-World.pixelWidth,Math.min(x, width-World.squareSize));
+        y = Math.max(World.squareSize-World.pixelHeight,Math.min(y, height-World.squareSize));
+    }
 
 //    public void update(Player player, boolean centered) {
 //        if (centered) {

@@ -36,7 +36,7 @@ public class World {
     static ImageObserver nothing = new ImageObserver() {
         @Override
         public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException("Not supported yet.");
         }
     };
 
@@ -47,6 +47,10 @@ public class World {
     static void changeTileSet(TileSet tileSet) {
         setTileSet(tileSet);
         renderMap();
+    }
+    
+    static BufferedImage getImage() {
+        throw new UnsupportedOperationException("Dario pls call this!");
     }
 
     static void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
