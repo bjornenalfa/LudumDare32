@@ -1,4 +1,4 @@
-Stuff Dario & Theodor thought of:
+﻿Stuff Dario & Theodor thought of:
 
 + snow particles
 + wind animation thingy has to come back
@@ -16,11 +16,12 @@ Stuff Dario & Theodor thought of:
 
 + Multiple worlds at the same time. -Björn on this
 + Edit one layer at a time.
-+ Filechooser for loading files.
-+ Default filechooser to the level directory.
++ Filechooser for loading files. //Dario on this
++ Default filechooser to the level directory. //Dario on this
 + Floodfill
 + Advanced brushes
 + Templates
 + View one layer at a time.
 + Undo (not super important)
 + Metadata editor (teleports, monsters, objects, triggers, etc)
++ Change size of world - Björn on this
