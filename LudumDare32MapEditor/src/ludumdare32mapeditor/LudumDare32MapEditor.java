@@ -4,13 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FileDialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -19,25 +17,18 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 public class LudumDare32MapEditor extends JFrame {
 
@@ -98,7 +89,7 @@ public class LudumDare32MapEditor extends JFrame {
         panel.add(inPanel, BorderLayout.NORTH);
 
         panel.addComponentListener(componentAdapter());
-        
+
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(1600, 608));
         setResizable(true);
@@ -108,7 +99,7 @@ public class LudumDare32MapEditor extends JFrame {
         setVisible(true);
     }
 
-     private ComponentAdapter componentAdapter() {
+    private ComponentAdapter componentAdapter() {
         return new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -123,7 +114,7 @@ public class LudumDare32MapEditor extends JFrame {
             }
         };
     }
-    
+
     private Action save() {
         return new AbstractAction() {
             @Override
@@ -140,34 +131,21 @@ public class LudumDare32MapEditor extends JFrame {
 //                } catch (IOException ex) {
 //                    System.out.println(ex);
 //                }
-                JFileChooser chooser = new JFileChooser();
+                FileDialog fd = new FileDialog(new JFrame(), "Save file", FileDialog.SAVE);
+                fd.setFile("*.png");
+                fd.setVisible(true);
+                File file = new File(fd.getDirectory()+fd.getFile());
+                if (!file.getAbsolutePath().toLowerCase().endsWith(".png")) {
+                    file = new File(file.getAbsolutePath() + ".png");
+                }
                 try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InstantiationException ex) {
-                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) {
-                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UnsupportedLookAndFeelException ex) {
-                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
+                    ImageIO.write(World.img, "png", file);
+                } catch (IOException ex) {
+                    System.out.println(ex);
                 }
-                int returnVal = chooser.showSaveDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = chooser.getSelectedFile();
-                    String fname = file.getAbsolutePath();
-
-                    if (!fname.toLowerCase().endsWith(".png")) {
-                        file = new File(fname + ".png");
-                    }
-                    try {
-                        ImageIO.write(World.img, "png", file);
-                    } catch (IOException ex) {
-                        System.out.println(ex);
-                    }
-                    System.out.println("Saving: " + file);
-                }
+                System.out.println("Saving: " + file);
             }
+
         };
     }
 
