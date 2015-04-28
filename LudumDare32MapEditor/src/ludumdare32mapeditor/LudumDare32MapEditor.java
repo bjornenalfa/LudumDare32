@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class LudumDare32MapEditor extends JFrame {
 
@@ -59,6 +60,12 @@ public class LudumDare32MapEditor extends JFrame {
     static Camera camera2;
 
     public LudumDare32MapEditor() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.setTileSet(tileSet);
         World.loadFromFile("levels/test.png");
@@ -135,24 +142,34 @@ public class LudumDare32MapEditor extends JFrame {
 //                } catch (IOException ex) {
 //                    System.out.println(ex);
 //                }
-                try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
-                }
                 JFileChooser chooser = new JFileChooser();
+                chooser.setAcceptAllFileFilterUsed(false);
+                FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("PNG images", "png");
+                FileNameExtensionFilter jpegFilter = new FileNameExtensionFilter("JPEG images", "jpeg");
+                chooser.setFileFilter(jpegFilter);
+                chooser.setFileFilter(pngFilter);
                 if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String saveFormat = "";
                     File file = chooser.getSelectedFile();
-                    if (!file.getAbsolutePath().toLowerCase().endsWith(".png")) {
-                        file = new File(file.getAbsolutePath() + ".png");
+                    if (chooser.getFileFilter() == pngFilter) {
+                        if (!file.getAbsolutePath().toLowerCase().endsWith(".png")) {
+                            file = new File(file.getAbsolutePath() + ".png");
+                        }
+                        saveFormat = "png";
+                    } else if (chooser.getFileFilter() == jpegFilter) {
+                        if (!file.getAbsolutePath().toLowerCase().endsWith(".jpeg")) {
+                            file = new File(file.getAbsolutePath() + ".jpeg");
+                        }
+                        saveFormat = "jpeg";
                     }
+
                     try {
-                        ImageIO.write(World.img, "png", file);
+                        ImageIO.write(World.getImage(), saveFormat, file);
                     } catch (IOException ex) {
                         System.out.println(ex);
                     }
                     System.out.println("Saving: " + file);
-                } 
+                }
             }
         };
     }
