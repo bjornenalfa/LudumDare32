@@ -2,6 +2,7 @@ package ludumdare32mapeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -92,6 +93,8 @@ public class LudumDare32MapEditor extends JFrame {
         panel.add(anotherPanel, BorderLayout.CENTER);
         panel.add(inPanel, BorderLayout.NORTH);
 
+        panel.addComponentListener(componentAdapter());
+        
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(1600, 608));
         setResizable(true);
@@ -101,6 +104,22 @@ public class LudumDare32MapEditor extends JFrame {
         setVisible(true);
     }
 
+     private ComponentAdapter componentAdapter() {
+        return new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Component component = e.getComponent();
+                int h = component.getHeight();
+                int w = component.getWidth();
+
+                mapPanel.setBounds(0, 0, w / 2, h);
+                tilePanel.setBounds(w / 2, 0, w / 2, h);
+                camera.changeSize(w / 2, h);
+                camera2.changeSize(w / 2, h);
+            }
+        };
+    }
+    
     private Action save() {
         return new AbstractAction() {
             @Override
