@@ -68,7 +68,7 @@ public class LudumDare32MapEditor extends JFrame {
 
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.setTileSet(tileSet);
-        World.loadFromFile("levels/test.png");
+        World.loadFromFile("levels/test.jpg");
 
         setTitle("LudumDare32 Map Editor");
 
