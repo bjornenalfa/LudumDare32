@@ -23,6 +23,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -34,6 +36,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class LudumDare32MapEditor extends JFrame {
 
@@ -137,6 +141,17 @@ public class LudumDare32MapEditor extends JFrame {
 //                    System.out.println(ex);
 //                }
                 JFileChooser chooser = new JFileChooser();
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InstantiationException ex) {
+                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IllegalAccessException ex) {
+                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnsupportedLookAndFeelException ex) {
+                    Logger.getLogger(LudumDare32MapEditor.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 int returnVal = chooser.showSaveDialog(null);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
@@ -242,7 +257,7 @@ public class LudumDare32MapEditor extends JFrame {
             Point.Double p = camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
             //int x = (int) (screenPoint.x) / World.squareSize;
             //int y = (int) (screenPoint.y) / World.squareSize;
-            World.changeTile((int)(p.x/World.squareSize), (int)(p.y/World.squareSize), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
+            World.changeTile((int) (p.x / World.squareSize), (int) (p.y / World.squareSize), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
             //World.changeTile(x, y, tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
             repaint();
         }
