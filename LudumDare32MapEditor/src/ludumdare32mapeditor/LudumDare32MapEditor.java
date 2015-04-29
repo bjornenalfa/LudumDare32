@@ -182,6 +182,7 @@ public class LudumDare32MapEditor extends JFrame {
                     try {
                         BufferedImage img;
                         img= ImageIO.read(file);
+                        World.loadFromImage(img);
                     } catch (IOException ex) {
                         System.out.println(ex);
                     }
