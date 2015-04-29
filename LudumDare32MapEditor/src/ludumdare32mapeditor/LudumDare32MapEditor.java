@@ -17,6 +17,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -178,11 +179,12 @@ public class LudumDare32MapEditor extends JFrame {
                 chooser.setCurrentDirectory(new File(".//..//src//ludumdare32/levels//"));
                 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
-//                    try {
-//                        CODE TO ADD
-//                    } catch (IOException ex) {
-//                        System.out.println(ex);
-//                    }
+                    try {
+                        BufferedImage img;
+                        img= ImageIO.read(file);
+                    } catch (IOException ex) {
+                        System.out.println(ex);
+                    }
                     System.out.println("Loading: " + file);
                 }
             }
