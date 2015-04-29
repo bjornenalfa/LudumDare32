@@ -176,14 +176,20 @@ public class World {
     static void changeImg(int x, int y, int argb) {
         img.setRGB(x, y, argb);
     }
-
+    
     public static void loadFromFile(String path) {
         try {
             img = ImageIO.read(World.class.getResourceAsStream(path));
+            loadFromImage(img);
         } catch (IOException e) {
             System.out.println("Level not found");
             return;
         }
+    }
+
+    public static void loadFromImage(BufferedImage image) {
+        img = image;
+        
         width = img.getWidth();
         height = img.getHeight();
         pixelWidth = width * squareSize;
