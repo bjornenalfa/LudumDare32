@@ -16,7 +16,8 @@
 
 + Multiple worlds at the same time. -Björn on this
 + Edit one layer at a time.
-+ Filechooser for loading files. //Dario on this; what to load and where to? 
++ Ability to resize loaded images
++ draw white outline as some kind of "border" for the image...
 + Floodfill
 + Advanced brushes
 + Templates
