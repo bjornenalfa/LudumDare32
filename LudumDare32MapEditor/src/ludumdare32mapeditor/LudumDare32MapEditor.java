@@ -180,9 +180,7 @@ public class LudumDare32MapEditor extends JFrame {
                 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
                     try {
-                        BufferedImage img;
-                        img= ImageIO.read(file);
-                        World.loadFromImage(img);
+                        World.loadFromImage(ImageIO.read(file));
                         repaint();
                     } catch (IOException ex) {
                         System.out.println(ex);
