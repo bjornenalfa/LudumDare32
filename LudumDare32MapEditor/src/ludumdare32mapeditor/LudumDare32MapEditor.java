@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
@@ -24,6 +25,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
@@ -72,17 +74,22 @@ public class LudumDare32MapEditor extends JFrame {
 
         setTitle("LudumDare32 Map Editor");
 
-        
         camera = new Camera(800, 608);
         camera2 = new Camera(800, 608);
 
         MyCheckBoxPanel checkBoxPanel = new MyCheckBoxPanel();
-        JButton button = new JButton("SAVE");
-        button.addActionListener(save());
+        JButton button1 = new JButton("SAVE");
+        button1.addActionListener(save());
+        JButton button2 = new JButton("LOAD");
+        button2.addActionListener(load());
 
         JPanel inPanel = new JPanel(new BorderLayout());
         inPanel.setPreferredSize(new Dimension(1600, 20));
-        inPanel.add(button, BorderLayout.WEST);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
+        buttonPanel.add(button1);
+        buttonPanel.add(button2);
+        inPanel.add(buttonPanel, BorderLayout.WEST);
         inPanel.add(label, BorderLayout.CENTER);
         inPanel.add(checkBoxPanel, BorderLayout.EAST);
 
@@ -131,24 +138,12 @@ public class LudumDare32MapEditor extends JFrame {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                System.out.println("saving");
-//                String s = JOptionPane.showInputDialog(mapPanel, "", "Save as", JOptionPane.QUESTION_MESSAGE);
-//                String path = "levels/" + s + ".png";
-//                BufferedImage img = new BufferedImage(World.width, World.height, BufferedImage.TYPE_INT_ARGB);
-//                //String string = getClass().getResource(path).getPath();
-//                //System.out.println(string);
-//                File file = new File(path);
-//                try {
-//                    ImageIO.write(img, "png", file);
-//                } catch (IOException ex) {
-//                    System.out.println(ex);
-//                }
                 JFileChooser chooser = new JFileChooser();
-                chooser.setAcceptAllFileFilterUsed(false);
-                FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("PNG images", "png");
-                FileNameExtensionFilter jpegFilter = new FileNameExtensionFilter("JPEG images", "jpeg");
+                FileNameExtensionFilter pngFilter = new FileNameExtensionFilter("PNG", "png");
+                FileNameExtensionFilter jpegFilter = new FileNameExtensionFilter("JPEG", "jpeg");
                 chooser.setFileFilter(jpegFilter);
                 chooser.setFileFilter(pngFilter);
+                chooser.setCurrentDirectory(new File(".//..//src//ludumdare32/levels//"));
                 if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String saveFormat = "";
                     File file = chooser.getSelectedFile();
@@ -170,6 +165,25 @@ public class LudumDare32MapEditor extends JFrame {
                         System.out.println(ex);
                     }
                     System.out.println("Saving: " + file);
+                }
+            }
+        };
+    }
+
+    private Action load() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new File(".//..//src//ludumdare32/levels//"));
+                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+//                    try {
+//                        CODE TO ADD
+//                    } catch (IOException ex) {
+//                        System.out.println(ex);
+//                    }
+                    System.out.println("Loading: " + file);
                 }
             }
         };
