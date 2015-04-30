@@ -202,7 +202,7 @@ public class World {
     public boolean pixelPointInWorld(double x, double y) {
         x -= xOffset;
         y -= yOffset;
-        return !(x < 0 || x > pixelWidth || y < 0 || y > pixelHeight);
+        return !(x < 0 || x >= pixelWidth || y < 0 || y >= pixelHeight);
     }
 
     public boolean squarePointInWorld(int x, int y) {
