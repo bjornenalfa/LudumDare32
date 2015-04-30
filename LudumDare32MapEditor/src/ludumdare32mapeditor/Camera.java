@@ -17,14 +17,14 @@ public class Camera {
         halfWidth = width / 2d;
         halfHeight = height / 2d;
     }
-    
+
     public Point.Double windowToWorldCoordinates(Point p) {
-        return windowToWorldCoordinates(p.x,p.y);
-    } 
-    
+        return windowToWorldCoordinates(p.x, p.y);
+    }
+
     public Point.Double windowToWorldCoordinates(Point.Double p) {
-        return windowToWorldCoordinates(p.x,p.y);
-    } 
+        return windowToWorldCoordinates(p.x, p.y);
+    }
 
     public Point.Double windowToWorldCoordinates(double wx, double wy) {
         return new Point.Double((wx + x) / scale, (wy + y) / scale);

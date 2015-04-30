@@ -76,9 +76,8 @@ public class LudumDare32MapEditor extends JFrame {
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         //World.setTileSet(tileSet);
         //World.loadFromFile("levels/test.jpg");
-        
         worlds[1].setOffset(700, 0);
-        
+
         setTitle("LudumDare32 Map Editor");
 
         camera1 = new Camera(800, 608);
@@ -218,7 +217,7 @@ public class LudumDare32MapEditor extends JFrame {
                 worlds[i].paintLayer1(g);
                 worlds[i].paintLayer2(g);
             }
-            
+
             worlds[selectedWorld].drawBorder(g, Color.red);
 
 //            if (mouseDown) {
@@ -288,8 +287,8 @@ public class LudumDare32MapEditor extends JFrame {
             Point.Double p = camera1.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
             //int x = (int) (screenPoint.x) / World.squareSize;
             //int y = (int) (screenPoint.y) / World.squareSize;
-            worlds[selectedWorld].changeTile((int) (p.x / World.squareSize), (int) (p.y / World.squareSize), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
-            //World.changeTile(x, y, tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
+            //worlds[selectedWorld].changeTileSquareCoordinates((int) (p.x / World.squareSize), (int) (p.y / World.squareSize), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
+            worlds[selectedWorld].changeTilePixelCoordinates((int) (p.x), (int) (p.y), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
             repaint();
         }
 
@@ -309,13 +308,20 @@ public class LudumDare32MapEditor extends JFrame {
                         changeTile(me.getPoint());
                     }
                     mouseDown1 = false;
+                    draggingWorld = false;
                 }
 
                 @Override
                 public void mouseDragged(MouseEvent me) {
                     if (mouseDown1 && button == 3) {
                         Point newPoint = me.getPoint();
-                        camera1.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
+                        if (draggingWorld) {
+                            Point.Double np = camera1.windowToWorldCoordinates(newPoint);
+                            Point.Double lp = camera1.windowToWorldCoordinates(lastPoint);
+                            worlds[selectedWorld].move(np.x - lp.x, np.y - lp.y);
+                        } else {
+                            camera1.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
+                        }
                         //camera1.constrainToWorld(worlds[selectedWorld]);
                         lastPoint = newPoint;
                         repaint();
@@ -336,9 +342,13 @@ public class LudumDare32MapEditor extends JFrame {
                         lastPoint = me.getPoint();
                         mouseDown1 = true;
                         Point.Double p = camera1.windowToWorldCoordinates(lastPoint);
-                        for (int i = 0;i<worlds.length;i++) {
+                        for (int i = 0; i < worlds.length; i++) {
                             if (worlds[i].pixelPointInWorld(p)) {
                                 selectedWorld = i;
+                                if (button == 3) {
+                                    draggingWorld = true;
+                                }
+                                break;
                             }
                         }
                     }

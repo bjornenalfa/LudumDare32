@@ -194,8 +194,16 @@ public class World {
         return !(x < 0 || x > width || y < 0 || y > height);
     }
 
-    public void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
-        if (x < 0 || x > width || y < 0 || y > height) {
+    public void changeTilePixelCoordinates(double x, double y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        changeTileSquareCoordinates((int) x, (int) y, tile1, tile2, cloudy, sunny, rainy, snowy, renderAbov);
+    }
+
+    public void changeTileSquareCoordinates(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
+        if (!squarePointInWorld(x, y)) {
             return;
         }
         collisionMap[x][y][0] = cloudy;
