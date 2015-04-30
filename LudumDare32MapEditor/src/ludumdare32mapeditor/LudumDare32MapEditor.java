@@ -257,6 +257,7 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    world.expand(1, 1, 1, 1);
                     repaint();
                 }
             };
@@ -266,7 +267,7 @@ public class LudumDare32MapEditor extends JFrame {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    camera1.setScale(2);
+                    world.contract(1, 1, 1, 1);
                     repaint();
                 }
             };

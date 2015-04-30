@@ -74,8 +74,10 @@ public class World {
         renderMap();
     }
 
-    public World(int width, int height, TileSet tileSet) {
+    public World(int w, int h, TileSet tileSet) {
         currentTileSet = tileSet;
+        width = w;
+        height = h;
         pixelWidth = width * squareSize;
         pixelHeight = height * squareSize;
         textureMap = new int[width][height];
@@ -114,14 +116,14 @@ public class World {
 
         width = newWidth;
         height = newHeight;
-        pixelWidth = newWidth * squareSize;
-        pixelHeight = newHeight * squareSize;
+        pixelWidth = width * squareSize;
+        pixelHeight = height * squareSize;
         textureMap = newTM;
         textureMap2 = newTM2;
         renderAbove = newRA;
         collisionMap = newCM;
         renderMap();
-        move(left * squareSize, up * squareSize);
+        move(-left * squareSize, -up * squareSize);
     }
 
     public void contract(int up, int right, int down, int left) {
@@ -143,14 +145,14 @@ public class World {
 
         width = newWidth;
         height = newHeight;
-        pixelWidth = newWidth * squareSize;
-        pixelHeight = newHeight * squareSize;
+        pixelWidth = width * squareSize;
+        pixelHeight = height * squareSize;
         textureMap = newTM;
         textureMap2 = newTM2;
         renderAbove = newRA;
         collisionMap = newCM;
         renderMap();
-        move(-left * squareSize, -up * squareSize);
+        move(left * squareSize, up * squareSize);
     }
 
     public void setTileSet(TileSet tileSet) {
