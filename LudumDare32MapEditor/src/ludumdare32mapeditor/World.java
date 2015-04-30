@@ -191,7 +191,7 @@ public class World {
     }
 
     public boolean squarePointInWorld(int x, int y) {
-        return !(x < 0 || x > width || y < 0 || y > height);
+        return !(x < 0 || x >= width || y < 0 || y >= height);
     }
 
     public void changeTilePixelCoordinates(double x, double y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
