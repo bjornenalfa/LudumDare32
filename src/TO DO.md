@@ -14,7 +14,6 @@
 
 # Map editor
 
-+ Multiple worlds at the same time. -Björn on this
 + Edit one layer at a time.
 + Draw white outline as some kind of "border" for the image...
 + Floodfill
