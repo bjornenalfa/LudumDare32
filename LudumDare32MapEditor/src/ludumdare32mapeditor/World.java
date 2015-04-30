@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
@@ -174,9 +175,27 @@ public class World {
         }
         return image;
     }
+    
+    public boolean pixelPointInWorld(Point p) {
+        return pixelPointInWorld(p.x,p.y);
+    }
+    
+    public boolean pixelPointInWorld(Point.Double p) {
+        return pixelPointInWorld(p.x,p.y);
+    }
+
+    public boolean pixelPointInWorld(double x, double y) {
+        x -= xOffset;
+        y -= yOffset;
+        return !(x < 0 || x > pixelWidth || y < 0 || y > pixelHeight);
+    }
+
+    public boolean squarePointInWorld(int x, int y) {
+        return !(x < 0 || x > width || y < 0 || y > height);
+    }
 
     public void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
-        if (x < 0 | x > width | y < 0 | y > height) {
+        if (x < 0 || x > width || y < 0 || y > height) {
             return;
         }
         collisionMap[x][y][0] = cloudy;
@@ -240,17 +259,12 @@ public class World {
     public void paintLayer2(Graphics2D g) {
         g.drawImage(layer2, (int) xOffset, (int) yOffset, nothing);
     }
+    
+    public void drawBorder(Graphics2D g, Color c) {
+        g.setColor(c);
+        g.drawRect((int)xOffset, (int)yOffset, (int)(xOffset+pixelWidth), (int)(yOffset+pixelHeight));
+    }
 
-//    public static World loadWorld(int ID) {
-//        try {
-//            loadFromFile("levels/" + worlds[ID] + ".png");
-//            worldNumber = ID;
-//        } catch (Exception e) {
-//            System.out.println("Unknown world");
-//            System.out.println(e);
-//            return;
-//        }
-//    }
     public static World loadFromFile(String path, TileSet tileSet) {
         try {
             return loadFromImage(ImageIO.read(World.class.getResourceAsStream(path)), tileSet);

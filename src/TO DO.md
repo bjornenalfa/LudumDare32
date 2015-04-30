@@ -18,6 +18,7 @@
 + Edit one layer at a time.
 + Draw white outline as some kind of "border" for the image...
 + Floodfill
++ Pipette
 + Advanced brushes
 + Templates
 + View one layer at a time.
