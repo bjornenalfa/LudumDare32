@@ -185,7 +185,10 @@ public class LudumDare32MapEditor extends JFrame {
                 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
                     try {
+                        double x = worlds[selectedWorld].xOffset;
+                        double y = worlds[selectedWorld].yOffset;
                         worlds[selectedWorld] = World.loadFromImage(ImageIO.read(file), tileSet);
+                        worlds[selectedWorld].setOffset(x, y);
                         repaint();
                     } catch (IOException ex) {
                         System.out.println(ex);

@@ -14,6 +14,7 @@
 
 # Map editor
 
++ Make a new world
 + Edit one layer at a time.
 + Draw white outline as some kind of "border" for the image...
 + Floodfill
