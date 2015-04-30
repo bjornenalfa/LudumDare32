@@ -20,6 +20,5 @@
 + Pipette
 + Advanced brushes
 + Templates
-+ View one layer at a time.
 + Undo (not super important)
 + Metadata editor (teleports, monsters, objects, triggers, etc)
