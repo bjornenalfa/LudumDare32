@@ -59,6 +59,8 @@ public class LudumDare32MapEditor extends JFrame {
     MyTilePanel tilePanel;
     JLabel label = new JLabel("");
 
+    int showLayers = 3;
+
     static Camera camera1;
     static Camera camera2;
 
@@ -211,17 +213,26 @@ public class LudumDare32MapEditor extends JFrame {
         }
 
         @Override
-        protected void paintComponent(Graphics g1) {
+        protected void paintComponent(Graphics g1) { //THIS IS THE FIRST PANELS PAINT FUNCTION =======================================================================
             Graphics2D g = (Graphics2D) g1;
             camera1.clearScreen(g, Color.BLACK);
             camera1.transformGraphics(g);
 
-            for (int i = 0; i < worlds.length; i++) {
-                worlds[i].paintLayer1(g);
-                worlds[i].paintLayer2(g);
+            if ((showLayers & 1) == 1) {
+                for (int i = 0; i < worlds.length; i++) {
+                    worlds[i].paintLayer1(g);
+                }
+            }
+            if (((showLayers >> 1) & 1) == 1) {
+                for (int i = 0; i < worlds.length; i++) {
+                    worlds[i].paintLayer2(g);
+                }
             }
 
-            worlds[selectedWorld].drawBorder(g, Color.red);
+            for (int i = 0; i < worlds.length; i++) {
+                worlds[i].drawBorder(g, Color.WHITE);
+            }
+            worlds[selectedWorld].drawBorder(g, Color.RED);
 
 //            if (mouseDown) {
 //                Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
@@ -234,14 +245,17 @@ public class LudumDare32MapEditor extends JFrame {
             getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
             getActionMap().put("exit", exit());
 
-            getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("1"), "half");
-            getActionMap().put("half", half());
-
-            getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("2"), "one");
+            getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("1"), "one");
             getActionMap().put("one", one());
 
-            getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("3"), "two");
+            getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("2"), "two");
             getActionMap().put("two", two());
+
+            getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("3"), "three");
+            getActionMap().put("three", three());
+
+            getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("4"), "four");
+            getActionMap().put("four", four());
         }
 
         private Action exit() {
@@ -253,7 +267,7 @@ public class LudumDare32MapEditor extends JFrame {
             };
         }
 
-        private Action half() {
+        private Action one() {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -264,7 +278,7 @@ public class LudumDare32MapEditor extends JFrame {
             };
         }
 
-        private Action one() {
+        private Action two() {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -274,11 +288,21 @@ public class LudumDare32MapEditor extends JFrame {
             };
         }
 
-        private Action two() {
+        private Action three() {
             return new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     worlds[selectedWorld].contract(1, 1, 1, 1);
+                    repaint();
+                }
+            };
+        }
+
+        private Action four() {
+            return new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showLayers = (showLayers) % 3 + 1;
                     repaint();
                 }
             };
@@ -348,6 +372,7 @@ public class LudumDare32MapEditor extends JFrame {
                         for (int i = 0; i < worlds.length; i++) {
                             if (worlds[i].pixelPointInWorld(p)) {
                                 selectedWorld = i;
+                                repaint();
                                 if (button == 3) {
                                     draggingWorld = true;
                                 }
