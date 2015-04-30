@@ -11,25 +11,25 @@ import javax.imageio.ImageIO;
 
 public class World {
 
-    static int worldNumber = 0;
+//    static int worldNumber = 0;
     static String[] worlds = {"test", "test2"};
 
-    static TileSet currentTileSet;
+    TileSet currentTileSet;
 
     static final int squareSize = 16;
 
-    static boolean[][][] collisionMap;
-    static boolean[][] renderAbove;
-    static int[][] textureMap;
-    static int[][] textureMap2;
+    boolean[][][] collisionMap;
+    boolean[][] renderAbove;
+    int[][] textureMap;
+    int[][] textureMap2;
     //sstatic int[][] textureMap3;
-    static int width = 0;
-    static int height = 0;
-    static int pixelWidth = 0;
-    static int pixelHeight = 0;
+    int width = 0;
+    int height = 0;
+    int pixelWidth = 0;
+    int pixelHeight = 0;
 
-    static BufferedImage layer1;
-    static BufferedImage layer2;
+    BufferedImage layer1;
+    BufferedImage layer2;
     //static BufferedImage layer3;
 
     static AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
@@ -40,16 +40,60 @@ public class World {
         }
     };
 
-    static void setTileSet(TileSet tileSet) {
+    public World(BufferedImage image, TileSet tileSet) {
+        currentTileSet = tileSet;
+        width = image.getWidth();
+        height = image.getHeight();
+        pixelWidth = width * squareSize;
+        pixelHeight = height * squareSize;
+        textureMap = new int[width][height];
+        textureMap2 = new int[width][height];
+        renderAbove = new boolean[width][height];
+        collisionMap = new boolean[width][height][4];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int argb = image.getRGB(x, y);
+                boolean cloudy = 1 == (1 & (argb >> 31));
+                boolean rainy = 1 == (1 & (argb >> 30));
+                boolean sunny = 1 == (1 & (argb >> 29));
+                boolean snowy = 1 == (1 & (argb >> 28));
+                boolean aboveCharacters = 1 == (1 & (argb >> 25));
+
+                int texture1 = 4095 & (argb >> 12);
+                int texture2 = 4095 & argb;
+                textureMap[x][y] = texture1;
+                textureMap2[x][y] = texture2;
+                renderAbove[x][y] = aboveCharacters;
+                collisionMap[x][y][0] = cloudy;
+                collisionMap[x][y][1] = sunny;
+                collisionMap[x][y][2] = rainy;
+                collisionMap[x][y][3] = snowy;
+            }
+        }
+        renderMap();
+    }
+
+    public World(int width, int height, TileSet tileSet) {
+        currentTileSet = tileSet;
+        pixelWidth = width * squareSize;
+        pixelHeight = height * squareSize;
+        textureMap = new int[width][height];
+        textureMap2 = new int[width][height];
+        renderAbove = new boolean[width][height];
+        collisionMap = new boolean[width][height][4];
+        renderMap();
+    }
+
+    public void setTileSet(TileSet tileSet) {
         currentTileSet = tileSet;
     }
 
-    static void changeTileSet(TileSet tileSet) {
+    public void changeTileSet(TileSet tileSet) {
         setTileSet(tileSet);
         renderMap();
     }
 
-    static BufferedImage getImage() {
+    public BufferedImage getImage() {
         BufferedImage image = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -60,7 +104,7 @@ public class World {
         return image;
     }
 
-    static void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
+    public void changeTile(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
         if (x < 0 | x > width | y < 0 | y > height) {
             return;
         }
@@ -96,7 +140,7 @@ public class World {
 //        layer3.createGraphics().drawImage(currentTileSet.images[textureMap3[x][y]], x * squareSize, y * squareSize, nothing);
     }
 
-    static void renderMap() {
+    public void renderMap() {
         layer1 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = (Graphics2D) layer1.getGraphics();
         g2d.setComposite(composite);
@@ -146,7 +190,7 @@ public class World {
 //        }
     }
 
-    static void paint(Graphics2D g) {
+    public void paint(Graphics2D g) {
         g.drawImage(layer1, 0, 0, nothing);
 //        for (int x = 0; x < width; x++) {
 //            for (int y = 0; y < height; y++) {
@@ -156,82 +200,30 @@ public class World {
 //        }
     }
 
-    static void paint2(Graphics2D g) {
+    public void paint2(Graphics2D g) {
         g.drawImage(layer2, 0, 0, nothing);
     }
 
-    public static void loadWorld(int ID) {
+//    public static World loadWorld(int ID) {
+//        try {
+//            loadFromFile("levels/" + worlds[ID] + ".png");
+//            worldNumber = ID;
+//        } catch (Exception e) {
+//            System.out.println("Unknown world");
+//            System.out.println(e);
+//            return;
+//        }
+//    }
+    public static World loadFromFile(String path, TileSet tileSet) {
         try {
-            loadFromFile("levels/" + worlds[ID] + ".png");
-            worldNumber = ID;
-        } catch (Exception e) {
-            System.out.println("Unknown world");
-            System.out.println(e);
-            return;
-        }
-    }
-
-    static BufferedImage img = null;
-
-    static void changeImg(int x, int y, int argb) {
-        img.setRGB(x, y, argb);
-    }
-    
-    public static void loadFromFile(String path) {
-        try {
-            img = ImageIO.read(World.class.getResourceAsStream(path));
-            loadFromImage(img);
+            return loadFromImage(ImageIO.read(World.class.getResourceAsStream(path)), tileSet);
         } catch (IOException e) {
             System.out.println("Level not found");
-            return;
+            return null;
         }
     }
 
-    public static void loadFromImage(BufferedImage image) {
-        img = image;
-        
-        width = img.getWidth();
-        height = img.getHeight();
-        pixelWidth = width * squareSize;
-        pixelHeight = height * squareSize;
-        textureMap = new int[width][height];
-        textureMap2 = new int[width][height];
-        renderAbove = new boolean[width][height];
-        collisionMap = new boolean[width][height][4];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                int argb = img.getRGB(x, y);
-                boolean cloudy = 1 == (1 & (argb >> 31));
-                boolean rainy = 1 == (1 & (argb >> 30));
-                boolean sunny = 1 == (1 & (argb >> 29));
-                boolean snowy = 1 == (1 & (argb >> 28));
-                boolean aboveCharacters = 1 == (1 & (argb >> 25));
-
-                int texture1 = 4095 & (argb >> 12);
-                int texture2 = 4095 & argb;
-                textureMap[x][y] = texture1;
-//                if (aboveCharacters) {
-//                    textureMap3[x][y] = texture2;
-//                    textureMap2[x][y] = TileSet.INVISIBLE;
-//                } else {
-                textureMap2[x][y] = texture2;
-                renderAbove[x][y] = aboveCharacters;
-//                    textureMap3[x][y] = TileSet.INVISIBLE;
-//                }
-                collisionMap[x][y][0] = cloudy;
-                collisionMap[x][y][1] = sunny;
-                collisionMap[x][y][2] = rainy;
-                collisionMap[x][y][3] = snowy;
-
-                /*int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;
-                
-                 int alpha = 255 & (argb >> 24);
-                 int red = 255 & (argb >> 16);
-                 int green = 255 & (argb >> 8);
-                 int blue = 255 & (argb >> 0);
-                 textureMap[x][y] = red + green * 256;*/
-            }
-        }
-        renderMap();
+    public static World loadFromImage(BufferedImage image, TileSet tileSet) {
+        return new World(image, tileSet);
     }
 }

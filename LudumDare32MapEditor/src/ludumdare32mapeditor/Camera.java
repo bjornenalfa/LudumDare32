@@ -79,9 +79,9 @@ public class Camera {
         g.fillRect(0,0,width,height);
     }
     
-    public void constrainToWorld() {
-        x = Math.max(-width+World.squareSize*scale,Math.min(x, World.pixelWidth*scale-World.squareSize*scale));
-        y = Math.max(-height+World.squareSize*scale+20,Math.min(y, World.pixelHeight*scale-World.squareSize*scale));
+    public void constrainToWorld(World world) {
+        x = Math.max(-width+World.squareSize*scale,Math.min(x, world.pixelWidth*scale-World.squareSize*scale));
+        y = Math.max(-height+World.squareSize*scale+20,Math.min(y, world.pixelHeight*scale-World.squareSize*scale));
     }
     
     public void constrainToTileSet() {
