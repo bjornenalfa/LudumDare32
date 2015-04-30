@@ -21,7 +21,7 @@ public class World {
 
     boolean[][][] collisionMap;
     boolean[][] renderAbove;
-    int[][] textureMap;
+    int[][] textureMap1;
     int[][] textureMap2;
     int width = 0;
     int height = 0;
@@ -48,7 +48,7 @@ public class World {
         height = image.getHeight();
         pixelWidth = width * squareSize;
         pixelHeight = height * squareSize;
-        textureMap = new int[width][height];
+        textureMap1 = new int[width][height];
         textureMap2 = new int[width][height];
         renderAbove = new boolean[width][height];
         collisionMap = new boolean[width][height][4];
@@ -63,7 +63,7 @@ public class World {
 
                 int texture1 = 4095 & (argb >> 12);
                 int texture2 = 4095 & argb;
-                textureMap[x][y] = texture1;
+                textureMap1[x][y] = texture1;
                 textureMap2[x][y] = texture2;
                 renderAbove[x][y] = aboveCharacters;
                 collisionMap[x][y][0] = cloudy;
@@ -81,7 +81,7 @@ public class World {
         height = h;
         pixelWidth = width * squareSize;
         pixelHeight = height * squareSize;
-        textureMap = new int[width][height];
+        textureMap1 = new int[width][height];
         textureMap2 = new int[width][height];
         renderAbove = new boolean[width][height];
         collisionMap = new boolean[width][height][4];
@@ -108,7 +108,7 @@ public class World {
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                newTM[x + left][y + up] = textureMap[x][y];
+                newTM[x + left][y + up] = textureMap1[x][y];
                 newTM2[x + left][y + up] = textureMap2[x][y];
                 newRA[x + left][y + up] = renderAbove[x][y];
                 newCM[x + left][y + up] = collisionMap[x][y];
@@ -119,7 +119,7 @@ public class World {
         height = newHeight;
         pixelWidth = width * squareSize;
         pixelHeight = height * squareSize;
-        textureMap = newTM;
+        textureMap1 = newTM;
         textureMap2 = newTM2;
         renderAbove = newRA;
         collisionMap = newCM;
@@ -137,7 +137,7 @@ public class World {
 
         for (int x = 0; x < newWidth; x++) {
             for (int y = 0; y < newHeight; y++) {
-                newTM[x][y] = textureMap[x + left][y + up];
+                newTM[x][y] = textureMap1[x + left][y + up];
                 newTM2[x][y] = textureMap2[x + left][y + up];
                 newRA[x][y] = renderAbove[x + left][y + up];
                 newCM[x][y] = collisionMap[x + left][y + up];
@@ -148,7 +148,7 @@ public class World {
         height = newHeight;
         pixelWidth = width * squareSize;
         pixelHeight = height * squareSize;
-        textureMap = newTM;
+        textureMap1 = newTM;
         textureMap2 = newTM2;
         renderAbove = newRA;
         collisionMap = newCM;
@@ -170,10 +170,25 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 //int data = (collisionMap[x][y][0] ? 1 : 0) << 31 | (collisionMap[x][y][1] ? 1 : 0) << 30 | (collisionMap[x][y][2] ? 1 : 0) << 29 | (collisionMap[x][y][3] ? 1 : 0) << 28 | (renderAbove[x][y] ? 1 : 0) << 25 | textureMap[x][y] << 12 | textureMap2[x][y];
-                image.setRGB(x, y, (collisionMap[x][y][0] ? 1 : 0) << 31 | (collisionMap[x][y][1] ? 1 : 0) << 30 | (collisionMap[x][y][2] ? 1 : 0) << 29 | (collisionMap[x][y][3] ? 1 : 0) << 28 | (renderAbove[x][y] ? 1 : 0) << 25 | textureMap[x][y] << 12 | textureMap2[x][y]);
+                image.setRGB(x, y, (collisionMap[x][y][0] ? 1 : 0) << 31 | (collisionMap[x][y][1] ? 1 : 0) << 30 | (collisionMap[x][y][2] ? 1 : 0) << 29 | (collisionMap[x][y][3] ? 1 : 0) << 28 | (renderAbove[x][y] ? 1 : 0) << 25 | textureMap1[x][y] << 12 | textureMap2[x][y]);
             }
         }
         return image;
+    }
+
+    public Tile getTileFromPixelCoordinates(double x, double y) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        return getTileFromSquareCoordinates((int) x, (int) y);
+    }
+
+    public Tile getTileFromSquareCoordinates(int x, int y) {
+        if (squarePointInWorld(x, y)) {
+            return new Tile(textureMap1[x][y], textureMap2[x][y], renderAbove[x][y], collisionMap[x][y]);
+        }
+        return null;
     }
 
     public boolean pixelPointInWorld(Point p) {
@@ -203,27 +218,26 @@ public class World {
     }
 
     public void changeTileSquareCoordinates(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
-        if (!squarePointInWorld(x, y)) {
-            return;
-        }
-        collisionMap[x][y][0] = cloudy;
-        collisionMap[x][y][1] = sunny;
-        collisionMap[x][y][2] = rainy;
-        collisionMap[x][y][3] = snowy;
-        textureMap[x][y] = tile1;
-        textureMap2[x][y] = tile2;
-        renderAbove[x][y] = renderAbov;
-        Graphics2D g2d = (Graphics2D) layer1.getGraphics();
-        g2d.setComposite(composite);
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
-        layer1.createGraphics().drawImage(currentTileSet.images[textureMap[x][y]], x * squareSize, y * squareSize, nothing);
+        if (squarePointInWorld(x, y)) {
+            collisionMap[x][y][0] = cloudy;
+            collisionMap[x][y][1] = sunny;
+            collisionMap[x][y][2] = rainy;
+            collisionMap[x][y][3] = snowy;
+            textureMap1[x][y] = tile1;
+            textureMap2[x][y] = tile2;
+            renderAbove[x][y] = renderAbov;
+            Graphics2D g2d = (Graphics2D) layer1.getGraphics();
+            g2d.setComposite(composite);
+            g2d.setColor(new Color(0, 0, 0, 0));
+            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+            layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
 
-        g2d = (Graphics2D) layer2.getGraphics();
-        g2d.setComposite(composite);
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
-        layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+            g2d = (Graphics2D) layer2.getGraphics();
+            g2d.setComposite(composite);
+            g2d.setColor(new Color(0, 0, 0, 0));
+            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+            layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+        }
     }
 
     public void renderMap() {
@@ -236,7 +250,7 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 try {
-                    g2d.drawImage(currentTileSet.images[textureMap[x][y]], x * squareSize, y * squareSize, nothing);
+                    g2d.drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
                 } catch (Exception e) {
                     g2d.drawImage(currentTileSet.images[0], x * squareSize, y * squareSize, nothing);
                 }
