@@ -166,7 +166,7 @@ public class World {
     }
 
     public BufferedImage getImage() {
-        BufferedImage image = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 //int data = (collisionMap[x][y][0] ? 1 : 0) << 31 | (collisionMap[x][y][1] ? 1 : 0) << 30 | (collisionMap[x][y][2] ? 1 : 0) << 29 | (collisionMap[x][y][3] ? 1 : 0) << 28 | (renderAbove[x][y] ? 1 : 0) << 25 | textureMap[x][y] << 12 | textureMap2[x][y];
