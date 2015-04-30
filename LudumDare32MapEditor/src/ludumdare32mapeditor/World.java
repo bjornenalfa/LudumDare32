@@ -175,13 +175,13 @@ public class World {
         }
         return image;
     }
-    
+
     public boolean pixelPointInWorld(Point p) {
-        return pixelPointInWorld(p.x,p.y);
+        return pixelPointInWorld(p.x, p.y);
     }
-    
+
     public boolean pixelPointInWorld(Point.Double p) {
-        return pixelPointInWorld(p.x,p.y);
+        return pixelPointInWorld(p.x, p.y);
     }
 
     public boolean pixelPointInWorld(double x, double y) {
@@ -259,10 +259,10 @@ public class World {
     public void paintLayer2(Graphics2D g) {
         g.drawImage(layer2, (int) xOffset, (int) yOffset, nothing);
     }
-    
+
     public void drawBorder(Graphics2D g, Color c) {
         g.setColor(c);
-        g.drawRect((int)xOffset, (int)yOffset, (int)(xOffset+pixelWidth), (int)(yOffset+pixelHeight));
+        g.drawRect((int) xOffset, (int) yOffset, (int) pixelWidth, (int) pixelHeight);
     }
 
     public static World loadFromFile(String path, TileSet tileSet) {
