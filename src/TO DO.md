@@ -16,12 +16,10 @@
 
 + Multiple worlds at the same time. -Björn on this
 + Edit one layer at a time.
-+ Ability to resize loaded images
-+ draw white outline as some kind of "border" for the image...
++ Draw white outline as some kind of "border" for the image...
 + Floodfill
 + Advanced brushes
 + Templates
 + View one layer at a time.
 + Undo (not super important)
 + Metadata editor (teleports, monsters, objects, triggers, etc)
-+ Change size of world - Björn on this
