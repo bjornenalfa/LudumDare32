@@ -61,7 +61,7 @@ public class LudumDare32MapEditor extends JFrame {
 
     static Camera camera1;
     static Camera camera2;
-    
+
     World world = World.loadFromFile("levels/test.png", tileSet);
 
     public LudumDare32MapEditor() {
@@ -74,7 +74,6 @@ public class LudumDare32MapEditor extends JFrame {
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         //World.setTileSet(tileSet);
         //World.loadFromFile("levels/test.jpg");
-
         setTitle("LudumDare32 Map Editor");
 
         camera1 = new Camera(800, 608);
@@ -182,7 +181,7 @@ public class LudumDare32MapEditor extends JFrame {
                 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
                     try {
-                        world = World.loadFromImage(ImageIO.read(file),tileSet);
+                        world = World.loadFromImage(ImageIO.read(file), tileSet);
                         repaint();
                     } catch (IOException ex) {
                         System.out.println(ex);
@@ -210,8 +209,8 @@ public class LudumDare32MapEditor extends JFrame {
             camera1.clearScreen(g, Color.BLACK);
             camera1.transformGraphics(g);
 
-            world.paint(g);
-            world.paint2(g);
+            world.paintLayer1(g);
+            world.paintLayer2(g);
 
 //            if (mouseDown) {
 //                Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);

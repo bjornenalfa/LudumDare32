@@ -19,7 +19,7 @@ public class Camera {
     }
 
     public Point.Double windowToWorldCoordinates(double wx, double wy) {
-        return new Point.Double((wx+x)/scale,(wy+y)/scale);
+        return new Point.Double((wx + x) / scale, (wy + y) / scale);
     }
 
     public void changeSize(int width, int height) {
@@ -73,20 +73,20 @@ public class Camera {
         g.scale(1, 1);
         g.translate(0, 0);
     }
-    
+
     public void clearScreen(Graphics2D g, Color color) {
         g.setColor(color);
-        g.fillRect(0,0,width,height);
+        g.fillRect(0, 0, width, height);
     }
-    
+
     public void constrainToWorld(World world) {
-        x = Math.max(-width+World.squareSize*scale,Math.min(x, world.pixelWidth*scale-World.squareSize*scale));
-        y = Math.max(-height+World.squareSize*scale+20,Math.min(y, world.pixelHeight*scale-World.squareSize*scale));
+        x = Math.max(-width + World.squareSize * scale, Math.min(x, world.pixelWidth * scale - World.squareSize * scale));
+        y = Math.max(-height + World.squareSize * scale + 20, Math.min(y, world.pixelHeight * scale - World.squareSize * scale));
     }
-    
+
     public void constrainToTileSet() {
-        x = Math.max(-width+World.squareSize*scale,Math.min(x, LudumDare32MapEditor.tileSet.horizontalTiles*World.squareSize*scale-World.squareSize*scale));
-        y = Math.max(-height+World.squareSize*scale+20,Math.min(y,  LudumDare32MapEditor.tileSet.verticalTiles*World.squareSize*scale-World.squareSize*scale));
+        x = Math.max(-width + World.squareSize * scale, Math.min(x, LudumDare32MapEditor.tileSet.horizontalTiles * World.squareSize * scale - World.squareSize * scale));
+        y = Math.max(-height + World.squareSize * scale + 20, Math.min(y, LudumDare32MapEditor.tileSet.verticalTiles * World.squareSize * scale - World.squareSize * scale));
     }
 
 //    public void update(Player player, boolean centered) {

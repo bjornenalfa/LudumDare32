@@ -22,11 +22,14 @@ public class World {
     boolean[][] renderAbove;
     int[][] textureMap;
     int[][] textureMap2;
-    //sstatic int[][] textureMap3;
+    //static int[][] textureMap3;
     int width = 0;
     int height = 0;
     int pixelWidth = 0;
     int pixelHeight = 0;
+
+    double xOffset = 0;
+    double yOffset = 0;
 
     BufferedImage layer1;
     BufferedImage layer2;
@@ -82,6 +85,16 @@ public class World {
         renderAbove = new boolean[width][height];
         collisionMap = new boolean[width][height][4];
         renderMap();
+    }
+
+    public void move(double dx, double dy) {
+        xOffset += dx;
+        yOffset += dy;
+    }
+
+    public void setOffset(double x, double y) {
+        xOffset = x;
+        yOffset = y;
     }
 
     public void setTileSet(TileSet tileSet) {
@@ -190,8 +203,8 @@ public class World {
 //        }
     }
 
-    public void paint(Graphics2D g) {
-        g.drawImage(layer1, 0, 0, nothing);
+    public void paintLayer1(Graphics2D g) {
+        g.drawImage(layer1, (int) xOffset, (int) yOffset, nothing);
 //        for (int x = 0; x < width; x++) {
 //            for (int y = 0; y < height; y++) {
 //                g.drawImage(Tile.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
@@ -200,8 +213,8 @@ public class World {
 //        }
     }
 
-    public void paint2(Graphics2D g) {
-        g.drawImage(layer2, 0, 0, nothing);
+    public void paintLayer2(Graphics2D g) {
+        g.drawImage(layer2, (int) xOffset, (int) yOffset, nothing);
     }
 
 //    public static World loadWorld(int ID) {
