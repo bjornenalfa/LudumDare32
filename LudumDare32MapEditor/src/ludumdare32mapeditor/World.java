@@ -176,49 +176,49 @@ public class World {
         return image;
     }
 
-    public Tile getTileFromPixelCoordinates(double x, double y) {
+    public Tile getTileFromWorldCoordinates(double x, double y) {
         x -= xOffset;
         y -= yOffset;
         x /= squareSize;
         y /= squareSize;
-        return getTileFromSquareCoordinates((int) x, (int) y);
+        return getTileFromGridCoordinates((int) x, (int) y);
     }
 
-    public Tile getTileFromSquareCoordinates(int x, int y) {
-        if (squarePointInWorld(x, y)) {
+    public Tile getTileFromGridCoordinates(int x, int y) {
+        if (gridPointInWorld(x, y)) {
             return new Tile(textureMap1[x][y], textureMap2[x][y], renderAbove[x][y], collisionMap[x][y]);
         }
         return null;
     }
 
-    public boolean pixelPointInWorld(Point p) {
-        return pixelPointInWorld(p.x, p.y);
+    public boolean worldPointInWorld(Point p) {
+        return worldPointInWorld(p.x, p.y);
     }
 
-    public boolean pixelPointInWorld(Point.Double p) {
-        return pixelPointInWorld(p.x, p.y);
+    public boolean worldPointInWorld(Point.Double p) {
+        return worldPointInWorld(p.x, p.y);
     }
 
-    public boolean pixelPointInWorld(double x, double y) {
+    public boolean worldPointInWorld(double x, double y) {
         x -= xOffset;
         y -= yOffset;
         return !(x < 0 || x >= pixelWidth || y < 0 || y >= pixelHeight);
     }
 
-    public boolean squarePointInWorld(int x, int y) {
+    public boolean gridPointInWorld(int x, int y) {
         return !(x < 0 || x >= width || y < 0 || y >= height);
     }
 
-    public void changeTilePixelCoordinates(double x, double y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
+    public void changeTileWorldCoordinates(double x, double y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
         x -= xOffset;
         y -= yOffset;
         x /= squareSize;
         y /= squareSize;
-        changeTileSquareCoordinates((int) x, (int) y, tile1, tile2, cloudy, sunny, rainy, snowy, renderAbov);
+        changeTileGridCoordinates((int) x, (int) y, tile1, tile2, cloudy, sunny, rainy, snowy, renderAbov);
     }
 
-    public void changeTileSquareCoordinates(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
-        if (squarePointInWorld(x, y)) {
+    public void changeTileGridCoordinates(int x, int y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
+        if (gridPointInWorld(x, y)) {
             collisionMap[x][y][0] = cloudy;
             collisionMap[x][y][1] = sunny;
             collisionMap[x][y][2] = rainy;
@@ -237,6 +237,61 @@ public class World {
             g2d.setColor(new Color(0, 0, 0, 0));
             g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
             layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+        }
+    }
+
+    public void changeTileLayer1WorldCoordinates(double x, double y, int tile) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        changeTileLayer1GridCoordinates((int) x, (int) y, tile);
+    }
+
+    public void changeTileLayer1GridCoordinates(int x, int y, int tile) {
+        if (gridPointInWorld(x, y)) {
+            textureMap1[x][y] = tile;
+
+            Graphics2D g2d = (Graphics2D) layer1.getGraphics();
+            g2d.setComposite(composite);
+            g2d.setColor(new Color(0, 0, 0, 0));
+            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+            layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
+        }
+    }
+
+    public void changeTileLayer1WorldCoordinates(double x, double y, int tile, boolean renderAbove) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        changeTileLayer2GridCoordinates((int) x, (int) y, tile, renderAbove);
+    }
+    
+    public void changeTileLayer2GridCoordinates(int x, int y, int tile, boolean ra) {
+        if (gridPointInWorld(x, y)) {
+            textureMap2[x][y] = tile;
+            renderAbove[x][y] = ra;
+
+            Graphics2D g2d = (Graphics2D) layer2.getGraphics();
+            g2d.setComposite(composite);
+            g2d.setColor(new Color(0, 0, 0, 0));
+            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+            layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+        }
+    }
+    
+    public void changeTileLayer1WorldCoordinates(double x, double y, int tile, boolean[] collisions) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        changeTileCollisionGridCoordinates((int) x, (int) y, collisions);
+    }
+    
+    public void changeTileCollisionGridCoordinates(int x, int y, boolean[] collisions) {
+        if (gridPointInWorld(x, y)) {
+            collisionMap[x][y] = collisions;
         }
     }
 

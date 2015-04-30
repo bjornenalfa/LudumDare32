@@ -315,7 +315,7 @@ public class LudumDare32MapEditor extends JFrame {
             //int x = (int) (screenPoint.x) / World.squareSize;
             //int y = (int) (screenPoint.y) / World.squareSize;
             //worlds[selectedWorld].changeTileSquareCoordinates((int) (p.x / World.squareSize), (int) (p.y / World.squareSize), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
-            worlds[selectedWorld].changeTilePixelCoordinates((int) (p.x), (int) (p.y), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
+            worlds[selectedWorld].changeTileWorldCoordinates((int) (p.x), (int) (p.y), tile1, tile2, cloudyCollision, sunnyCollision, rainyCollision, snowyCollision, renderAboveCharacters);
             repaint();
         }
 
@@ -370,7 +370,7 @@ public class LudumDare32MapEditor extends JFrame {
                         mouseDown1 = true;
                         Point.Double p = camera1.windowToWorldCoordinates(lastPoint);
                         for (int i = 0; i < worlds.length; i++) {
-                            if (worlds[i].pixelPointInWorld(p)) {
+                            if (worlds[i].worldPointInWorld(p)) {
                                 selectedWorld = i;
                                 repaint();
                                 if (button == 3) {
