@@ -310,16 +310,18 @@ public class LudumDare32 extends JFrame {
                     changingWind = false;
                     double dx = player.getX() - windstartX;
                     double dy = player.getY() - windstartY;
-                    Wind.direction = Math.atan2(dy, dx);
+                    double direction = Math.atan2(dy, dx);
                     double length = Math.sqrt(dx * dx + dy * dy);
+                    double power = 0;
                     if (length < 10) {
-                        Wind.power = 0;
+                        power = 0;
                     } else if (length > 60) {
-                        Wind.power = 0.5;
+                        power = 0.5;
                     } else {
-                        Wind.power = Math.sqrt(dx * dx + dy * dy) / 120;
+                        power = Math.sqrt(dx * dx + dy * dy) / 120;
                     }
-                    System.out.println(length + " : " + Wind.power);
+                    Wind.change(direction, power);
+                    System.out.println(length + " : " + power);
                 }
             };
         }

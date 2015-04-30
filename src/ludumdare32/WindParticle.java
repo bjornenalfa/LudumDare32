@@ -14,7 +14,7 @@ public class WindParticle extends Particles {
 
     private final ArrayList<Integer> xList = new ArrayList();
     private final ArrayList<Integer> yList = new ArrayList();
-    double distance = 10 * Wind.power;
+    double distance = 10 * Wind.getPower();
     double angle = Wind.direction;
     private int spiralLengthCounter = 0;
     private final int spiralLength = (int) (Math.random() * 10 + 20);
