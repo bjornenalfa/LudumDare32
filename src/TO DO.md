@@ -15,10 +15,13 @@
 # Map editor
 
 + Make a new world
++ Toolbox on the side where you can swap between visible layers, pick a tool, see your current tile, etc.
 + Edit one layer at a time.
 + Floodfill
 + Pipette
++ Change brush size
 + Advanced brushes
-+ Templates
++ Templates (Pick between presaved and make your own)
++ Copy and paste area (kind of the same as templates)
 + Undo (not super important)
 + Metadata editor (teleports, monsters, objects, triggers, etc)
