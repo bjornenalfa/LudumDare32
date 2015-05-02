@@ -1,5 +1,6 @@
 package ludumdare32;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -10,6 +11,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -32,7 +35,7 @@ public class LudumDare32 extends JFrame {
     MyPanel panel;
     static Camera camera;
 
-//    BufferedImage image;
+    BufferedImage image;
     public LudumDare32() {
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.setTileSet(Cloudy.tileSet);
@@ -54,43 +57,52 @@ public class LudumDare32 extends JFrame {
         foe.setTarget(300, 600);
         foe.moveToTarget(true);
 
-//        image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
-//        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
-//        Graphics2D g2d = (Graphics2D) image.getGraphics();
-//        g2d.setComposite(composite);
-//        g2d.setColor(new Color(0, 0, 0, 0));
-//        g2d.fillRect(0, 0, 500, 500);
-//
-//        g2d = image.createGraphics();
-//
-//        for (int x = 0; x < 500; x++) {
-//            for (int y = 0; y < 500; y++) {
-//                ArrayList<Point> tiles = new ArrayList();
-//                int tx = (int) (x + 16) / 32;
-//                int ty = (int) (y + 16) / 32;
-//                try {
-//                    for (int x2 = tx - 1; x2 < tx + 2; x2++) {
-//                        for (int y2 = ty - 1; y2 < ty + 2; y2++) {
-//                            if (World.collisionMap[x2][y2]) {
-//                                tiles.add(new Point(x2 * 32, y2 * 32));
-//                            }
-//                        }
-//                    }
-//                } catch (Exception e) {
-//                }
-//                for (Point tile : tiles) {
-//                    double cx = x - tile.x;
-//                    double cy = y - tile.y;
-//                    cx = Math.max(0, Math.min(32, cx));
-//                    cy = Math.max(0, Math.min(32, cy));
-//                    Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
-//                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
-//                        g2d.setColor(new Color(255, 255, 255, 128));
-//                        g2d.fillRect(x, y, 1, 1);
-//                    }
-//                }
-//            }
-//        }
+        image = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
+        Graphics2D g2d = (Graphics2D) image.getGraphics();
+        g2d.setComposite(composite);
+        g2d.setColor(new Color(0, 0, 0, 0));
+        g2d.fillRect(0, 0, 500, 500);
+
+        g2d = image.createGraphics();
+
+        for (int x = 0; x < 500; x++) {
+            for (int y = 0; y < 500; y++) {
+                ArrayList<Point> tiles = new ArrayList();
+                int tx = (int) (x + 16) / 32;
+                int ty = (int) (y + 16) / 32;
+                try {
+                    for (int x2 = tx - 1; x2 < tx + 2; x2++) {
+                        for (int y2 = ty - 1; y2 < ty + 2; y2++) {
+                            if (World.collisionMap[x2][y2][Weather.current]) {
+                                tiles.add(new Point(x2 * 32, y2 * 32));
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                }
+                for (Point tile : tiles) {
+                    double cx = x - tile.x;
+                    double cy = y - tile.y;
+                    cx = Math.max(0, Math.min(32, cx));
+                    cy = Math.max(0, Math.min(32, cy));
+                    if (cx + cy < 32) {
+                        // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
+                        //cx = cx;
+                        cy = cy - 32;
+                        double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
+                        cx = scalar/Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
+                        cy = -scalar/Math.sqrt(2);
+                        cy = cy + 32;
+                    }
+                    Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
+                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
+                        g2d.setColor(new Color(255, 255, 255, 128));
+                        g2d.fillRect(x, y, 1, 1);
+                    }
+                }
+            }
+        }
         //
         setTitle("LudumDare32");
 
@@ -149,7 +161,7 @@ public class LudumDare32 extends JFrame {
         @Override
         public void run() {
 
-            while (true) {
+            while (true) { // UPDATING =========================================================================================================
                 player.changeV((leftDown ? -1 : 0) + (rightDown ? 1 : 0), (upDown ? -1 : 0) + (downDown ? 1 : 0), player.acceleration);
 
                 Weather.updateTransition();
@@ -192,7 +204,7 @@ public class LudumDare32 extends JFrame {
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) { // PAINTING =============================================================================================
             Graphics2D g2 = (Graphics2D) g;
             g2.setColor(Color.DARK_GRAY);
             g2.fillRect(0, 0, World.width * 32, World.width * 32);
@@ -213,7 +225,7 @@ public class LudumDare32 extends JFrame {
             Weather.paint(g2);
             Weather.transitionClearClip(g2);
             Weather.paintOldWeather(g2);
-//            g2.drawImage(image, 0, 0, this);
+            g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
 
         }
