@@ -159,6 +159,15 @@ public class Character {
             double cy = y - tile.y;
             cx = Math.max(0, Math.min(32, cx));
             cy = Math.max(0, Math.min(32, cy));
+            if (cx + cy < 32) {
+                // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
+                //cx = cx;
+                cy = cy - 32;
+                double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
+                cx = scalar/Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
+                cy = -scalar/Math.sqrt(2);
+                cy = cy + 32;
+            }
             Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
             Vector2D velocityVector = new Vector2D(new Point.Double(vx, vy));
             if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < r * r) {
