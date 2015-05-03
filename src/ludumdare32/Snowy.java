@@ -14,4 +14,20 @@ public class Snowy extends Weather {
         Weather.current = Weather.SNOWY;
     }
     
+    public static void makeParticles() {
+        if (transitioning && old == SNOWY) {
+            for (int i = 0;i<3;i++) {
+                SnowParticle particle = new SnowParticle(-LudumDare32.camera.translateX+Math.random()*1600-400,-LudumDare32.camera.translateY-50-Math.random()*100);
+            }
+        } else {
+            for (int i = 0;i<3;i++) {
+                SnowParticle particle = new SnowParticle(-LudumDare32.camera.translateX+Math.random()*1600-400,-LudumDare32.camera.translateY-50-Math.random()*100);
+            }
+        }
+    }
+    
+    public static void update() {
+        makeParticles();
+    }
+    
 }

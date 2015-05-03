@@ -13,7 +13,7 @@ public class Player extends Character {
 
     @Override
     public void paint(Graphics2D g) {
-        g.setXORMode(Color.BLACK);
+        //g.setXORMode(Color.BLACK);
         g.setColor(Color.DARK_GRAY);
         g.fillOval((int)(getX()-getR()), (int)(getY()-getR()), (int)getR()*2, (int)getR()*2);
     }

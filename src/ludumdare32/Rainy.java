@@ -20,7 +20,7 @@ public class Rainy extends Weather{
         if (transitioning && old == RAINY) {
             for (int i = 0;i<3;i++) {
                 RainParticle particle = new RainParticle(-LudumDare32.camera.translateX+Math.random()*1600-400,-LudumDare32.camera.translateY-50-Math.random()*100,1);
-                oldWeatherParticles.add(particle);
+                //oldWeatherParticles.add(particle);
             }
         } else {
             for (int i = 0;i<3;i++) {

@@ -134,7 +134,7 @@ public class Weather {
                 Rainy.update();
                 break;
             case SNOWY:
-                //Snowy.paint(g);
+                Snowy.update();
                 break;
         }
         if (transitioning) {
@@ -149,7 +149,7 @@ public class Weather {
                     Rainy.update();
                     break;
                 case SNOWY:
-                    //Snowy.paint(g);
+                    Snowy.update();
                     break;
             }
         }
