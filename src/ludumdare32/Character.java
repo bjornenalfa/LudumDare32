@@ -170,11 +170,14 @@ public class Character {
             }
             Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
             Vector2D velocityVector = new Vector2D(new Point.Double(vx, vy));
-            if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < r * r) {
+            double sqdistance = collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y;
+            if (sqdistance < r * r) {
                 Vector2D projectionVector = Vector2D.OrthogonalProjection(velocityVector, collisionVector);
                 if (Vector2D.scalarProductCoordinates(projectionVector, collisionVector) < 0) {
-                    x -= projectionVector.point.x * 1;
-                    y -= projectionVector.point.y * 1;
+                    double penetrationDepth = (r-Math.sqrt(sqdistance));
+                    collisionVector.normalize();
+                    x += collisionVector.point.x * penetrationDepth;
+                    y += collisionVector.point.y * penetrationDepth;
                     vx -= projectionVector.point.x * 1;
                     vy -= projectionVector.point.y * 1;
                 }
