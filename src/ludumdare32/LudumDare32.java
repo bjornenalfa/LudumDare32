@@ -36,6 +36,7 @@ public class LudumDare32 extends JFrame {
     static Camera camera;
 
     BufferedImage image;
+
     public LudumDare32() {
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         World.setTileSet(Cloudy.tileSet);
@@ -91,9 +92,19 @@ public class LudumDare32 extends JFrame {
                         //cx = cx;
                         cy = cy - 32;
                         double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
-                        cx = scalar/Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
-                        cy = -scalar/Math.sqrt(2);
+                        cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
+                        cy = -scalar / Math.sqrt(2);
                         cy = cy + 32;
+                    }
+                    if ((32-cx) + cy < 32) {
+                        // Ortogonal projektion av vektor från (0,0) till c på normaliserad vektor (1,1)
+                        //cx = cx;
+                        //cy = cy;
+                        double scalar = (cx / Math.sqrt(2) + cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,1)
+                        cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,1)
+                        cy = scalar / Math.sqrt(2);
+                        //cx = cx;
+                        //cy = cy;
                     }
                     Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
                     if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
