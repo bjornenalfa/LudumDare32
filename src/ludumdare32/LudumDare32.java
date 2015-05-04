@@ -107,7 +107,7 @@ public class LudumDare32 extends JFrame {
                         //cy = cy;
                     }
                     Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
-                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
+                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 1 * 1) {
                         g2d.setColor(new Color(255, 255, 255, 128));
                         g2d.fillRect(x, y, 1, 1);
                     }

@@ -136,8 +136,8 @@ public class Character {
         targetY = y;
     }
 
-    public void moveToTarget(boolean yes) {
-        moveToTarget = yes;
+    public void moveToTarget(boolean yesOrNo) {
+        moveToTarget = yesOrNo;
     }
 
     public void checkCollision() {
@@ -193,43 +193,44 @@ public class Character {
                 }
             }
         }
-//        for (Point tile : tiles) {
-//            double cx = x - tile.x;
-//            double cy = y - tile.y;
-//            cx = Math.max(0, Math.min(32, cx));
-//            cy = Math.max(0, Math.min(32, cy));
-//            if (cx + cy < 32) {
-//                // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
-//                //cx = cx;
-//                cy = cy - 32;
-//                double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
-//                cx = scalar/Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
-//                cy = -scalar/Math.sqrt(2);
-//                cy = cy + 32;
-//            }
-//            if ((32-cx) + cy < 32) {
-//                // Ortogonal projektion av vektor från (0,0) till c på normaliserad vektor (-1,1)
-//                //cx = cx;
-//                //cy = cy;
-//                double scalar = ((-cx) / Math.sqrt(2) + cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (-1,1)
-//                cx = -scalar/Math.sqrt(2); // c = length * normaliserad vektor (-1,1)
-//                cy = scalar/Math.sqrt(2);
-//                //cy = cy;
-//            }
-//            Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
-//            Vector2D velocityVector = new Vector2D(new Point.Double(vx, vy));
-//            double sqdistance = collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y;
-//            if (sqdistance < r * r) {
-//                Vector2D projectionVector = Vector2D.OrthogonalProjection(velocityVector, collisionVector);
-//                if (Vector2D.scalarProductCoordinates(projectionVector, collisionVector) < 0) {
-//                    double penetrationDepth = (r-Math.sqrt(sqdistance));
-//                    collisionVector.normalize();
-//                    x += collisionVector.point.x * penetrationDepth;
-//                    y += collisionVector.point.y * penetrationDepth;
-//                    vx -= projectionVector.point.x * 1;
-//                    vy -= projectionVector.point.y * 1;
-//                }
-//            }
-//        }
+        for (Point tile : tiles) {
+            double cx = x - tile.x;
+            double cy = y - tile.y;
+            cx = Math.max(0, Math.min(32, cx));
+            cy = Math.max(0, Math.min(32, cy));
+            if (cx + cy < 32) {
+                // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
+                //cx = cx;
+                cy = cy - 32;
+                double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
+                cx = scalar/Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
+                cy = -scalar/Math.sqrt(2);
+                cy = cy + 32;
+            }
+            if ((32 - cx) + cy < 32) {
+                // Ortogonal projektion av vektor från (0,0) till c på normaliserad vektor (1,1)
+                //cx = cx;
+                //cy = cy;
+                double scalar = (cx / Math.sqrt(2) + cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,1)
+                cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,1)
+                cy = scalar / Math.sqrt(2);
+                //cx = cx;
+                //cy = cy;
+            }
+            Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
+            Vector2D velocityVector = new Vector2D(new Point.Double(vx, vy));
+            double sqdistance = collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y;
+            if (sqdistance < r * r) {
+                Vector2D projectionVector = Vector2D.OrthogonalProjection(velocityVector, collisionVector);
+                if (Vector2D.scalarProductCoordinates(projectionVector, collisionVector) < 0) {
+                    double penetrationDepth = (r-Math.sqrt(sqdistance));
+                    collisionVector.normalize();
+                    x += collisionVector.point.x * penetrationDepth;
+                    y += collisionVector.point.y * penetrationDepth;
+                    vx -= projectionVector.point.x * 1;
+                    vy -= projectionVector.point.y * 1;
+                }
+            }
+        }
     }
 }
