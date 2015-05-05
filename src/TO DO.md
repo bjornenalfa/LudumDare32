@@ -1,7 +1,5 @@
 ﻿Stuff Dario & Theodor thought of:
 
-+ snow particles
-+ wind animation thingy has to come back
 + kill mosters with traps
 + certain monsters can only be killed on certain seasons
 

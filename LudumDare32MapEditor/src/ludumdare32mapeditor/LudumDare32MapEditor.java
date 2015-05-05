@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
@@ -33,6 +34,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -107,15 +109,21 @@ public class LudumDare32MapEditor extends JFrame {
         tilePanel = new MyTilePanel();
         tilePanel.setFocusable(true);
 
-        JPanel anotherPanel = new JPanel(new GridLayout(1, 2));
-        anotherPanel.add(mapPanel);
-        anotherPanel.add(tilePanel);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapPanel, tilePanel);
+        splitPane.setResizeWeight(0.75);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setContinuousLayout(true);
+        splitPane.setDividerSize(6);
+        
+        JPanel toolPanel = new ToolPanel();
+
+        JPanel anotherPanel = new JPanel(new BorderLayout());
+        anotherPanel.add(toolPanel, BorderLayout.WEST);
+        anotherPanel.add(splitPane, BorderLayout.CENTER);
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(anotherPanel, BorderLayout.CENTER);
         panel.add(inPanel, BorderLayout.NORTH);
-
-        panel.addComponentListener(componentAdapter());
 
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(1600, 608));
@@ -124,22 +132,6 @@ public class LudumDare32MapEditor extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
-    }
-
-    private ComponentAdapter componentAdapter() {
-        return new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                Component component = e.getComponent();
-                int h = component.getHeight();
-                int w = component.getWidth();
-
-                mapPanel.setBounds(0, 0, w / 2, h);
-                tilePanel.setBounds(w / 2, 0, w / 2, h);
-                camera1.changeSize(w / 2, h);
-                camera2.changeSize(w / 2, h);
-            }
-        };
     }
 
     private Action save() {
@@ -201,6 +193,38 @@ public class LudumDare32MapEditor extends JFrame {
         };
     }
 
+    class ToolPanel extends JPanel {
+
+        public ToolPanel() {
+            super(new GridLayout(0, 1));
+
+            addToolButtons();
+        }
+
+        private void addToolButtons() {
+            JButton test = new JButton("TEST");
+            test.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("test");
+                }
+            });
+            test.setPreferredSize(new Dimension(50, 50));
+            add(test);
+            
+            JButton test2 = new JButton("TEST2");
+            test2.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("test2");
+                }
+            });
+            test2.setPreferredSize(new Dimension(50, 50));
+            add(test2);
+
+        }
+    }
+
     class MyPanel extends JPanel {
 
         public MyPanel() {
@@ -210,6 +234,8 @@ public class LudumDare32MapEditor extends JFrame {
             addMouseListener(ma);
             addMouseMotionListener(ma);
             addMouseWheelListener(ma);
+
+            addComponentListener(componentAdapterMap());
         }
 
         @Override
@@ -384,6 +410,17 @@ public class LudumDare32MapEditor extends JFrame {
             };
         }
 
+        private ComponentAdapter componentAdapterMap() {
+            return new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    Component component = e.getComponent();
+                    int h = component.getHeight();
+                    int w = component.getWidth();
+                    camera1.changeSize(w, h);
+                }
+            };
+        }
     }
 
     class MyCheckBoxPanel extends JPanel implements ItemListener {
@@ -448,9 +485,12 @@ public class LudumDare32MapEditor extends JFrame {
     class MyTilePanel extends JPanel {
 
         public MyTilePanel() {
-            addMouseListener(mouseAdapter());
-            addMouseMotionListener(mouseAdapter());
-            addMouseWheelListener(mouseAdapter());
+            MouseAdapter ma = mouseAdapter();
+            addMouseListener(ma);
+            addMouseMotionListener(ma);
+            addMouseWheelListener(ma);
+
+            addComponentListener(componentAdapterTile());
             calcColor();
         }
 
@@ -556,6 +596,18 @@ public class LudumDare32MapEditor extends JFrame {
                         lastPoint2 = me.getPoint();
                         mouseDown2 = true;
                     }
+                }
+            };
+        }
+
+        private ComponentAdapter componentAdapterTile() {
+            return new ComponentAdapter() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+                    Component component = e.getComponent();
+                    int h = component.getHeight();
+                    int w = component.getWidth();
+                    camera2.changeSize(w, h);
                 }
             };
         }
