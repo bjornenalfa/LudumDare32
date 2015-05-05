@@ -31,7 +31,7 @@ public class LudumDare32 extends JFrame {
     double windstartX;
     double windstartY;
 
-    Player player = new Player(200, 250, 0);
+    static Player player = new Player(655, 450, 0);
     MyPanel panel;
     static Camera camera;
 

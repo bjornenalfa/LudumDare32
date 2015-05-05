@@ -15,7 +15,7 @@ public class World {
     static String[] worlds = {"test", "test2"};
 
     static TileSet currentTileSet;
-    
+
     static byte[][][] collisionMap;
     static int[][] textureMap;
     static int[][] textureMap2;
@@ -28,6 +28,8 @@ public class World {
     static BufferedImage layer1;
     static BufferedImage layer2;
     static BufferedImage layer3;
+    
+    static AlphaComposite overwriteAlpha = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
 
     static ImageObserver nothing = new ImageObserver() {
         @Override
@@ -35,11 +37,11 @@ public class World {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     };
-    
+
     static void setTileSet(TileSet tileSet) {
         currentTileSet = tileSet;
     }
-    
+
     static void changeTileSet(TileSet tileset) {
         setTileSet(tileset);
         renderMap();
@@ -47,9 +49,8 @@ public class World {
 
     static void renderMap() {
         layer1 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
-        AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
         Graphics2D g2d = (Graphics2D) layer1.getGraphics();
-        g2d.setComposite(composite);
+        g2d.setComposite(overwriteAlpha);
         g2d.setColor(new Color(0, 0, 0, 0));
         g2d.fillRect(0, 0, pixelWidth, pixelHeight);
         g2d = layer1.createGraphics();
@@ -61,7 +62,7 @@ public class World {
 
         layer2 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D) layer2.getGraphics();
-        g2d.setComposite(composite);
+        g2d.setComposite(overwriteAlpha);
         g2d.setColor(new Color(0, 0, 0, 0));
         g2d.fillRect(0, 0, pixelWidth, pixelHeight);
         g2d = layer2.createGraphics();
@@ -73,7 +74,7 @@ public class World {
 
         layer3 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D) layer3.getGraphics();
-        g2d.setComposite(composite);
+        g2d.setComposite(overwriteAlpha);
         g2d.setColor(new Color(0, 0, 0, 0));
         g2d.fillRect(0, 0, pixelWidth, pixelHeight);
         g2d = layer3.createGraphics();
@@ -96,8 +97,18 @@ public class World {
 //        }
     }
 
-    static void paint2(Graphics2D g) {
-        g.drawImage(layer3, 0, 0, nothing);
+    static void paint2(Graphics2D g) throws SourceAlphaComposite.UnsupportedBufferException {
+        BufferedImage layer = new BufferedImage(layer3.getColorModel(), layer3.copyData(null), layer3.isAlphaPremultiplied(), null);
+        
+        Graphics2D g2 = layer.createGraphics();
+//        g2.setComposite(overwriteAlpha);
+//        g2.setColor(new Color(0, 0, 0, 0));
+//        g2.fillRect(0, 0, pixelWidth, pixelHeight);
+        
+        g2.setComposite(SourceAlphaComposite.createComposite(BufferedImage.TYPE_INT_ARGB));
+        LudumDare32.player.paint(g2);
+
+        g.drawImage(layer, 0, 0, nothing);
     }
 
     public static void loadWorld(int ID) {
@@ -146,10 +157,10 @@ public class World {
                     textureMap2[x][y] = texture2;
                     textureMap3[x][y] = TileSet.INVISIBLE;
                 }
-                collisionMap[x][y][Weather.CLOUDY] = cloudy ? (byte)-127 : 0;
-                collisionMap[x][y][Weather.SUNNY] = sunny ? (byte)1 : 0;
-                collisionMap[x][y][Weather.RAINY] = rainy ? (byte)1 : 0;
-                collisionMap[x][y][Weather.SNOWY] = snowy ? (byte)1 : 0;
+                collisionMap[x][y][Weather.CLOUDY] = cloudy ? (byte) 13 : 0;
+                collisionMap[x][y][Weather.SUNNY] = sunny ? (byte) 1 : 0;
+                collisionMap[x][y][Weather.RAINY] = rainy ? (byte) 1 : 0;
+                collisionMap[x][y][Weather.SNOWY] = snowy ? (byte) 1 : 0;
 
                 /*int argbBackwards = (cloudy << 31) | (rainy << 30) | (sunny << 29) | (snowy << 28) | (texture1 << 12 ) | texture2;
                 
@@ -170,17 +181,17 @@ public class World {
             case 0:
                 if (playerTileX == 11 && playerTileY == 6) {
                     loadWorld(1);
-                    player.setX(9*32+16);
-                    player.setY(5*32+16);
-                    player.setVy(player.getVy()*-1);
+                    player.setX(9 * 32 + 16);
+                    player.setY(5 * 32 + 16);
+                    player.setVy(player.getVy() * -1);
                 }
                 break;
             case 1:
                 if (playerTileX == 9 && playerTileY == 4) {
                     loadWorld(0);
-                    player.setX(11*32+16);
-                    player.setY(7*32+16);
-                    player.setVy(player.getVy()*-1);
+                    player.setX(11 * 32 + 16);
+                    player.setY(7 * 32 + 16);
+                    player.setVy(player.getVy() * -1);
                 }
                 break;
         }
