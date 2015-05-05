@@ -608,6 +608,7 @@ public class LudumDare32MapEditor extends JFrame {
                     int h = component.getHeight();
                     int w = component.getWidth();
                     camera2.changeSize(w, h);
+                    repaint();
                 }
             };
         }
