@@ -75,7 +75,7 @@ public class LudumDare32 extends JFrame {
                 try {
                     for (int x2 = tx - 1; x2 < tx + 2; x2++) {
                         for (int y2 = ty - 1; y2 < ty + 2; y2++) {
-                            if (World.collisionMap[x2][y2][Weather.current] > 0) {
+                            if (World.collisionMap[x2][y2][Weather.current] != 0) {
                                 tiles.add(new Point(x2 * 32, y2 * 32));
                             }
                         }
@@ -83,7 +83,7 @@ public class LudumDare32 extends JFrame {
                 } catch (Exception e) {
                 }
                 for (Point tile : tiles) {
-                   byte collisionType = World.collisionMap[(tile.x / 32)][(tile.y / 32)][Weather.current];
+                    byte collisionType = World.collisionMap[(tile.x / 32)][(tile.y / 32)][Weather.current];
                     double cx = x - tile.x;
                     double cy = y - tile.y;
                     if ((collisionType & 1) == 1) {// BIT 1 = BASE SQUARE COLLISION
