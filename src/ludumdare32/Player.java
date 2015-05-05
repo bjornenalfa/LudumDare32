@@ -17,4 +17,10 @@ public class Player extends Character {
         g.setColor(Color.DARK_GRAY);
         g.fillOval((int)(getX()-getR()), (int)(getY()-getR()), (int)getR()*2, (int)getR()*2);
     }
+    
+    public void paintBehind(Graphics2D g) {
+        //g.setXORMode(Color.WHITE);
+        g.setColor(Color.RED);
+        g.fillOval((int)(getX()-getR()), (int)(getY()-getR()), (int)getR()*2, (int)getR()*2);
+    }
 }

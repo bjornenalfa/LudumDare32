@@ -97,7 +97,7 @@ public class World {
 //        }
     }
 
-    static void paint2(Graphics2D g) throws SourceAlphaComposite.UnsupportedBufferException {
+    static void paint2(Graphics2D g) {
         BufferedImage layer = new BufferedImage(layer3.getColorModel(), layer3.copyData(null), layer3.isAlphaPremultiplied(), null);
         
         Graphics2D g2 = layer.createGraphics();
@@ -105,8 +105,9 @@ public class World {
 //        g2.setColor(new Color(0, 0, 0, 0));
 //        g2.fillRect(0, 0, pixelWidth, pixelHeight);
         
-        g2.setComposite(SourceAlphaComposite.createComposite(BufferedImage.TYPE_INT_ARGB));
-        LudumDare32.player.paint(g2);
+        //g2.setComposite(SourceAlphaComposite.createComposite(BufferedImage.TYPE_INT_ARGB));
+        g2.setComposite(AlphaComposite.SrcIn);
+        LudumDare32.player.paintBehind(g2);
 
         g.drawImage(layer, 0, 0, nothing);
     }
