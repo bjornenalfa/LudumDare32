@@ -75,7 +75,7 @@ public class LudumDare32 extends JFrame {
                 try {
                     for (int x2 = tx - 1; x2 < tx + 2; x2++) {
                         for (int y2 = ty - 1; y2 < ty + 2; y2++) {
-                            if (World.collisionMap[x2][y2][Weather.current]) {
+                            if (World.collisionMap[x2][y2][Weather.current] > 0) {
                                 tiles.add(new Point(x2 * 32, y2 * 32));
                             }
                         }
@@ -83,37 +83,66 @@ public class LudumDare32 extends JFrame {
                 } catch (Exception e) {
                 }
                 for (Point tile : tiles) {
+                   byte collisionType = World.collisionMap[(tile.x / 32)][(tile.y / 32)][Weather.current];
                     double cx = x - tile.x;
                     double cy = y - tile.y;
-                    cx = Math.max(0, Math.min(32, cx));
-                    cy = Math.max(0, Math.min(32, cy));
-                    if (cx + cy < 32) {
-                        // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
-                        cy = cy - 32;
-                        double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
-                        cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
-                        cy = -scalar / Math.sqrt(2);
-                        cy = cy + 32;
-                    } if ((32 - cx) + cy < 32) {
-                        // Ortogonal projektion av vektor från (0,0) till c på normaliserad vektor (1,1)
-                        double scalar = (cx / Math.sqrt(2) + cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,1)
-                        cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,1)
-                        cy = scalar / Math.sqrt(2);
-                    } //else if (cx + (32 - cy) < 32) {
-//                        // Ortogonal projektion av vektor från (0,0) till c på normaliserad vektor (1,1)
-//                        double scalar = (cx / Math.sqrt(2) + cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,1)
-//                        cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,1)
-//                        cy = scalar / Math.sqrt(2);
-//                    } else if ((32 - cx) + (32 - cy) < 32) {
-//                        // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
-//                        cy = cy - 32;
-//                        double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
-//                        cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
-//                        cy = -scalar / Math.sqrt(2);
-//                        cy = cy + 32;
-//                    }
+                    if ((collisionType & 1) == 1) {// BIT 1 = BASE SQUARE COLLISION
+                        cx = Math.max(0, Math.min(32, cx));
+                        cy = Math.max(0, Math.min(32, cy));
+                    }
+                    if ((collisionType & 2) == 2) {// BIT 2 = TOP LEFT NO COLLISION
+                        if (cx + cy < 32) {
+                            // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
+                            cy = cy - 32;
+                            double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
+                            cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
+                            cy = -scalar / Math.sqrt(2);
+                            cy = cy + 32;
+                        }
+                    }
+                    if ((collisionType & 4) == 4) {// BIT 3 = TOP RIGHT NO COLLISION
+                        if ((32 - cx) + cy < 32) {
+                            // Ortogonal projektion av vektor från (0,0) till c på normaliserad vektor (1,1)
+                            double scalar = (cx / Math.sqrt(2) + cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,1)
+                            cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,1)
+                            cy = scalar / Math.sqrt(2);
+                        }
+                    }
+                    if ((collisionType & 8) == 8) {// BIT 4 = BOTTOM LEFT NO COLLISION
+                        if (cx + (32 - cy) < 32) {
+                            // Ortogonal projektion av vektor från (0,0) till c på normaliserad vektor (1,1)
+                            double scalar = (cx / Math.sqrt(2) + cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,1)
+                            cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,1)
+                            cy = scalar / Math.sqrt(2);
+                        }
+                    }
+                    if ((collisionType & 16) == 16) {// BIT 5 = BOTTOM RIGHT NO COLLISION
+                        if ((32 - cx) + (32 - cy) < 32) {
+                            // Ortogonal projektion av vektor från (0,32) till c på normaliserad vektor (1,-1)
+                            cy = cy - 32;
+                            double scalar = (cx / Math.sqrt(2) - cy / Math.sqrt(2)); // Skalär produkt mellan c och normaliserad vektor (1,-1)
+                            cx = scalar / Math.sqrt(2); // c = length * normaliserad vektor (1,-1)
+                            cy = -scalar / Math.sqrt(2);
+                            cy = cy + 32;
+                        }
+                    }
+                    if ((collisionType & 32) == 32) {// BIT 6 = LEFT EDGE NO COLLISION
+                        if (cx < 1) {
+                            cx = 100000;
+                        }
+                    }
+                    if ((collisionType & 64) == 64) {// BIT 7 = RIGHT EDGE NO COLLISION
+                        if (cx > 31) {
+                            cx = 100000;
+                        }
+                    }
+                    if ((collisionType & 128) == 128) {// BIT 8 = TOP EDGE NO COLLISION
+                        if (cy > 31) {
+                            cy = 100000;
+                        }
+                    }
                     Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
-                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 1 * 1) {
+                    if (collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y < 13 * 13) {
                         g2d.setColor(new Color(255, 255, 255, 128));
                         g2d.fillRect(x, y, 1, 1);
                     }
