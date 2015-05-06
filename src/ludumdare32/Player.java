@@ -14,13 +14,13 @@ public class Player extends Character {
     @Override
     public void paint(Graphics2D g) {
         //g.setXORMode(Color.WHITE);
-        g.setColor(Color.DARK_GRAY);
+        g.setColor(Color.BLUE);
         g.fillOval((int)(getX()-getR()), (int)(getY()-getR()), (int)getR()*2, (int)getR()*2);
     }
     
     public void paintBehind(Graphics2D g) {
         //g.setXORMode(Color.WHITE);
-        g.setColor(Color.RED);
+        g.setColor(Color.DARK_GRAY);
         g.fillOval((int)(getX()-getR()), (int)(getY()-getR()), (int)getR()*2, (int)getR()*2);
     }
 }

@@ -158,7 +158,7 @@ public class World {
                     textureMap2[x][y] = texture2;
                     textureMap3[x][y] = TileSet.INVISIBLE;
                 }
-                collisionMap[x][y][Weather.CLOUDY] = cloudy ? (byte) 13 : 0;
+                collisionMap[x][y][Weather.CLOUDY] = cloudy ? (byte) 1 : 0;
                 collisionMap[x][y][Weather.SUNNY] = sunny ? (byte) 1 : 0;
                 collisionMap[x][y][Weather.RAINY] = rainy ? (byte) 1 : 0;
                 collisionMap[x][y][Weather.SNOWY] = snowy ? (byte) 1 : 0;
