@@ -418,11 +418,12 @@ public class LudumDare32MapEditor extends JFrame {
                     int h = component.getHeight();
                     int w = component.getWidth();
                     camera1.changeSize(w, h);
+                    repaint();
                 }
             };
         }
     }
-
+    // THIS IS WHERE THE TILE PANEL BEGINS =========================================================================================
     class MyCheckBoxPanel extends JPanel implements ItemListener {
 
         JCheckBox cloudyBox;
