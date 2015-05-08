@@ -17,12 +17,12 @@ public class ToolPanel extends JPanel {
     static int currentTool = 0;
     
     TileSet toolTiles = new TileSet("img/Art Icons Transparent.png", 60, 27, 38, 78, 74);
-    TileSet selectedToolTiles = new TileSet("img/Art Icons Blue.png", 60, 27, 38, 78, 74);
+    TileSet selectedToolTiles = new TileSet("img/Art Icons Blue Transparent.png", 60, 27, 38, 78, 74);
 
     public ToolPanel() {
         setPreferredSize(new Dimension(80, 608));
         toolTiles.changeTileSize(30);
-        selectedToolTiles.changeTileSize(30);
+        selectedToolTiles.changeTileSize(28);
         
         addToolButtons();
         addLabels();
