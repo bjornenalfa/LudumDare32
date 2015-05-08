@@ -73,18 +73,12 @@ public class MapPanel extends JPanel {
     }
 
     private void addKeyBindings() {
-<<<<<<< HEAD
-=======
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
-        getActionMap().put("exit", exit());
-
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTROL, InputEvent.CTRL_DOWN_MASK), "ctrl_down");
         getActionMap().put("ctrl_down", ctrl_down());
         
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released CONTROL"), "ctrl_up");
         getActionMap().put("ctrl_up", ctrl_up());
 
->>>>>>> origin/master
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("1"), "one");
         getActionMap().put("one", one());
 
