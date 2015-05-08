@@ -16,6 +16,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
@@ -23,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -95,6 +97,9 @@ public class MapEditor extends JFrame {
         panel.add(anotherPanel, BorderLayout.CENTER);
         panel.add(inPanel, BorderLayout.NORTH);
 
+        panel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
+        panel.getActionMap().put("exit", exit());
+        
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(1600, 608));
         setResizable(true);
@@ -187,6 +192,15 @@ public class MapEditor extends JFrame {
         };
     }
 
+    private Action exit() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        };
+    }
+    
     public static void main(String[] args) {
         new MapEditor();
     }

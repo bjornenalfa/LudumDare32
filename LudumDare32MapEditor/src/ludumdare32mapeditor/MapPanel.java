@@ -69,9 +69,6 @@ public class MapPanel extends JPanel {
     }
 
     private void addKeyBindings() {
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
-        getActionMap().put("exit", exit());
-
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("1"), "one");
         getActionMap().put("one", one());
 
@@ -83,15 +80,6 @@ public class MapPanel extends JPanel {
 
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("4"), "four");
         getActionMap().put("four", four());
-    }
-
-    private Action exit() {
-        return new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        };
     }
 
     private Action one() {
