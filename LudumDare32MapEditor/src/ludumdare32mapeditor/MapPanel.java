@@ -8,6 +8,8 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -25,6 +27,8 @@ public class MapPanel extends JPanel {
     Point lastPoint;
     boolean mouseDown = false;
     boolean draggingWorld = false;
+    
+    boolean ctrlDown = false;
 
     int showLayers = 3;
 
@@ -72,6 +76,12 @@ public class MapPanel extends JPanel {
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
         getActionMap().put("exit", exit());
 
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTROL, InputEvent.CTRL_DOWN_MASK), "ctrl_down");
+        getActionMap().put("ctrl_down", ctrl_down());
+        
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released CONTROL"), "ctrl_up");
+        getActionMap().put("ctrl_up", ctrl_up());
+
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("1"), "one");
         getActionMap().put("one", one());
 
@@ -83,6 +93,24 @@ public class MapPanel extends JPanel {
 
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("4"), "four");
         getActionMap().put("four", four());
+    }
+    
+    private Action ctrl_down() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ctrlDown = true;
+            }
+        };
+    }
+    
+    private Action ctrl_up() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ctrlDown = false;
+            }
+        };
     }
 
     private Action exit() {
@@ -197,7 +225,7 @@ public class MapPanel extends JPanel {
                         if (MapEditor.worlds.get(i).worldPointInWorld(p)) {
                             MapEditor.selectedWorld = i;
                             repaint();
-                            if (button == 3) {
+                            if (button == 3 && ctrlDown) {
                                 draggingWorld = true;
                             }
                             break;
