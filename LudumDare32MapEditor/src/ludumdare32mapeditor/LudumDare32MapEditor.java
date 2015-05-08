@@ -30,10 +30,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class LudumDare32MapEditor extends JFrame {
 
     static TileSet tileSet = new TileSet("img/Spritesheet/cloudy.png", 16, 1);
-    ArrayList<World> worlds = new ArrayList<>();
-    int selectedWorld = 0;
+    static ArrayList<World> worlds = new ArrayList<>();
+    static int selectedWorld = 0;
 
-    MapPanel mapPanel = new MapPanel(worlds, selectedWorld);
+    MapPanel mapPanel = new MapPanel();
     TilePanel tilePanel = new TilePanel();
     JLabel label = new JLabel("");
 
