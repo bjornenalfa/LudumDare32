@@ -60,7 +60,7 @@ public class MapEditor extends JFrame {
         JButton button2 = new JButton("SAVE");
         button2.addActionListener(save());
         JButton button3 = new JButton("LOAD");
-        button2.addActionListener(load());
+        button3.addActionListener(load());
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(button1);
@@ -184,6 +184,7 @@ public class MapEditor extends JFrame {
                 if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                     System.out.println(Integer.parseInt(width.getText().replaceAll(",", "")) + " " + Integer.parseInt(height.getText().replaceAll(",", "")));
                     worlds.add(World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_ARGB), tileSet));
+                    worlds.get(worlds.size()-1).setOffset(700, 700);
                     repaint();
                 } else {
 
