@@ -16,8 +16,8 @@ public class ToolPanel extends JPanel {
     
     static int currentTool = 0;
     
-    TileSet toolTiles = new TileSet("img/Art Icons Transparent.png", 60, 27, 38, 78, 74);
-    TileSet selectedToolTiles = new TileSet("img/Art Icons Blue Transparent.png", 60, 27, 38, 78, 74);
+    TileSet toolTiles = new TileSet("img/Art-Icons-Transparent.png", 60, 27, 38, 78, 74);
+    TileSet selectedToolTiles = new TileSet("img/Art-Icons-Blue-Transparent.png", 60, 27, 38, 78, 74);
 
     public ToolPanel() {
         setPreferredSize(new Dimension(80, 608));
@@ -31,7 +31,7 @@ public class ToolPanel extends JPanel {
     private void addToolButtons() {
         addButton(1);
         addButton(2);
-        addButton(0);
+        addButton(14);
         addButton(16);
         addButton(46);
     }
