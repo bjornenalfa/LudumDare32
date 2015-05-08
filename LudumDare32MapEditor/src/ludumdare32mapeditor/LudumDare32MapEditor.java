@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -13,8 +14,10 @@ import javax.swing.Action;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
@@ -45,14 +48,17 @@ public class LudumDare32MapEditor extends JFrame {
 
         setTitle("LudumDare32 Map Editor");
 
-        JButton button1 = new JButton("SAVE");
-        button1.addActionListener(save());
-        JButton button2 = new JButton("LOAD");
+        JButton button1 = new JButton("NEW");
+        button1.addActionListener(newIMG());
+        JButton button2 = new JButton("SAVE");
+        button2.addActionListener(save());
+        JButton button3 = new JButton("LOAD");
         button2.addActionListener(load());
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(button1);
         buttonPanel.add(button2);
+        buttonPanel.add(button3);
 
         CheckBoxPanel checkBoxPanel = new CheckBoxPanel();
 
@@ -148,6 +154,28 @@ public class LudumDare32MapEditor extends JFrame {
                         System.out.println(ex);
                     }
                     System.out.println("Loading: " + file);
+                }
+            }
+        };
+    }
+    
+        private Action newIMG() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                NumberFormat intOnly;
+                intOnly = NumberFormat.getIntegerInstance();
+                intOnly.setMaximumFractionDigits(0);
+                JFormattedTextField width = new JFormattedTextField(intOnly);
+                JFormattedTextField height =new JFormattedTextField(intOnly);
+                Object[] message = {
+                    "Width: ", width,
+                    "Height: ", height
+                };
+                if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                    System.out.println(Integer.parseInt(width.getText()) + " " + Integer.parseInt(height.getText()));
+                } else {
+
                 }
             }
         };
