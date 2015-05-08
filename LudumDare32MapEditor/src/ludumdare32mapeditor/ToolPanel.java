@@ -9,6 +9,12 @@ import javax.swing.JPanel;
 
 public class ToolPanel extends JPanel {
 
+    final static int PENCIL = 0;
+    final static int BRUSH = 1;
+    final static int BUCKET = 2;
+    final static int PICKTILE = 3;
+    final static int RECTANGLE = 4;
+    
     static Tile tile = new Tile();
     final static int amountOfButtons = 5;
     JButton[] buttons = new JButton[amountOfButtons];
