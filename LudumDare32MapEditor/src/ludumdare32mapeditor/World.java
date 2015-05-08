@@ -244,6 +244,34 @@ public class World {
             layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
         }
     }
+    
+    public void changeTileWorldCoordinates(double x, double y, Tile tile) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        changeTileGridCoordinates((int) x, (int) y, tile);
+    }
+
+    public void changeTileGridCoordinates(int x, int y, Tile tile) {
+        if (gridPointInWorld(x, y)) {
+            collisionMap[x][y] = tile.collisionMap;
+            textureMap1[x][y] = tile.texture1;
+            textureMap2[x][y] = tile.texture2;
+            renderAbove[x][y] = tile.renderAbove;
+            Graphics2D g2d = (Graphics2D) layer1.getGraphics();
+            g2d.setComposite(composite);
+            g2d.setColor(new Color(0, 0, 0, 0));
+            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+            layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
+
+            g2d = (Graphics2D) layer2.getGraphics();
+            g2d.setComposite(composite);
+            g2d.setColor(new Color(0, 0, 0, 0));
+            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+            layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+        }
+    }
 
     public void changeTileLayer1WorldCoordinates(double x, double y, int tile) {
         x -= xOffset;
