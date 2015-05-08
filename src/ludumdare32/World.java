@@ -108,6 +108,7 @@ public class World {
         //g2.setComposite(SourceAlphaComposite.createComposite(BufferedImage.TYPE_INT_ARGB));
         g2.setComposite(AlphaComposite.SrcIn);
         LudumDare32.player.paintBehind(g2);
+        g2.dispose();
 
         g.drawImage(layer, 0, 0, nothing);
     }

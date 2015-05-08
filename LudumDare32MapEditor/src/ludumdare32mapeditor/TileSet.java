@@ -1,5 +1,7 @@
 package ludumdare32mapeditor;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -10,6 +12,7 @@ public class TileSet {
 
     int horizontalTiles = 0;
     int verticalTiles = 0;
+    int size = 0;
 
     static final int INVISIBLE = 285;
 
@@ -21,6 +24,7 @@ public class TileSet {
             System.out.println("Spritesheet not found");
             return;
         }
+        this.size = size;
         int width = img.getWidth();
         int height = img.getHeight();
         horizontalTiles = (int) Math.ceil((double) width / (size + margin));
@@ -46,6 +50,7 @@ public class TileSet {
             System.out.println("Spritesheet not found");
             return;
         }
+        this.size = size;
         int width = img.getWidth()-xOffset*2;
         int height = img.getHeight()-yOffset*2;
         horizontalTiles = (int) Math.ceil((double) width / (size + xMargin));
@@ -63,9 +68,12 @@ public class TileSet {
         }
     }
     
-    public void changeTileSize(int newWidth, int newHeight) {
+    public void changeTileSize(int newSize) {
+        AffineTransform at = new AffineTransform();
+        at.scale((double)(newSize)/size, (double)(newSize)/size);
+        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
         for (int i = 0;i<images.length;i++) {
-            images[i] = (BufferedImage) images[i].getScaledInstance(newWidth, newHeight, BufferedImage.SCALE_SMOOTH);
+            images[i] = scaleOp.filter((BufferedImage) images[i], new BufferedImage(newSize,newSize,BufferedImage.TYPE_INT_ARGB));
         }
     }
 }
