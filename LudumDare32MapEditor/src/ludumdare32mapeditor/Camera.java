@@ -93,8 +93,8 @@ public class Camera {
     }
 
     public void constrainToTileSet() {
-        x = Math.max(-width + World.squareSize * scale, Math.min(x, LudumDare32MapEditor.tileSet.horizontalTiles * World.squareSize * scale - World.squareSize * scale));
-        y = Math.max(-height + World.squareSize * scale , Math.min(y, LudumDare32MapEditor.tileSet.verticalTiles * World.squareSize * scale - World.squareSize * scale));
+        x = Math.max(-width + World.squareSize * scale, Math.min(x, MapEditor.tileSet.horizontalTiles * World.squareSize * scale - World.squareSize * scale));
+        y = Math.max(-height + World.squareSize * scale , Math.min(y, MapEditor.tileSet.verticalTiles * World.squareSize * scale - World.squareSize * scale));
     }
 
 //    public void update(Player player, boolean centered) {

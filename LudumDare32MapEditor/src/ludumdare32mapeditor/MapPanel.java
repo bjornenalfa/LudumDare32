@@ -46,20 +46,20 @@ public class MapPanel extends JPanel {
         camera.transformGraphics(g);
 
         if ((showLayers & 1) == 1) {
-            for (int i = 0; i < LudumDare32MapEditor.worlds.size(); i++) {
-                LudumDare32MapEditor.worlds.get(i).paintLayer1(g);
+            for (int i = 0; i < MapEditor.worlds.size(); i++) {
+                MapEditor.worlds.get(i).paintLayer1(g);
             }
         }
         if (((showLayers >> 1) & 1) == 1) {
-            for (int i = 0; i < LudumDare32MapEditor.worlds.size(); i++) {
-                LudumDare32MapEditor.worlds.get(i).paintLayer2(g);
+            for (int i = 0; i < MapEditor.worlds.size(); i++) {
+                MapEditor.worlds.get(i).paintLayer2(g);
             }
         }
 
-        for (int i = 0; i < LudumDare32MapEditor.worlds.size(); i++) {
-            LudumDare32MapEditor.worlds.get(i).drawBorder(g, Color.WHITE);
+        for (int i = 0; i < MapEditor.worlds.size(); i++) {
+            MapEditor.worlds.get(i).drawBorder(g, Color.WHITE);
         }
-        LudumDare32MapEditor.worlds.get(LudumDare32MapEditor.selectedWorld).drawBorder(g, Color.RED);
+        MapEditor.worlds.get(MapEditor.selectedWorld).drawBorder(g, Color.RED);
 
 //      if (mouseDown) {
 //          Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
@@ -98,8 +98,8 @@ public class MapPanel extends JPanel {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LudumDare32MapEditor.tileSet = new TileSet("img/Spritesheet/sunny.png", 16, 1);
-                LudumDare32MapEditor.worlds.get(LudumDare32MapEditor.selectedWorld).changeTileSet(LudumDare32MapEditor.tileSet);
+                MapEditor.tileSet = new TileSet("img/Spritesheet/sunny.png", 16, 1);
+                MapEditor.worlds.get(MapEditor.selectedWorld).changeTileSet(MapEditor.tileSet);
                 repaint();
             }
         };
@@ -109,7 +109,7 @@ public class MapPanel extends JPanel {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LudumDare32MapEditor.worlds.get(LudumDare32MapEditor.selectedWorld).expand(1, 1, 1, 1);
+                MapEditor.worlds.get(MapEditor.selectedWorld).expand(1, 1, 1, 1);
                 repaint();
             }
         };
@@ -119,7 +119,7 @@ public class MapPanel extends JPanel {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LudumDare32MapEditor.worlds.get(LudumDare32MapEditor.selectedWorld).contract(1, 1, 1, 1);
+                MapEditor.worlds.get(MapEditor.selectedWorld).contract(1, 1, 1, 1);
                 repaint();
             }
         };
@@ -139,7 +139,7 @@ public class MapPanel extends JPanel {
 
     public void changeTile(Point screenPoint) {
         Point.Double p = camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
-        LudumDare32MapEditor.worlds.get(LudumDare32MapEditor.selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), ToolPanel.tile);
+        MapEditor.worlds.get(MapEditor.selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), ToolPanel.tile);
         repaint();
     }
 
@@ -169,7 +169,7 @@ public class MapPanel extends JPanel {
                     if (draggingWorld) {
                         Point.Double np = camera.windowToWorldCoordinates(newPoint);
                         Point.Double lp = camera.windowToWorldCoordinates(lastPoint);
-                        LudumDare32MapEditor.worlds.get(LudumDare32MapEditor.selectedWorld).move(np.x - lp.x, np.y - lp.y);
+                        MapEditor.worlds.get(MapEditor.selectedWorld).move(np.x - lp.x, np.y - lp.y);
                     } else {
                         camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
                     }
@@ -193,9 +193,9 @@ public class MapPanel extends JPanel {
                     lastPoint = me.getPoint();
                     mouseDown = true;
                     Point.Double p = camera.windowToWorldCoordinates(lastPoint);
-                    for (int i = 0; i < LudumDare32MapEditor.worlds.size(); i++) {
-                        if (LudumDare32MapEditor.worlds.get(i).worldPointInWorld(p)) {
-                            LudumDare32MapEditor.selectedWorld = i;
+                    for (int i = 0; i < MapEditor.worlds.size(); i++) {
+                        if (MapEditor.worlds.get(i).worldPointInWorld(p)) {
+                            MapEditor.selectedWorld = i;
                             repaint();
                             if (button == 3) {
                                 draggingWorld = true;

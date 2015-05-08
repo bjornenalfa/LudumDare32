@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.Objects;
 import javax.swing.JPanel;
-import static ludumdare32mapeditor.LudumDare32MapEditor.tileSet;
+import static ludumdare32mapeditor.MapEditor.tileSet;
 
 class TilePanel extends JPanel {
 
