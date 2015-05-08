@@ -11,6 +11,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import static javax.swing.JComponent.WHEN_FOCUSED;
@@ -20,7 +21,7 @@ import javax.swing.KeyStroke;
 
 public class MapPanel extends JPanel {
 
-    World[] worlds;
+    ArrayList<World> worlds = new ArrayList<>();
     int selectedWorld;
     
     static Camera camera = new Camera(800, 608);
@@ -30,7 +31,7 @@ public class MapPanel extends JPanel {
 
     int showLayers = 3;
 
-    public MapPanel(World[] worlds, int selectedWorld) {
+    public MapPanel(ArrayList worlds, int selectedWorld) {
         this.worlds = worlds;
         this.selectedWorld = selectedWorld;
         addKeyBindings();
@@ -50,20 +51,20 @@ public class MapPanel extends JPanel {
         camera.transformGraphics(g);
 
         if ((showLayers & 1) == 1) {
-            for (int i = 0; i < worlds.length; i++) {
-                worlds[i].paintLayer1(g);
+            for (int i = 0; i < worlds.size(); i++) {
+                worlds.get(i).paintLayer1(g);
             }
         }
         if (((showLayers >> 1) & 1) == 1) {
-            for (int i = 0; i < worlds.length; i++) {
-                worlds[i].paintLayer2(g);
+            for (int i = 0; i < worlds.size(); i++) {
+                worlds.get(i).paintLayer2(g);
             }
         }
 
-        for (int i = 0; i < worlds.length; i++) {
-            worlds[i].drawBorder(g, Color.WHITE);
+        for (int i = 0; i < worlds.size(); i++) {
+            worlds.get(i).drawBorder(g, Color.WHITE);
         }
-        worlds[selectedWorld].drawBorder(g, Color.RED);
+        worlds.get(selectedWorld).drawBorder(g, Color.RED);
 
 //      if (mouseDown) {
 //          Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
@@ -103,7 +104,7 @@ public class MapPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LudumDare32MapEditor.tileSet = new TileSet("img/Spritesheet/sunny.png", 16, 1);
-                worlds[selectedWorld].changeTileSet(LudumDare32MapEditor.tileSet);
+                worlds.get(selectedWorld).changeTileSet(LudumDare32MapEditor.tileSet);
                 repaint();
             }
         };
@@ -113,7 +114,7 @@ public class MapPanel extends JPanel {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                worlds[selectedWorld].expand(1, 1, 1, 1);
+                worlds.get(selectedWorld).expand(1, 1, 1, 1);
                 repaint();
             }
         };
@@ -123,7 +124,7 @@ public class MapPanel extends JPanel {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                worlds[selectedWorld].contract(1, 1, 1, 1);
+                worlds.get(selectedWorld).contract(1, 1, 1, 1);
                 repaint();
             }
         };
@@ -143,7 +144,7 @@ public class MapPanel extends JPanel {
 
     public void changeTile(Point screenPoint) {
         Point.Double p = camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
-        worlds[selectedWorld].changeTileWorldCoordinates((int) (p.x), (int) (p.y), ToolPanel.tile);
+        worlds.get(selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), ToolPanel.tile);
         repaint();
     }
 
@@ -173,7 +174,7 @@ public class MapPanel extends JPanel {
                     if (draggingWorld) {
                         Point.Double np = camera.windowToWorldCoordinates(newPoint);
                         Point.Double lp = camera.windowToWorldCoordinates(lastPoint);
-                        worlds[selectedWorld].move(np.x - lp.x, np.y - lp.y);
+                        worlds.get(selectedWorld).move(np.x - lp.x, np.y - lp.y);
                     } else {
                         camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
                     }
@@ -197,8 +198,8 @@ public class MapPanel extends JPanel {
                     lastPoint = me.getPoint();
                     mouseDown = true;
                     Point.Double p = camera.windowToWorldCoordinates(lastPoint);
-                    for (int i = 0; i < worlds.length; i++) {
-                        if (worlds[i].worldPointInWorld(p)) {
+                    for (int i = 0; i < worlds.size(); i++) {
+                        if (worlds.get(selectedWorld).worldPointInWorld(p)) {
                             selectedWorld = i;
                             repaint();
                             if (button == 3) {
