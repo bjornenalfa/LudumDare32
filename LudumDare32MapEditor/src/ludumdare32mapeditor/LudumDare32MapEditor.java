@@ -178,7 +178,7 @@ public class LudumDare32MapEditor extends JFrame {
                 };
                 if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                     System.out.println(Integer.parseInt(width.getText().replaceAll(",", "")) + " " + Integer.parseInt(height.getText().replaceAll(",", "")));
-                    worlds.add(World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_RGB), tileSet));
+                    worlds.add(World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_ARGB), tileSet));
                     repaint();
                 } else {
 
