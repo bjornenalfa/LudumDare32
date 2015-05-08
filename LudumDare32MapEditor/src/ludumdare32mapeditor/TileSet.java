@@ -38,7 +38,7 @@ public class TileSet {
         }
     }
     
-    public TileSet(String path, int size, int margin, int xoffset, int yoffset) {
+    public TileSet(String path, int size, int xMargin, int yMargin, int xOffset, int yOffset) {
         BufferedImage img = null;
         try {
             img = ImageIO.read(TileSet.class.getResourceAsStream(path));
@@ -46,17 +46,17 @@ public class TileSet {
             System.out.println("Spritesheet not found");
             return;
         }
-        int width = img.getWidth()-xoffset*2;
-        int height = img.getHeight()-yoffset*2;
-        horizontalTiles = (int) Math.ceil((double) width / (size + margin));
-        verticalTiles = (int) Math.ceil((double) height / (size + margin));
+        int width = img.getWidth()-xOffset*2;
+        int height = img.getHeight()-yOffset*2;
+        horizontalTiles = (int) Math.ceil((double) width / (size + xMargin));
+        verticalTiles = (int) Math.ceil((double) height / (size + yMargin));
 
         images = new BufferedImage[horizontalTiles * verticalTiles];
         int iterator = 0;
 
         for (int y = 0; y < verticalTiles; y++) {
             for (int x = 0; x < horizontalTiles; x++) {
-                BufferedImage img2 = img.getSubimage(x * (size + margin) + xoffset, y * (size + margin) + yoffset, size, size);
+                BufferedImage img2 = img.getSubimage(x * (size + xMargin) + xOffset, y * (size + yMargin) + yOffset, size, size);
                 images[iterator] = img2;
                 iterator++;
             }
