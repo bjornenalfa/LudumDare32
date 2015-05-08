@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
@@ -348,7 +349,7 @@ public class World {
 
     public static World loadFromFile(String path, TileSet tileSet) {
         try {
-            return loadFromImage(ImageIO.read(World.class.getResourceAsStream(path)), tileSet);
+            return loadFromImage(ImageIO.read(new File(path)), tileSet);
         } catch (IOException e) {
             System.out.println("Level not found");
             return null;

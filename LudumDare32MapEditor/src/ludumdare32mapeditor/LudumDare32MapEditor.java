@@ -68,7 +68,7 @@ public class LudumDare32MapEditor extends JFrame {
 
     boolean draggingWorld = false;
     int selectedWorld = 0;
-    World[] worlds = {World.loadFromFile("levels/test.png", tileSet), World.loadFromFile("levels/test2.png", tileSet)};
+    World[] worlds = {World.loadFromFile(".//..//src//ludumdare32/levels//test.png", tileSet), World.loadFromFile(".//..//src//ludumdare32/levels//test2.png", tileSet)};
 
     public LudumDare32MapEditor() {
         try {
@@ -88,17 +88,18 @@ public class LudumDare32MapEditor extends JFrame {
         camera2 = new Camera(800, 608);
 
         MyCheckBoxPanel checkBoxPanel = new MyCheckBoxPanel();
+        
         JButton button1 = new JButton("SAVE");
         button1.addActionListener(save());
         JButton button2 = new JButton("LOAD");
         button2.addActionListener(load());
-
-        JPanel inPanel = new JPanel(new BorderLayout());
-        inPanel.setPreferredSize(new Dimension(1600, 20));
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.add(button1);
         buttonPanel.add(button2);
+        
+        JPanel inPanel = new JPanel(new BorderLayout());
+        inPanel.setPreferredSize(new Dimension(1600, 20));
         inPanel.add(buttonPanel, BorderLayout.WEST);
         inPanel.add(label, BorderLayout.CENTER);
         inPanel.add(checkBoxPanel, BorderLayout.EAST);
@@ -202,6 +203,51 @@ public class LudumDare32MapEditor extends JFrame {
         }
 
         private void addToolButtons() {
+            JButton pencil = new JButton("Pencil");
+            pencil.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("pencil");
+                }
+            });
+            add(pencil);
+            
+            JButton brush = new JButton("Brush");
+            brush.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("brush");
+                }
+            });
+            add(brush);
+
+            JButton bucket = new JButton("Bucket");
+            bucket.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("bucket");
+                }
+            });
+            add(bucket);
+            
+            JButton PickTile = new JButton("PickTile");
+            PickTile.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("pick tile");
+                }
+            });
+            add(PickTile);
+            
+            JButton FillRectangleShape = new JButton("FillRectangleShape");
+            FillRectangleShape.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("fill rectangle shape");
+                }
+            });
+            add(FillRectangleShape);
+            
             JButton test = new JButton("TEST");
             test.addActionListener(new ActionListener() {
                 @Override
@@ -209,19 +255,7 @@ public class LudumDare32MapEditor extends JFrame {
                     System.out.println("test");
                 }
             });
-            test.setPreferredSize(new Dimension(50, 50));
             add(test);
-            
-            JButton test2 = new JButton("TEST2");
-            test2.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("test2");
-                }
-            });
-            test2.setPreferredSize(new Dimension(50, 50));
-            add(test2);
-
         }
     }
 
