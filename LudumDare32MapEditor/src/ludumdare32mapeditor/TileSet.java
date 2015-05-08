@@ -62,4 +62,10 @@ public class TileSet {
             }
         }
     }
+    
+    public void changeTileSize(int newWidth, int newHeight) {
+        for (int i = 0;i<images.length;i++) {
+            images[i] = (BufferedImage) images[i].getScaledInstance(newWidth, newHeight, BufferedImage.SCALE_SMOOTH);
+        }
+    }
 }
