@@ -144,7 +144,7 @@ public class World {
                 newCM[x][y] = collisionMap[x + left][y + up];
             }
         }
-
+        if (newWidth >0 && newHeight >0){
         width = newWidth;
         height = newHeight;
         pixelWidth = width * squareSize;
@@ -155,6 +155,7 @@ public class World {
         collisionMap = newCM;
         renderMap();
         move(left * squareSize, up * squareSize);
+        }
     }
 
     public void setTileSet(TileSet tileSet) {
