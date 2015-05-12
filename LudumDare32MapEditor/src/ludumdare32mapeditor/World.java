@@ -34,6 +34,8 @@ public class World {
 
     BufferedImage layer1;
     BufferedImage layer2;
+    
+    String name = "";
 
     static AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
     static ImageObserver nothing = new ImageObserver() {
@@ -87,6 +89,26 @@ public class World {
         renderAbove = new boolean[width][height];
         collisionMap = new boolean[width][height][4];
         renderMap();
+    }
+    
+    public World(int w, int h, int x, int y, String name, TileSet tileSet) {
+        currentTileSet = tileSet;
+        width = w;
+        height = h;
+        xOffset = x;
+        yOffset = y;
+        this.name = name;
+        pixelWidth = width * squareSize;
+        pixelHeight = height * squareSize;
+        textureMap1 = new int[width][height];
+        textureMap2 = new int[width][height];
+        renderAbove = new boolean[width][height];
+        collisionMap = new boolean[width][height][4];
+        renderMap();
+    }
+    
+    public void setName(String newName) {
+        name = newName;
     }
 
     public void move(double dx, double dy) {

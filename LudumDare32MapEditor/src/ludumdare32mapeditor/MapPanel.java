@@ -27,7 +27,7 @@ public class MapPanel extends JPanel {
     Point lastPoint;
     boolean mouseDown = false;
     boolean draggingWorld = false;
-    
+
     boolean ctrlDown = false;
 
     int showLayers = 3;
@@ -75,7 +75,7 @@ public class MapPanel extends JPanel {
     private void addKeyBindings() {
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTROL, InputEvent.CTRL_DOWN_MASK), "ctrl_down");
         getActionMap().put("ctrl_down", ctrl_down());
-        
+
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released CONTROL"), "ctrl_up");
         getActionMap().put("ctrl_up", ctrl_up());
 
@@ -91,7 +91,7 @@ public class MapPanel extends JPanel {
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("4"), "four");
         getActionMap().put("four", four());
     }
-    
+
     private Action ctrl_down() {
         return new AbstractAction() {
             @Override
@@ -100,7 +100,7 @@ public class MapPanel extends JPanel {
             }
         };
     }
-    
+
     private Action ctrl_up() {
         return new AbstractAction() {
             @Override
@@ -171,9 +171,6 @@ public class MapPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent me) {
-                if (button == 1) {
-                    changeTile(me.getPoint());
-                }
                 mouseDown = false;
                 draggingWorld = false;
             }
@@ -208,16 +205,24 @@ public class MapPanel extends JPanel {
                     button = me.getButton();
                     lastPoint = me.getPoint();
                     mouseDown = true;
+                    boolean changedSelectedWorld = false;
                     Point.Double p = camera.windowToWorldCoordinates(lastPoint);
                     for (int i = 0; i < MapEditor.worlds.size(); i++) {
                         if (MapEditor.worlds.get(i).worldPointInWorld(p)) {
-                            MapEditor.selectedWorld = i;
+                            if (MapEditor.selectedWorld != i) {
+                                MapEditor.selectedWorld = i;
+                                changedSelectedWorld = true;
+                                button = 4711;
+                            }
                             repaint();
                             if (button == 3 && ctrlDown) {
                                 draggingWorld = true;
                             }
                             break;
                         }
+                    }
+                    if (button == 1 && !changedSelectedWorld) {
+                        changeTile(me.getPoint());
                     }
                 }
             }
