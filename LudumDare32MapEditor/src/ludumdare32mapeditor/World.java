@@ -77,6 +77,40 @@ public class World {
         }
         renderMap();
     }
+    
+    public World(BufferedImage image, String name, TileSet tileSet) {
+        currentTileSet = tileSet;
+        width = image.getWidth();
+        height = image.getHeight();
+        this.name = name;
+        pixelWidth = width * squareSize;
+        pixelHeight = height * squareSize;
+        textureMap1 = new int[width][height];
+        textureMap2 = new int[width][height];
+        renderAbove = new boolean[width][height];
+        collisionMap = new boolean[width][height][4];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int argb = image.getRGB(x, y);
+                boolean cloudy = 1 == (1 & (argb >> 31));
+                boolean rainy = 1 == (1 & (argb >> 30));
+                boolean sunny = 1 == (1 & (argb >> 29));
+                boolean snowy = 1 == (1 & (argb >> 28));
+                boolean aboveCharacters = 1 == (1 & (argb >> 25));
+
+                int texture1 = 4095 & (argb >> 12);
+                int texture2 = 4095 & argb;
+                textureMap1[x][y] = texture1;
+                textureMap2[x][y] = texture2;
+                renderAbove[x][y] = aboveCharacters;
+                collisionMap[x][y][0] = cloudy;
+                collisionMap[x][y][1] = sunny;
+                collisionMap[x][y][2] = rainy;
+                collisionMap[x][y][3] = snowy;
+            }
+        }
+        renderMap();
+    }
 
     public World(int w, int h, TileSet tileSet) {
         currentTileSet = tileSet;
@@ -409,5 +443,18 @@ public class World {
 
     public static World loadFromImage(BufferedImage image, TileSet tileSet) {
         return new World(image, tileSet);
+    }
+    
+    public static World loadFromFile(String path, String name, TileSet tileSet) {
+        try {
+            return loadFromImage(ImageIO.read(new File(path)), name, tileSet);
+        } catch (IOException e) {
+            System.out.println("Level not found");
+            return null;
+        }
+    }
+
+    public static World loadFromImage(BufferedImage image, String name, TileSet tileSet) {
+        return new World(image, name, tileSet);
     }
 }

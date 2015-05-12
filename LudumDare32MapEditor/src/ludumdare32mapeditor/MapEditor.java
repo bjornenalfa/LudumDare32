@@ -49,8 +49,8 @@ public class MapEditor extends JFrame {
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
         //World.setTileSet(tileSet);
         //World.loadFromFile("levels/test.jpg");
-        worlds.add(World.loadFromFile(".//..//src//ludumdare32/levels//test.png", tileSet));
-        worlds.add(World.loadFromFile(".//..//src//ludumdare32/levels//test2.png", tileSet));
+        worlds.add(World.loadFromFile(".//..//src//ludumdare32/levels//test.png", "test", tileSet));
+        worlds.add(World.loadFromFile(".//..//src//ludumdare32/levels//test2.png", "test2", tileSet));
         worlds.get(1).setOffset(700, 0);
 
         setTitle("LudumDare32 Map Editor");
