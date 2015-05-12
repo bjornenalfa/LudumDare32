@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -31,7 +30,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MapEditor extends JFrame {
 
-    static TileSet tileSet = new TileSet("img/Spritesheet/cloudy.png", 16, 1);
+    static TileSet tileSet = new TileSet(".//..//src//ludumdare32/img/Spritesheet/cloudy.png", 16, 1);
     static ArrayList<World> worlds = new ArrayList<>();
     static int selectedWorld = 0;
 
@@ -99,7 +98,7 @@ public class MapEditor extends JFrame {
 
         panel.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
         panel.getActionMap().put("exit", exit());
-        
+
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(1600, 608));
         setResizable(true);
@@ -183,7 +182,7 @@ public class MapEditor extends JFrame {
                 };
                 if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                     worlds.add(World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_ARGB), tileSet));
-                    worlds.get(worlds.size()-1).setOffset(700, 700);
+                    worlds.get(worlds.size() - 1).setOffset(700, 700);
                     repaint();
                 } else {
 
@@ -200,7 +199,7 @@ public class MapEditor extends JFrame {
             }
         };
     }
-    
+
     public static void main(String[] args) {
         new MapEditor();
     }

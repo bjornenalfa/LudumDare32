@@ -12,7 +12,6 @@
 
 # Map editor
 
-+ Make a new world
 + Toolbox on the side where you can swap between visible layers, pick a tool, see your current tile, etc.
 + Edit one layer at a time.
 + Floodfill
@@ -23,3 +22,4 @@
 + Copy and paste area (kind of the same as templates)
 + Undo (not super important)
 + Metadata editor (teleports, monsters, objects, triggers, etc)
++ Close world (ask if you are sure you want to close; ask if you want to save first)

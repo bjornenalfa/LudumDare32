@@ -114,7 +114,7 @@ public class MapPanel extends JPanel {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MapEditor.tileSet = new TileSet("img/Spritesheet/sunny.png", 16, 1);
+                MapEditor.tileSet = new TileSet(".//..//src//ludumdare32/img/Spritesheet/sunny.png", 16, 1);
                 MapEditor.worlds.get(MapEditor.selectedWorld).changeTileSet(MapEditor.tileSet);
                 repaint();
             }
@@ -212,7 +212,7 @@ public class MapPanel extends JPanel {
                             if (MapEditor.selectedWorld != i) {
                                 MapEditor.selectedWorld = i;
                                 changedSelectedWorld = true;
-                                button = 4711;
+                                button = button == 1 ? 4711 : button;
                             }
                             repaint();
                             if (button == 3 && ctrlDown) {
