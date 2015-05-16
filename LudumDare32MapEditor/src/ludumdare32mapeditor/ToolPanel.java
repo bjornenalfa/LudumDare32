@@ -6,8 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
@@ -92,17 +90,26 @@ public class ToolPanel extends JPanel {
     public void addLabels() {
 
     }
+    
+    public void changeTileFromWindowCoordinates(Point p) {
+        MapEditor.changeTileFromWindowCoordinates(p, tile);
+    }
+    
+    public void changeTileFromGridCoordinates(Point p) {
+        MapEditor.changeTileFromWindowCoordinates(p, tile);
+    }
 
     public void mousePressedTool(MouseEvent m, int button) {
         switch (currentTool) {
             case 0:
-                MapEditor.mapPanel.changeTile(m.getPoint());
+                changeTileFromWindowCoordinates(m.getPoint());
                 break;
             case 1:
                 break;
             case 2:
                 break;
             case 3:
+                tile = MapEditor.getTileFromWindowCoordinates(m.getPoint());
                 break;
             case 4:
                 break;
@@ -114,13 +121,14 @@ public class ToolPanel extends JPanel {
         if (button == 1) {
             switch (currentTool) {
                 case 0:
-                    MapEditor.mapPanel.changeTile(m.getPoint());
+                    changeTileFromWindowCoordinates(m.getPoint());
                     break;
                 case 1:
                     break;
                 case 2:
                     break;
                 case 3:
+                    MapEditor.getTileFromWindowCoordinates(m.getPoint());
                     break;
                 case 4:
                     break;
@@ -139,6 +147,7 @@ public class ToolPanel extends JPanel {
             case 2:
                 break;
             case 3:
+                MapEditor.mapPanel.repaint();
                 break;
             case 4:
                 break;
@@ -165,7 +174,7 @@ public class ToolPanel extends JPanel {
             case 0:
                 World world = MapEditor.mapPanel.getWorldFromWindowCoordinates(lastPoint);
                 if (world != null) {
-                    Point.Double worldPoint = MapEditor.mapPanel.camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
+                    Point.Double worldPoint = MapPanel.camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
                     //g.fillOval((int)(worldPoint.x-5), (int)(worldPoint.y-5), 10, 10);
                     g.setColor(Color.DARK_GRAY);
                     g.drawRect((int) ((worldPoint.x - (int) (world.xOffset) % 16) / 16) * 16 + (int) (world.xOffset) % 16, (int) ((worldPoint.y -  (int) (world.yOffset) % 16) / 16) * 16 + (int) (world.yOffset) % 16, 16, 16);
@@ -176,6 +185,13 @@ public class ToolPanel extends JPanel {
             case 2:
                 break;
             case 3:
+                world = MapEditor.mapPanel.getWorldFromWindowCoordinates(lastPoint);
+                if (world != null) {
+                    Point.Double worldPoint = MapPanel.camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
+                    //g.fillOval((int)(worldPoint.x-5), (int)(worldPoint.y-5), 10, 10);
+                    g.setColor(Color.DARK_GRAY);
+                    g.drawRect((int) ((worldPoint.x - (int) (world.xOffset) % 16) / 16) * 16 + (int) (world.xOffset) % 16, (int) ((worldPoint.y -  (int) (world.yOffset) % 16) / 16) * 16 + (int) (world.yOffset) % 16, 16, 16);
+                }
                 break;
             case 4:
                 break;
