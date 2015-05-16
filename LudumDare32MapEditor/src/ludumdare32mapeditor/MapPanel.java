@@ -24,7 +24,7 @@ import javax.swing.KeyStroke;
 public class MapPanel extends JPanel {
 
     static Camera camera = new Camera(800, 608);
-    Point lastPoint;
+    Point lastPoint = new Point(0,0);
     boolean mouseDown = false;
     boolean draggingWorld = false;
 
@@ -64,6 +64,8 @@ public class MapPanel extends JPanel {
             MapEditor.worlds.get(i).drawBorder(g, Color.WHITE);
         }
         MapEditor.worlds.get(MapEditor.selectedWorld).drawBorder(g, Color.RED);
+        
+        MapEditor.toolPanel.paintTool(g);
 
 //      if (mouseDown) {
 //          Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
@@ -173,6 +175,7 @@ public class MapPanel extends JPanel {
             public void mouseReleased(MouseEvent me) {
                 mouseDown = false;
                 draggingWorld = false;
+                MapEditor.toolPanel.mouseReleasedTool(me);
             }
 
             @Override
@@ -190,13 +193,14 @@ public class MapPanel extends JPanel {
                     lastPoint = newPoint;
                     repaint();
                 } else if (button == 1) {
-                    changeTile(me.getPoint());
+                    MapEditor.toolPanel.mouseDraggedTool(me);
                 }
             }
 
             @Override
             public void mouseMoved(MouseEvent me) {
                 requestFocus();
+                MapEditor.toolPanel.mouseMovedTool(me);
             }
 
             @Override
@@ -222,7 +226,7 @@ public class MapPanel extends JPanel {
                         }
                     }
                     if (button == 1 && !changedSelectedWorld) {
-                        changeTile(me.getPoint());
+                        MapEditor.toolPanel.mousePressedTool(me);
                     }
                 }
             }

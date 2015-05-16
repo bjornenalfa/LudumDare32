@@ -34,8 +34,9 @@ public class MapEditor extends JFrame {
     static ArrayList<World> worlds = new ArrayList<>();
     static int selectedWorld = 0;
 
-    MapPanel mapPanel = new MapPanel();
-    TilePanel tilePanel = new TilePanel();
+    static MapPanel mapPanel = new MapPanel();
+    static TilePanel tilePanel = new TilePanel();
+    static ToolPanel toolPanel = new ToolPanel();
     JLabel label = new JLabel("");
 
     public MapEditor() {
@@ -85,8 +86,6 @@ public class MapEditor extends JFrame {
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setDividerSize(6);
-
-        JPanel toolPanel = new ToolPanel();
 
         JPanel anotherPanel = new JPanel(new BorderLayout());
         anotherPanel.add(toolPanel, BorderLayout.WEST);

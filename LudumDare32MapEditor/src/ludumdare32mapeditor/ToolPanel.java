@@ -1,11 +1,16 @@
 package ludumdare32mapeditor;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import static ludumdare32mapeditor.MapPanel.camera;
 
 public class ToolPanel extends JPanel {
 
@@ -22,6 +27,8 @@ public class ToolPanel extends JPanel {
     
     static int currentTool = 0;
     
+    Point lastPoint = new Point(0,0);
+    
     TileSet toolTiles = new TileSet("img/Art-Icons-Transparent.png", 64, 23, 34, 77, 74);
     TileSet selectedToolTiles = new TileSet("img/Art-Icons-Blue-Transparent.png", 64, 23, 34, 77, 74);
 
@@ -35,11 +42,12 @@ public class ToolPanel extends JPanel {
     }
 
     private void addToolButtons() {
-        addButton(1);
-        addButton(2);
-        addButton(14);
-        addButton(16);
-        addButton(46);
+        addButton(1); //Pen
+        addButton(2); //Brush
+        addButton(14); //Fill
+        addButton(16); //Pipett
+        addButton(46); //Resize
+        changeTool(0);
     }
 
     int buttonsIterator = 0;
@@ -72,6 +80,92 @@ public class ToolPanel extends JPanel {
     public void addLabels() {
 
     }
-
     
+    public void mousePressedTool(MouseEvent m) {
+        int button = m.getButton();
+        switch (currentTool) {
+            case 0:
+                MapEditor.mapPanel.changeTile(m.getPoint());
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3: 
+                break;
+            case 4: 
+                break;
+        }
+    }
+    
+    public void mouseDraggedTool(MouseEvent m) {
+        int button = m.getButton();
+        switch (currentTool) {
+            case 0:
+                lastPoint = m.getPoint();
+                MapEditor.mapPanel.changeTile(m.getPoint());
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3: 
+                break;
+            case 4: 
+                break;
+        }
+    }
+    
+    public void mouseMovedTool(MouseEvent m) {
+        int button = m.getButton();
+        switch (currentTool) {
+            case 0:
+                lastPoint = m.getPoint();
+                MapEditor.mapPanel.repaint();
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3: 
+                break;
+            case 4: 
+                break;
+        }
+    }
+
+    public void mouseReleasedTool(MouseEvent m) {
+        int button = m.getButton();
+        switch (currentTool) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3: 
+                break;
+            case 4: 
+                break;
+        }
+    }
+    
+    public void paintTool(Graphics2D g) {
+        switch (currentTool) {
+            case 0:
+                Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
+                //g.fillOval((int)(worldPoint.x-5), (int)(worldPoint.y-5), 10, 10);
+                g.setColor(Color.DARK_GRAY);
+                g.drawRect((int) (worldPoint.x / 16) * 16, (int) (worldPoint.y / 16) * 16, 16, 16);
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3: 
+                break;
+            case 4: 
+                break;
+        }
+    }
 }
