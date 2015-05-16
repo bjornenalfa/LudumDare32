@@ -24,7 +24,7 @@ import javax.swing.KeyStroke;
 public class MapPanel extends JPanel {
 
     static Camera camera = new Camera(800, 608);
-    Point lastPoint = new Point(0,0);
+    Point lastPoint = new Point(0, 0);
     boolean mouseDown = false;
     boolean draggingWorld = false;
 
@@ -64,7 +64,7 @@ public class MapPanel extends JPanel {
             MapEditor.worlds.get(i).drawBorder(g, Color.WHITE);
         }
         MapEditor.worlds.get(MapEditor.selectedWorld).drawBorder(g, Color.RED);
-        
+
         MapEditor.toolPanel.paintTool(g);
 
 //      if (mouseDown) {
@@ -153,6 +153,18 @@ public class MapPanel extends JPanel {
         };
     }
 
+    public World getWorldFromWindowCoordinates(Point p) {
+        //System.out.println("before x:"+p.x+" y:"+p.y);
+        Point.Double worldCoordinates = camera.windowToWorldCoordinates(p);
+        //System.out.println("after x:"+worldCoordinates.x+" y:"+worldCoordinates.y);
+        for (int i = 0; i < MapEditor.worlds.size(); i++) {
+            if (MapEditor.worlds.get(i).worldPointInWorld(worldCoordinates)) {
+                return MapEditor.worlds.get(i);
+            }
+        }
+        return null;
+    }
+
     int button;
 
     public void changeTile(Point screenPoint) {
@@ -175,11 +187,12 @@ public class MapPanel extends JPanel {
             public void mouseReleased(MouseEvent me) {
                 mouseDown = false;
                 draggingWorld = false;
-                MapEditor.toolPanel.mouseReleasedTool(me);
+                MapEditor.toolPanel.mouseReleasedTool(me, button);
             }
 
             @Override
             public void mouseDragged(MouseEvent me) {
+                MapEditor.toolPanel.mouseDraggedTool(me, button);
                 if (mouseDown && button == 3) {
                     Point newPoint = me.getPoint();
                     if (draggingWorld) {
@@ -193,14 +206,14 @@ public class MapPanel extends JPanel {
                     lastPoint = newPoint;
                     repaint();
                 } else if (button == 1) {
-                    MapEditor.toolPanel.mouseDraggedTool(me);
+                    //MapEditor.toolPanel.mouseDraggedTool(me, button);
                 }
             }
 
             @Override
             public void mouseMoved(MouseEvent me) {
                 requestFocus();
-                MapEditor.toolPanel.mouseMovedTool(me);
+                MapEditor.toolPanel.mouseMovedTool(me, button);
             }
 
             @Override
@@ -226,7 +239,7 @@ public class MapPanel extends JPanel {
                         }
                     }
                     if (button == 1 && !changedSelectedWorld) {
-                        MapEditor.toolPanel.mousePressedTool(me);
+                        MapEditor.toolPanel.mousePressedTool(me, button);
                     }
                 }
             }
