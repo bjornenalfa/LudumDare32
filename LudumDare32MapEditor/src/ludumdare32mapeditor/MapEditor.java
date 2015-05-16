@@ -2,6 +2,7 @@ package ludumdare32mapeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -105,6 +106,26 @@ public class MapEditor extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+    
+    public static void changeTileFromWindowCoordinates(Point screenPoint, Tile tile) {
+        Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
+        worlds.get(selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), tile);
+        mapPanel.repaint();
+    }
+    
+    public static void changeTileFromGridCoordinates(Point p, Tile tile) {
+        worlds.get(selectedWorld).changeTileGridCoordinates(p.x, p.y, tile);
+        mapPanel.repaint();
+    }
+    
+    public static Tile getTileFromWindowCoordinates(Point screenPoint) {
+        Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
+        return worlds.get(selectedWorld).getTileFromWorldCoordinates((int) (p.x), (int) (p.y));
+    }
+    
+    public static Tile getTileFromGridCoordinates(Point p) {
+        return worlds.get(selectedWorld).getTileFromGridCoordinates(p.x, p.y);
     }
 
     private Action save() {

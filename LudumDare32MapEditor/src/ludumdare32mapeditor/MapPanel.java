@@ -167,12 +167,6 @@ public class MapPanel extends JPanel {
 
     int button;
 
-    public void changeTile(Point screenPoint) {
-        Point.Double p = camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
-        MapEditor.worlds.get(MapEditor.selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), ToolPanel.tile);
-        repaint();
-    }
-
     private MouseAdapter mouseAdapter() {
         return new MouseAdapter() {
             @Override
