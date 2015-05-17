@@ -108,14 +108,14 @@ public class MapEditor extends JFrame {
         setVisible(true);
     }
     
-    public static void changeTileFromWindowCoordinates(Point screenPoint, Tile tile) {
+    public static void changeTileFromWindowCoordinates(Point screenPoint, Tile tile, int layer) {
         Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
-        worlds.get(selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), tile);
+        worlds.get(selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), tile, layer);
         mapPanel.repaint();
     }
     
-    public static void changeTileFromGridCoordinates(Point p, Tile tile) {
-        worlds.get(selectedWorld).changeTileGridCoordinates(p.x, p.y, tile);
+    public static void changeTileFromGridCoordinates(Point p, Tile tile, int layer) {
+        worlds.get(selectedWorld).changeTileGridCoordinates(p.x, p.y, tile, layer);
         mapPanel.repaint();
     }
     

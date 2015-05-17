@@ -92,11 +92,11 @@ public class ToolPanel extends JPanel {
     }
     
     public void changeTileFromWindowCoordinates(Point p) {
-        MapEditor.changeTileFromWindowCoordinates(p, tile);
+        MapEditor.changeTileFromWindowCoordinates(p, tile, layer);
     }
     
     public void changeTileFromGridCoordinates(Point p) {
-        MapEditor.changeTileFromWindowCoordinates(p, tile);
+        MapEditor.changeTileFromWindowCoordinates(p, tile, layer);
     }
 
     public void mousePressedTool(MouseEvent m, int button) {
@@ -213,13 +213,15 @@ public class ToolPanel extends JPanel {
 
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("2"), "two");
         getActionMap().put("two", two());
+        
+        getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("3"), "three");
+        getActionMap().put("three", three());
     }
 
     private Action one() {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("pressed tool 1");
                 layer = 1;
                 repaint();
             }
@@ -230,8 +232,17 @@ public class ToolPanel extends JPanel {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("pressed tool 2");
                 layer = 2;
+                repaint();
+            }
+        };
+    }
+    
+    private Action three() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                layer = 0;
                 repaint();
             }
         };

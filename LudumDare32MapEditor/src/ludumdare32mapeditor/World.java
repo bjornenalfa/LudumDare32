@@ -34,7 +34,7 @@ public class World {
 
     BufferedImage layer1;
     BufferedImage layer2;
-    
+
     String name = "";
 
     static AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
@@ -77,7 +77,7 @@ public class World {
         }
         renderMap();
     }
-    
+
     public World(BufferedImage image, String name, TileSet tileSet) {
         currentTileSet = tileSet;
         width = image.getWidth();
@@ -124,7 +124,7 @@ public class World {
         collisionMap = new boolean[width][height][4];
         renderMap();
     }
-    
+
     public World(int w, int h, int x, int y, String name, TileSet tileSet) {
         currentTileSet = tileSet;
         width = w;
@@ -140,7 +140,7 @@ public class World {
         collisionMap = new boolean[width][height][4];
         renderMap();
     }
-    
+
     public void setName(String newName) {
         name = newName;
     }
@@ -200,17 +200,17 @@ public class World {
                 newCM[x][y] = collisionMap[x + left][y + up];
             }
         }
-        if (newWidth >0 && newHeight >0){
-        width = newWidth;
-        height = newHeight;
-        pixelWidth = width * squareSize;
-        pixelHeight = height * squareSize;
-        textureMap1 = newTM;
-        textureMap2 = newTM2;
-        renderAbove = newRA;
-        collisionMap = newCM;
-        renderMap();
-        move(left * squareSize, up * squareSize);
+        if (newWidth > 0 && newHeight > 0) {
+            width = newWidth;
+            height = newHeight;
+            pixelWidth = width * squareSize;
+            pixelHeight = height * squareSize;
+            textureMap1 = newTM;
+            textureMap2 = newTM2;
+            renderAbove = newRA;
+            collisionMap = newCM;
+            renderMap();
+            move(left * squareSize, up * squareSize);
         }
     }
 
@@ -266,9 +266,9 @@ public class World {
     public boolean gridPointInWorld(int x, int y) {
         return !(x < 0 || x >= width || y < 0 || y >= height);
     }
-    
+
     public Point worldPointToGridPoint(Point.Double p) {
-        return new Point((int)((p.x-xOffset)/squareSize),(int)((p.y-yOffset)/squareSize));
+        return new Point((int) ((p.x - xOffset) / squareSize), (int) ((p.y - yOffset) / squareSize));
     }
 
     public void changeTileWorldCoordinates(double x, double y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
@@ -301,90 +301,92 @@ public class World {
             layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
         }
     }
-    
-    public void changeTileWorldCoordinates(double x, double y, Tile tile) {
+
+    public void changeTileWorldCoordinates(double x, double y, Tile tile, int layer) {
         x -= xOffset;
         y -= yOffset;
         x /= squareSize;
         y /= squareSize;
-        changeTileGridCoordinates((int) x, (int) y, tile);
+        changeTileGridCoordinates((int) x, (int) y, tile, layer);
     }
 
-    public void changeTileGridCoordinates(int x, int y, Tile tile) {
+    public void changeTileGridCoordinates(int x, int y, Tile tile, int layer) {
         if (gridPointInWorld(x, y)) {
             collisionMap[x][y] = tile.collisionMap;
-            textureMap1[x][y] = tile.texture1;
-            textureMap2[x][y] = tile.texture2;
-            renderAbove[x][y] = tile.renderAbove;
-            Graphics2D g2d = (Graphics2D) layer1.getGraphics();
-            g2d.setComposite(composite);
-            g2d.setColor(new Color(0, 0, 0, 0));
-            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
-            layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
-
-            g2d = (Graphics2D) layer2.getGraphics();
-            g2d.setComposite(composite);
-            g2d.setColor(new Color(0, 0, 0, 0));
-            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
-            layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+            if (layer == 1 || layer == 0) {
+                textureMap1[x][y] = tile.texture1;
+                Graphics2D g2d = (Graphics2D) layer1.getGraphics();
+                g2d.setComposite(composite);
+                g2d.setColor(new Color(0, 0, 0, 0));
+                g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+                layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
+            }
+            if (layer == 2 || layer == 0) {
+                renderAbove[x][y] = tile.renderAbove;
+                textureMap2[x][y] = tile.texture2;
+                Graphics2D g2d = (Graphics2D) layer2.getGraphics();
+                g2d.setComposite(composite);
+                g2d.setColor(new Color(0, 0, 0, 0));
+                g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+                layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+            }
         }
     }
 
-    public void changeTileLayer1WorldCoordinates(double x, double y, int tile) {
-        x -= xOffset;
-        y -= yOffset;
-        x /= squareSize;
-        y /= squareSize;
-        changeTileLayer1GridCoordinates((int) x, (int) y, tile);
-    }
-
-    public void changeTileLayer1GridCoordinates(int x, int y, int tile) {
-        if (gridPointInWorld(x, y)) {
-            textureMap1[x][y] = tile;
-
-            Graphics2D g2d = (Graphics2D) layer1.getGraphics();
-            g2d.setComposite(composite);
-            g2d.setColor(new Color(0, 0, 0, 0));
-            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
-            layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
-        }
-    }
-
-    public void changeTileLayer1WorldCoordinates(double x, double y, int tile, boolean renderAbove) {
-        x -= xOffset;
-        y -= yOffset;
-        x /= squareSize;
-        y /= squareSize;
-        changeTileLayer2GridCoordinates((int) x, (int) y, tile, renderAbove);
-    }
-    
-    public void changeTileLayer2GridCoordinates(int x, int y, int tile, boolean ra) {
-        if (gridPointInWorld(x, y)) {
-            textureMap2[x][y] = tile;
-            renderAbove[x][y] = ra;
-
-            Graphics2D g2d = (Graphics2D) layer2.getGraphics();
-            g2d.setComposite(composite);
-            g2d.setColor(new Color(0, 0, 0, 0));
-            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
-            layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
-        }
-    }
-    
-    public void changeTileLayer1WorldCoordinates(double x, double y, int tile, boolean[] collisions) {
-        x -= xOffset;
-        y -= yOffset;
-        x /= squareSize;
-        y /= squareSize;
-        changeTileCollisionGridCoordinates((int) x, (int) y, collisions);
-    }
-    
-    public void changeTileCollisionGridCoordinates(int x, int y, boolean[] collisions) {
-        if (gridPointInWorld(x, y)) {
-            collisionMap[x][y] = collisions;
-        }
-    }
-
+//    public void changeTileLayer1WorldCoordinates(double x, double y, int tile) {
+//        x -= xOffset;
+//        y -= yOffset;
+//        x /= squareSize;
+//        y /= squareSize;
+//        changeTileLayer1GridCoordinates((int) x, (int) y, tile);
+//    }
+//
+//    public void changeTileLayer1GridCoordinates(int x, int y, int tile) {
+//        if (gridPointInWorld(x, y)) {
+//            textureMap1[x][y] = tile;
+//
+//            Graphics2D g2d = (Graphics2D) layer1.getGraphics();
+//            g2d.setComposite(composite);
+//            g2d.setColor(new Color(0, 0, 0, 0));
+//            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+//            layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
+//        }
+//    }
+//
+//    public void changeTileLayer1WorldCoordinates(double x, double y, int tile, boolean renderAbove) {
+//        x -= xOffset;
+//        y -= yOffset;
+//        x /= squareSize;
+//        y /= squareSize;
+//        changeTileLayer2GridCoordinates((int) x, (int) y, tile, renderAbove);
+//    }
+//    
+//    public void changeTileLayer2GridCoordinates(int x, int y, int tile, boolean ra) {
+//        if (gridPointInWorld(x, y)) {
+//            textureMap2[x][y] = tile;
+//            renderAbove[x][y] = ra;
+//
+//            Graphics2D g2d = (Graphics2D) layer2.getGraphics();
+//            g2d.setComposite(composite);
+//            g2d.setColor(new Color(0, 0, 0, 0));
+//            g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
+//            layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
+//        }
+//    }
+//    
+//    public void changeTileLayer1WorldCoordinates(double x, double y, int tile, boolean[] collisions) {
+//        x -= xOffset;
+//        y -= yOffset;
+//        x /= squareSize;
+//        y /= squareSize;
+//        changeTileCollisionGridCoordinates((int) x, (int) y, collisions);
+//    }
+//    
+//    public void changeTileCollisionGridCoordinates(int x, int y, boolean[] collisions) {
+//        if (gridPointInWorld(x, y)) {
+//            collisionMap[x][y] = collisions;
+//        }
+//    }
     public void renderMap() {
         layer1 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = (Graphics2D) layer1.getGraphics();
@@ -444,7 +446,7 @@ public class World {
     public static World loadFromImage(BufferedImage image, TileSet tileSet) {
         return new World(image, tileSet);
     }
-    
+
     public static World loadFromFile(String path, String name, TileSet tileSet) {
         try {
             return loadFromImage(ImageIO.read(new File(path)), name, tileSet);
