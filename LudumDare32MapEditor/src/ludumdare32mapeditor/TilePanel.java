@@ -19,7 +19,7 @@ class TilePanel extends JPanel {
 
     static Camera camera = new Camera(800, 608);
     boolean mouseDown = false;
-    Point lastPoint;
+    Point lastPoint = new Point(0, 0);
 
     Point first = new Point(0, 0);
     Point second = new Point(0, 0);
@@ -54,6 +54,12 @@ class TilePanel extends JPanel {
             g.setColor(Color.GREEN);
             g.drawRect(first.x, first.y, World.squareSize, World.squareSize);
         }
+
+        Point.Double worldPoint = camera.windowToWorldCoordinates(lastPoint);
+        worldPoint.x -= worldPoint.x % 16;
+        worldPoint.y -= worldPoint.y % 16;
+        g.setColor(Color.DARK_GRAY);
+        g.drawRect((int) worldPoint.x, (int) worldPoint.y, World.squareSize, World.squareSize);
         camera.resetTransform(g);
     }
 
@@ -101,13 +107,29 @@ class TilePanel extends JPanel {
                     Point newPoint = me.getPoint();
                     camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
                     camera.constrainToTileSet();
-                    lastPoint = newPoint;
-                    repaint();
+                } else {
+                    if (button == 1) {
+                        first = new Point();
+                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                        first.x = (int) (p.x - p.x % World.squareSize);
+                        first.y = (int) (p.y - p.y % World.squareSize);
+                        ToolPanel.changeTile(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
+                    } else if (button == 3) {
+                        second = new Point();
+                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                        second.x = (int) (p.x - p.x % World.squareSize);
+                        second.y = (int) (p.y - p.y % World.squareSize);
+                        ToolPanel.changeTile(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
+                    }
                 }
+                lastPoint = me.getPoint();
+                repaint();
             }
 
             @Override
             public void mouseMoved(MouseEvent me) {
+                lastPoint = me.getPoint();
+                repaint();
                 requestFocus();
             }
 
