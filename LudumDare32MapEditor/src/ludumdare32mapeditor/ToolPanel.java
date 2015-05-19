@@ -90,11 +90,11 @@ public class ToolPanel extends JPanel {
     public void addLabels() {
 
     }
-    
+
     public void changeTileFromWindowCoordinates(Point p) {
         MapEditor.changeTileFromWindowCoordinates(p, tile, layer);
     }
-    
+
     public void changeTileFromGridCoordinates(Point p) {
         MapEditor.changeTileFromWindowCoordinates(p, tile, layer);
     }
@@ -177,7 +177,7 @@ public class ToolPanel extends JPanel {
                     Point.Double worldPoint = MapPanel.camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
                     //g.fillOval((int)(worldPoint.x-5), (int)(worldPoint.y-5), 10, 10);
                     g.setColor(Color.DARK_GRAY);
-                    g.drawRect((int) ((worldPoint.x - (int) (world.xOffset) % 16) / 16) * 16 + (int) (world.xOffset) % 16, (int) ((worldPoint.y -  (int) (world.yOffset) % 16) / 16) * 16 + (int) (world.yOffset) % 16, 16, 16);
+                    g.drawRect((int) ((worldPoint.x - (int) (world.xOffset) % 16) / 16) * 16 + (int) (world.xOffset) % 16, (int) ((worldPoint.y - (int) (world.yOffset) % 16) / 16) * 16 + (int) (world.yOffset) % 16, 16, 16);
                 }
                 break;
             case 1:
@@ -190,7 +190,7 @@ public class ToolPanel extends JPanel {
                     Point.Double worldPoint = MapPanel.camera.windowToWorldCoordinates(lastPoint.x, lastPoint.y);
                     //g.fillOval((int)(worldPoint.x-5), (int)(worldPoint.y-5), 10, 10);
                     g.setColor(Color.DARK_GRAY);
-                    g.drawRect((int) ((worldPoint.x - (int) (world.xOffset) % 16) / 16) * 16 + (int) (world.xOffset) % 16, (int) ((worldPoint.y -  (int) (world.yOffset) % 16) / 16) * 16 + (int) (world.yOffset) % 16, 16, 16);
+                    g.drawRect((int) ((worldPoint.x - (int) (world.xOffset) % 16) / 16) * 16 + (int) (world.xOffset) % 16, (int) ((worldPoint.y - (int) (world.yOffset) % 16) / 16) * 16 + (int) (world.yOffset) % 16, 16, 16);
                 }
                 break;
             case 4:
@@ -213,7 +213,7 @@ public class ToolPanel extends JPanel {
 
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("2"), "two");
         getActionMap().put("two", two());
-        
+
         getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("3"), "three");
         getActionMap().put("three", three());
     }
@@ -237,7 +237,7 @@ public class ToolPanel extends JPanel {
             }
         };
     }
-    
+
     private Action three() {
         return new AbstractAction() {
             @Override

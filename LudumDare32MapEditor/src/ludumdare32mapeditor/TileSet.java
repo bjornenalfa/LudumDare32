@@ -42,7 +42,7 @@ public class TileSet {
             }
         }
     }
-    
+
     public TileSet(String path, int size, int xMargin, int yMargin, int xOffset, int yOffset) {
         BufferedImage img = null;
         try {
@@ -52,8 +52,8 @@ public class TileSet {
             return;
         }
         this.size = size;
-        int width = img.getWidth()-xOffset*2;
-        int height = img.getHeight()-yOffset*2;
+        int width = img.getWidth() - xOffset * 2;
+        int height = img.getHeight() - yOffset * 2;
         horizontalTiles = (int) Math.ceil((double) width / (size + xMargin));
         verticalTiles = (int) Math.ceil((double) height / (size + yMargin));
 
@@ -68,13 +68,13 @@ public class TileSet {
             }
         }
     }
-    
+
     public void changeTileSize(int newSize) {
         AffineTransform at = new AffineTransform();
-        at.scale((double)(newSize)/size, (double)(newSize)/size);
+        at.scale((double) (newSize) / size, (double) (newSize) / size);
         AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
-        for (int i = 0;i<images.length;i++) {
-            images[i] = scaleOp.filter((BufferedImage) images[i], new BufferedImage(newSize,newSize,BufferedImage.TYPE_INT_ARGB));
+        for (int i = 0; i < images.length; i++) {
+            images[i] = scaleOp.filter((BufferedImage) images[i], new BufferedImage(newSize, newSize, BufferedImage.TYPE_INT_ARGB));
         }
     }
 }
