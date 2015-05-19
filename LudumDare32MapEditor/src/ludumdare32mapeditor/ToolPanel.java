@@ -100,12 +100,12 @@ public class ToolPanel extends JPanel {
         add(texture2Label);
     }
 
-    public static void changeTile(Tile t) {
+    public static void changeActiveTile(Tile t) {
         tile = t;
         updateTileImage();
     }
 
-    public static void changeTile(int texture, int layer) {
+    public static void changeActiveTileTexture(int texture, int layer) {
         tile.layer = layer;
         if (layer == 1) {
             tile.texture1 = texture;
@@ -146,7 +146,7 @@ public class ToolPanel extends JPanel {
             case 2:
                 break;
             case 3:
-                tile = MapEditor.getTileFromWindowCoordinates(m.getPoint());
+                changeActiveTile(MapEditor.getTileFromWindowCoordinates(m.getPoint()));
                 break;
             case 4:
                 break;

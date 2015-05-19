@@ -88,13 +88,13 @@ class TilePanel extends JPanel {
                         Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
                         first.x = (int) (p.x - p.x % World.squareSize);
                         first.y = (int) (p.y - p.y % World.squareSize);
-                        ToolPanel.changeTile(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
+                        ToolPanel.changeActiveTileTexture(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
                     } else if (button == 3) {
                         second = new Point();
                         Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
                         second.x = (int) (p.x - p.x % World.squareSize);
                         second.y = (int) (p.y - p.y % World.squareSize);
-                        ToolPanel.changeTile(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
+                        ToolPanel.changeActiveTileTexture(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
                     }
                 }
                 repaint();
@@ -113,13 +113,13 @@ class TilePanel extends JPanel {
                         Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
                         first.x = (int) (p.x - p.x % World.squareSize);
                         first.y = (int) (p.y - p.y % World.squareSize);
-                        ToolPanel.changeTile(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
+                        ToolPanel.changeActiveTileTexture(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
                     } else if (button == 3) {
                         second = new Point();
                         Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
                         second.x = (int) (p.x - p.x % World.squareSize);
                         second.y = (int) (p.y - p.y % World.squareSize);
-                        ToolPanel.changeTile(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
+                        ToolPanel.changeActiveTileTexture(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
                     }
                 }
                 lastPoint = me.getPoint();
