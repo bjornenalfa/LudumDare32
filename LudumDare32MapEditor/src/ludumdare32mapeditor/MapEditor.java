@@ -57,7 +57,7 @@ public class MapEditor extends JFrame {
         setTitle("LudumDare32 Map Editor");
 
         JButton button1 = new JButton("NEW");
-        button1.addActionListener(newIMG());
+        button1.addActionListener(newWorld());
         JButton button2 = new JButton("SAVE");
         button2.addActionListener(save());
         JButton button3 = new JButton("LOAD");
@@ -107,23 +107,23 @@ public class MapEditor extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-    
+
     public static void changeTileFromWindowCoordinates(Point screenPoint, Tile tile, int layer) {
         Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
         worlds.get(selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), tile, layer);
         mapPanel.repaint();
     }
-    
+
     public static void changeTileFromGridCoordinates(Point p, Tile tile, int layer) {
         worlds.get(selectedWorld).changeTileGridCoordinates(p.x, p.y, tile, layer);
         mapPanel.repaint();
     }
-    
+
     public static Tile getTileFromWindowCoordinates(Point screenPoint) {
         Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
         return worlds.get(selectedWorld).getTileFromWorldCoordinates((int) (p.x), (int) (p.y));
     }
-    
+
     public static Tile getTileFromGridCoordinates(Point p) {
         return worlds.get(selectedWorld).getTileFromGridCoordinates(p.x, p.y);
     }
@@ -187,7 +187,7 @@ public class MapEditor extends JFrame {
         };
     }
 
-    private Action newIMG() {
+    private Action newWorld() {
         return new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -201,8 +201,52 @@ public class MapEditor extends JFrame {
                     "Height: ", height
                 };
                 if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                    worlds.add(World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_ARGB), tileSet));
-                    worlds.get(worlds.size() - 1).setOffset(700, 700);
+                    World newWorld = World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_ARGB), tileSet);
+//                    ArrayList<World> spotWorlds = new ArrayList();
+                    World spotWorld = World.loadFromImage(new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB), tileSet);
+                    Point.Double startPoint = mapPanel.camera.windowToWorldCoordinates(new Point(mapPanel.camera.width / 2, mapPanel.camera.height / 2));
+//                    spotWorld.setOffset(startPoint.x, startPoint.y);
+//                    spotWorlds.add(spotWorld);
+                    double halfWidth = newWorld.pixelWidth / 2;
+                    double halfHeight = newWorld.pixelHeight / 2;
+                    //startPoint.x -= halfWidth;
+                    //startPoint.y -= halfHeight;
+                    boolean spotFound = false;
+                    int iterator = 0;
+                    int increase = Math.min(newWorld.height,newWorld.width)*2;
+                    while (!spotFound) {
+                        double amount = (iterator * 2 * Math.PI) / 32;
+                        double angleIncrease = Math.PI * 2 / amount;
+                        for (double angle = 0; angle < Math.PI * 2; angle += angleIncrease) {
+                            double x = startPoint.x + Math.cos(angle) * iterator;
+                            double y = startPoint.y + Math.sin(angle) * iterator;
+                            
+//                            spotWorld = World.loadFromImage(new BufferedImage(1,1, BufferedImage.TYPE_INT_ARGB), tileSet);
+//                            spotWorld.setOffset(x, y);
+//                            spotWorlds.add(spotWorld);
+
+                            boolean touchingWorld = false;
+                            for (World world : worlds) {
+                                //System.out.println("w"+worlds.indexOf(world)+" lx:" + world.xOffset + " ty:" + world.yOffset + " rx:" + (world.xOffset + world.pixelWidth) + " bx:" + (world.yOffset + world.pixelHeight));
+                                //System.out.println("nw lx:" + (x - halfWidth) + " ty:" + (y - halfHeight) + " rx:" + (x + halfWidth) + " bx:" + (y + halfHeight));
+                                if (!(world.xOffset > x + halfWidth || world.xOffset + world.pixelWidth < x - halfWidth || world.yOffset > y + halfHeight || world.yOffset + world.pixelHeight < y - halfHeight)) {
+                                    touchingWorld = true;
+                                    break;
+                                }
+                            }
+                            if (!touchingWorld) {
+                                spotFound = true;
+                                startPoint = new Point.Double(x-halfWidth, y-halfHeight);
+                                break;
+                            }
+                        }
+                        iterator += increase;
+                        //System.out.println(iterator);
+                    }
+                    newWorld.setOffset(startPoint.x, startPoint.y);
+                    worlds.add(newWorld);
+//                    worlds.addAll(spotWorlds);
+                    //worlds.get(worlds.size() - 1).setOffset(700, 700);
                     repaint();
                 } else {
 
