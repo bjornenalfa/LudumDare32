@@ -26,7 +26,7 @@ public class Weather {
     static ArrayList<Particles> oldWeatherParticles = new ArrayList();
 
     static BufferedImage oldLayer1;
-    static BufferedImage oldLayer2;
+//    static BufferedImage oldLayer2;
     static BufferedImage oldLayer3;
     static Ellipse2D.Double transitionCircle;
     static double transitionTime = 0;
@@ -37,7 +37,7 @@ public class Weather {
     public static void startTransition(Point.Double point) {
         old = current;
         oldLayer1 = World.layer1;
-        oldLayer2 = World.layer2;
+//        oldLayer2 = World.layer2;
         oldLayer3 = World.layer3;
         transitionTime = 0;
         transitionPoint = point;
@@ -58,7 +58,7 @@ public class Weather {
     public static void paintTransition(Graphics2D g) {
         if (transitioning) {
             g.drawImage(oldLayer1, 0, 0, null);
-            g.drawImage(oldLayer2, 0, 0, null);
+//            g.drawImage(oldLayer2, 0, 0, null);
             g.setClip(transitionCircle);
         }
     }

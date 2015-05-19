@@ -26,7 +26,7 @@ public class World {
     static int pixelHeight = 0;
 
     static BufferedImage layer1;
-    static BufferedImage layer2;
+//    static BufferedImage layer2;
     static BufferedImage layer3;
     
     static AlphaComposite overwriteAlpha = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
@@ -57,20 +57,21 @@ public class World {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 g2d.drawImage(currentTileSet.images[textureMap[x][y]], x * 32, y * 32, 32, 32, nothing);
-            }
-        }
-
-        layer2 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
-        g2d = (Graphics2D) layer2.getGraphics();
-        g2d.setComposite(overwriteAlpha);
-        g2d.setColor(new Color(0, 0, 0, 0));
-        g2d.fillRect(0, 0, pixelWidth, pixelHeight);
-        g2d = layer2.createGraphics();
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
                 g2d.drawImage(currentTileSet.images[textureMap2[x][y]], x * 32, y * 32, 32, 32, nothing);
             }
         }
+
+//        layer2 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
+//        g2d = (Graphics2D) layer2.getGraphics();
+//        g2d.setComposite(overwriteAlpha);
+//        g2d.setColor(new Color(0, 0, 0, 0));
+//        g2d.fillRect(0, 0, pixelWidth, pixelHeight);
+//        g2d = layer2.createGraphics();
+//        for (int x = 0; x < width; x++) {
+//            for (int y = 0; y < height; y++) {
+//                g2d.drawImage(currentTileSet.images[textureMap2[x][y]], x * 32, y * 32, 32, 32, nothing);
+//            }
+//        }
 
         layer3 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D) layer3.getGraphics();
@@ -87,7 +88,7 @@ public class World {
 
     static void paint(Graphics2D g) {
         g.drawImage(layer1, 0, 0, nothing);
-        g.drawImage(layer2, 0, 0, nothing);
+//        g.drawImage(layer2, 0, 0, nothing);
 
 //        for (int x = 0; x < width; x++) {
 //            for (int y = 0; y < height; y++) {
