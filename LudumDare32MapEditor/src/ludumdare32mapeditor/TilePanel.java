@@ -59,6 +59,7 @@ class TilePanel extends JPanel {
 
     boolean bFirst = true;
     int button;
+    boolean movingCamera = false;
 
     private MouseAdapter mouseAdapter() {
         return new MouseAdapter() {
@@ -73,18 +74,22 @@ class TilePanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent me) {
-                if (button == 1) {
-                    first = new Point();
-                    Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
-                    first.x = (int) (p.x - p.x % World.squareSize);
-                    first.y = (int) (p.y - p.y % World.squareSize);
-                    ToolPanel.changeTile(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
-                } else if (button == 3) {
-                    second = new Point();
-                    Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
-                    second.x = (int) (p.x - p.x % World.squareSize);
-                    second.y = (int) (p.y - p.y % World.squareSize);
-                    ToolPanel.changeTile(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
+                if (movingCamera) {
+                    movingCamera = false;
+                } else {
+                    if (button == 1) {
+                        first = new Point();
+                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                        first.x = (int) (p.x - p.x % World.squareSize);
+                        first.y = (int) (p.y - p.y % World.squareSize);
+                        ToolPanel.changeTile(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
+                    } else if (button == 3) {
+                        second = new Point();
+                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                        second.x = (int) (p.x - p.x % World.squareSize);
+                        second.y = (int) (p.y - p.y % World.squareSize);
+                        ToolPanel.changeTile(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
+                    }
                 }
                 repaint();
                 mouseDown = false;
@@ -92,7 +97,7 @@ class TilePanel extends JPanel {
 
             @Override
             public void mouseDragged(MouseEvent me) {
-                if (mouseDown && ctrlDown && button == 3) {
+                if (movingCamera) {
                     Point newPoint = me.getPoint();
                     camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
                     camera.constrainToTileSet();
@@ -110,6 +115,9 @@ class TilePanel extends JPanel {
             public void mousePressed(MouseEvent me) {
                 if (!mouseDown) {
                     button = me.getButton();
+                    if (button == 3 && ctrlDown) {
+                        movingCamera = true;
+                    }
                     lastPoint = me.getPoint();
                     mouseDown = true;
                 }
