@@ -126,7 +126,6 @@ public class MapEditor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ctrlDown = true;
-                System.out.println("poop");
             }
         };
     }
