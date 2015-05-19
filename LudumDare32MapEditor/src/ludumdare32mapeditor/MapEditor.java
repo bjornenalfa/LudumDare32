@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +36,7 @@ public class MapEditor extends JFrame {
     static TileSet tileSet = new TileSet(".//..//src//ludumdare32/img/Spritesheet/cloudy.png", 16, 1);
     static ArrayList<World> worlds = new ArrayList<>();
     static int selectedWorld = 0;
+    static boolean ctrlDown = false;
 
     static MapPanel mapPanel = new MapPanel();
     static TilePanel tilePanel = new TilePanel();
@@ -108,6 +111,32 @@ public class MapEditor extends JFrame {
         setVisible(true);
     }
 
+    void addKeyBindings(JPanel panel) {
+        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTROL, InputEvent.CTRL_DOWN_MASK), "ctrl_down");
+        panel.getActionMap().put("ctrl_down", ctrl_down());
+
+        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released CONTROL"), "ctrl_up");
+        panel.getActionMap().put("ctrl_up", ctrl_up());
+    }
+
+    private Action ctrl_down() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ctrlDown = true;
+            }
+        };
+    }
+
+    private Action ctrl_up() {
+        return new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ctrlDown = false;
+            }
+        };
+    }
+    
     public static void changeTileFromWindowCoordinates(Point screenPoint, Tile tile, int layer) {
         Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
         worlds.get(selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), tile, layer);

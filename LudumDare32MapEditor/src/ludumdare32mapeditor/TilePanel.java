@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.Objects;
 import javax.swing.JPanel;
+import static ludumdare32mapeditor.MapEditor.ctrlDown;
 import static ludumdare32mapeditor.MapEditor.tileSet;
 
 class TilePanel extends JPanel {
@@ -73,29 +74,25 @@ class TilePanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent me) {
                 if (button == 1) {
-                    if (bFirst) {
-                        first = new Point();
-                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
-                        first.x = (int) (p.x - p.x % World.squareSize);
-                        first.y = (int) (p.y - p.y % World.squareSize);
-                        ToolPanel.tile.texture1 = (int) (p.x - p.x % World.squareSize) / World.squareSize + (int) (p.y - p.y % World.squareSize) / World.squareSize * tileSet.horizontalTiles;
-                        bFirst = false;
-                    } else {
-                        second = new Point();
-                        Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
-                        second.x = (int) (p.x - p.x % World.squareSize);
-                        second.y = (int) (p.y - p.y % World.squareSize);
-                        ToolPanel.tile.texture2 = second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles;
-                        bFirst = true;
-                    }
-                    repaint();
+                    first = new Point();
+                    Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                    first.x = (int) (p.x - p.x % World.squareSize);
+                    first.y = (int) (p.y - p.y % World.squareSize);
+                    ToolPanel.changeTile(first.x / World.squareSize + first.y / World.squareSize * tileSet.horizontalTiles, 1);
+                } else if (button == 3) {
+                    second = new Point();
+                    Point.Double p = camera.windowToWorldCoordinates(me.getX(), me.getY());
+                    second.x = (int) (p.x - p.x % World.squareSize);
+                    second.y = (int) (p.y - p.y % World.squareSize);
+                    ToolPanel.changeTile(second.x / World.squareSize + second.y / World.squareSize * tileSet.horizontalTiles, 2);
                 }
+                repaint();
                 mouseDown = false;
             }
 
             @Override
             public void mouseDragged(MouseEvent me) {
-                if (mouseDown && button == 3) {
+                if (mouseDown && ctrlDown && button == 3) {
                     Point newPoint = me.getPoint();
                     camera.moveWindowPixels(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
                     camera.constrainToTileSet();

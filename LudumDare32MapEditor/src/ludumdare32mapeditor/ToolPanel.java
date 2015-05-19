@@ -2,16 +2,19 @@ package ludumdare32mapeditor;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
@@ -24,7 +27,7 @@ public class ToolPanel extends JPanel {
     final static int RECTANGLE = 4;
 
     static Tile tile = new Tile();
-    final static int amountOfButtons = 5;
+    final static int amountOfButtons = 6;
     JButton[] buttons = new JButton[amountOfButtons];
     int[] imageIDs = new int[amountOfButtons];
 
@@ -57,6 +60,7 @@ public class ToolPanel extends JPanel {
         addButton(14); //Fill
         addButton(16); //Pipett
         addButton(46); //Resize
+        addButton(10); //PasteIn
         changeTool(0);
     }
 
@@ -87,8 +91,41 @@ public class ToolPanel extends JPanel {
         buttons[toolID].setIcon(new ImageIcon(selectedToolTiles.images[imageIDs[toolID]]));
     }
 
-    public void addLabels() {
+    static JLabel texture1Label = new JLabel();
+    static JLabel texture2Label = new JLabel();
 
+    public void addLabels() {
+        updateTileImage();
+        add(texture1Label);
+        add(texture2Label);
+    }
+
+    public static void changeTile(Tile t) {
+        tile = t;
+        updateTileImage();
+    }
+
+    public static void changeTile(int texture, int layer) {
+        tile.layer = layer;
+        if (layer == 1) {
+            tile.texture1 = texture;
+        }
+        if (layer == 2) {
+            tile.texture2 = texture;
+        }
+        updateTileImage();
+    }
+
+    public static void updateTileImage() {
+        BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = img.getGraphics();
+        g.setColor(Color.MAGENTA);
+        g.fillRect(0, 0, 32, 32);
+        g.drawImage(MapEditor.tileSet.images[tile.texture1], 0, 0, 32, 32, null);
+        texture1Label.setIcon(new ImageIcon(new BufferedImage(img.getColorModel(), img.copyData(null), img.isAlphaPremultiplied(), null)));
+        g.fillRect(0, 0, 32, 32);
+        g.drawImage(MapEditor.tileSet.images[tile.texture2], 0, 0, 32, 32, null);
+        texture2Label.setIcon(new ImageIcon(img));
     }
 
     public void changeTileFromWindowCoordinates(Point p) {
