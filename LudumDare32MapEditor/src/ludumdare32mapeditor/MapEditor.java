@@ -99,9 +99,8 @@ public class MapEditor extends JFrame {
         panel.add(anotherPanel, BorderLayout.CENTER);
         panel.add(inPanel, BorderLayout.NORTH);
 
-        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
-        panel.getActionMap().put("exit", exit());
-
+        addKeyBindings(panel);
+        
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(1600, 608));
         setResizable(true);
@@ -111,7 +110,10 @@ public class MapEditor extends JFrame {
         setVisible(true);
     }
 
-    void addKeyBindings(JPanel panel) {
+    private void addKeyBindings(JPanel panel) {
+        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
+        panel.getActionMap().put("exit", exit());
+        
         panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTROL, InputEvent.CTRL_DOWN_MASK), "ctrl_down");
         panel.getActionMap().put("ctrl_down", ctrl_down());
 
@@ -124,6 +126,7 @@ public class MapEditor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ctrlDown = true;
+                System.out.println("poop");
             }
         };
     }
