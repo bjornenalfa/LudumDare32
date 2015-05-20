@@ -5,7 +5,9 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 public class Character {
-
+    
+    static final TileSet spriteSheet = new TileSet("img/Spritesheet/roguelikeChar_transparent.png", 16, 1);
+    
     static ArrayList<Character> characters = new ArrayList();
 
     private double x, y, vx, vy, hp, r, acceleration;

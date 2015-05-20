@@ -2,9 +2,8 @@
 ###############################################################################
 
 
-	Roguelike pack
+	Roguelike Characters pack
 	by Kenney Vleugels for Kenney (www.kenney.nl)
-	with help by Lynn Evers (Twitter: @EversLynn)
 
 			------------------------------
 

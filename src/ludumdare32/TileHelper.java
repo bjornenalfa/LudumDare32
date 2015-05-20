@@ -24,7 +24,7 @@ public class TileHelper extends JFrame {
     JLabel label = new JLabel("");
     MyPanel drawPanel;
     
-    TileSet tileSet = new TileSet("img/Spritesheet/cloudy.png", 16, 1);
+    TileSet tileSet = new TileSet("img/Spritesheet/roguelikeChar_transparent.png", 16, 1);
 
     public TileHelper() {
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
@@ -126,6 +126,7 @@ public class TileHelper extends JFrame {
                 int green = 0xFF & (argbBackwards >> 8);
                 int blue = 0xFF & (argbBackwards);
                 label.setText("Red:" + red + ",Green:" + green + ",Blue:" + blue + ",Alpha:" + alpha);
+                System.out.println("number:"+(first.x / 32 + first.y / 32 * tileSet.horizontalTiles));
                 StringSelection selection = new StringSelection(Integer.toHexString((first.x/32 + first.y/32 * 57 << 12) | second.x/32 + second.y/32 * 57));
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(selection, selection);
