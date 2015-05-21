@@ -390,7 +390,7 @@ public class ToolPanel extends JPanel {
             JSlider source = (JSlider) e.getSource();
             if (source == slider) {
                 if (!source.getValueIsAdjusting()) {
-                    double r = source.getValue() / 10.0;
+                    dr = source.getValue() / 10.0;
                 }
             }
         }
