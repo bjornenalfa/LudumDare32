@@ -270,6 +270,10 @@ public class World {
     public Point worldPointToGridPoint(Point.Double p) {
         return new Point((int) ((p.x - xOffset) / squareSize), (int) ((p.y - yOffset) / squareSize));
     }
+    
+    public Point.Double gridPointToWorldPoint(Point p) {
+        return new Point.Double(p.x*squareSize+xOffset,p.y*squareSize+yOffset);
+    }
 
     public void changeTileWorldCoordinates(double x, double y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
         x -= xOffset;

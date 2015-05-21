@@ -139,9 +139,13 @@ public class MapEditor extends JFrame {
         };
     }
     
+    public static World getSelectedWorld() {
+        return worlds.get(selectedWorld);
+    }
+    
     public static void changeTileFromWindowCoordinates(Point screenPoint, Tile tile, int layer) {
         Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
-        worlds.get(selectedWorld).changeTileWorldCoordinates((int) (p.x), (int) (p.y), tile, layer);
+        worlds.get(selectedWorld).changeTileWorldCoordinates(p.x, p.y, tile, layer);
         mapPanel.repaint();
     }
 
@@ -152,7 +156,7 @@ public class MapEditor extends JFrame {
 
     public static Tile getTileFromWindowCoordinates(Point screenPoint) {
         Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
-        return worlds.get(selectedWorld).getTileFromWorldCoordinates((int) (p.x), (int) (p.y));
+        return worlds.get(selectedWorld).getTileFromWorldCoordinates(p.x, p.y);
     }
 
     public static Tile getTileFromGridCoordinates(Point p) {
