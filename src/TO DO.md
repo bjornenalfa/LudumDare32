@@ -3,6 +3,13 @@
 + kill mosters with traps
 + certain monsters can only be killed on certain seasons
 
+# MOBA Concept
+
+Klassiskt lane system med minions. 
+Mitten finns vind kontroll, 2 små i topleft och bottomright hälften så starka.
+Värme vs. Kyla. Olika väder på olika halvor, torn som ger väder. Kan förstöra och göra torn.
+Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
+
 # Game
 
 + Character sprites + animation (files already in repository)

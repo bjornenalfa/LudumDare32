@@ -232,8 +232,8 @@ public class MapEditor extends JFrame {
                     "Height: ", height
                 };
                 if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                    World newWorld = World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_ARGB), tileSet);
-                    Point.Double startPoint = mapPanel.camera.windowToWorldCoordinates(new Point(mapPanel.camera.width / 2, mapPanel.camera.height / 2));
+                    World newWorld = World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), BufferedImage.TYPE_INT_ARGB), tileSet);
+                    Point.Double startPoint = MapPanel.camera.windowToWorldCoordinates(new Point(MapPanel.camera.width / 2, MapPanel.camera.height / 2));
                     double halfWidth = newWorld.pixelWidth / 2;
                     double halfHeight = newWorld.pixelHeight / 2;
                     boolean spotFound = false;
