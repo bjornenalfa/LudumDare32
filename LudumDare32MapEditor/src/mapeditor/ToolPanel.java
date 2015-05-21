@@ -10,13 +10,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class ToolPanel extends JPanel {
 
@@ -98,6 +107,7 @@ public class ToolPanel extends JPanel {
         updateTileImage();
         add(texture1Label);
         add(texture2Label);
+        add(new SliderPanel(1, 10));
     }
 
     public static void changeActiveTile(Tile t) {
@@ -283,5 +293,41 @@ public class ToolPanel extends JPanel {
                 repaint();
             }
         };
+    }
+
+    class SliderPanel extends JPanel implements ChangeListener {
+
+        JSlider slider;
+
+        public SliderPanel(int lowestValue, int highestValue) {
+
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+                Logger.getLogger(MapEditor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            slider = new JSlider(SwingConstants.HORIZONTAL, lowestValue * 10, highestValue * 10, lowestValue * 10);
+            slider.setPreferredSize(new Dimension(75,50));
+            slider.setMajorTickSpacing(10);
+            slider.setMinorTickSpacing(1);
+            slider.setPaintLabels(true);
+            Hashtable labelTable = new Hashtable();
+            labelTable.put(new Integer(lowestValue*10), new JLabel("" + lowestValue));
+            labelTable.put(new Integer(highestValue*10), new JLabel("" + highestValue));
+            slider.setLabelTable(labelTable);
+            add(slider);
+        }
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JSlider source = (JSlider) e.getSource();
+            if (source == slider) {
+                if (!source.getValueIsAdjusting()) {
+                    double r = source.getValue() / 10.0;
+                }
+            }
+        }
+
     }
 }
