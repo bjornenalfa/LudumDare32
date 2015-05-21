@@ -9,7 +9,7 @@ public class Camera {
     private double x = 0, y = 0;
     private double halfWidth = 400, halfHeight = 304;
     int width = 800, height = 608;
-    private double scale = 1;
+    double scale = 1;
 
     public Camera(int width, int height) {
         this.width = width;

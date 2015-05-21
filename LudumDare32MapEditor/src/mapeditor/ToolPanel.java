@@ -28,9 +28,9 @@ public class ToolPanel extends JPanel {
     final static int RECTANGLE = 4;
 
     static Tile tile = new Tile();
-    final static int amountOfButtons = 6;
-    JButton[] buttons = new JButton[amountOfButtons];
-    int[] imageIDs = new int[amountOfButtons];
+    static int amountOfButtons;
+    JButton[] buttons;
+    int[] imageIDs;
 
     static int currentTool = 0;
 
@@ -42,6 +42,8 @@ public class ToolPanel extends JPanel {
     TileSet selectedToolTiles = new TileSet("img/Art-Icons-Blue-Transparent.png", 64, 23, 34, 77, 74);
 
     //BRUSH VARIABLES
+    double cr = 2;
+    double dr = 3.1;
     double r = 4.1;
 
     public ToolPanel() {
@@ -59,12 +61,17 @@ public class ToolPanel extends JPanel {
     }
 
     private void addToolButtons() {
+        amountOfButtons = 8;
+        buttons = new JButton[amountOfButtons];
+        imageIDs = new int[amountOfButtons];
         addButton(1); //Pen
-        addButton(2); //Brush
+        addButton(0); //Screen Constant Brush
+        addButton(2); //World Constant Brush
         addButton(14); //Fill
         addButton(16); //Pipett
         addButton(46); //Resize
         addButton(10); //PasteIn
+        addButton(32); //Something
         changeTool(0);
     }
 
@@ -157,11 +164,21 @@ public class ToolPanel extends JPanel {
                 }
                 break;
             case 2:
+                worldPoint = MapPanel.camera.windowToWorldCoordinates(m.getPoint());
+                gridPoint = getSelectedWorld().worldPointToGridPoint(worldPoint);
+                for (int x = -(int) (r + .99) + 1; x < r; x++) {
+                    for (int y = -(int) (r + .99) + 1; y < r; y++) {
+                        if (x * x + y * y < r * r) {
+                            changeTileFromGridCoordinates(new Point(gridPoint.x + x, gridPoint.y + y));
+                        }
+                    }
+                }
                 break;
             case 3:
-                changeActiveTile(MapEditor.getTileFromWindowCoordinates(m.getPoint()));
+                
                 break;
             case 4:
+                changeActiveTile(MapEditor.getTileFromWindowCoordinates(m.getPoint()));
                 break;
         }
     }
@@ -185,11 +202,21 @@ public class ToolPanel extends JPanel {
                     }
                     break;
                 case 2:
+                    worldPoint = MapPanel.camera.windowToWorldCoordinates(m.getPoint());
+                    gridPoint = getSelectedWorld().worldPointToGridPoint(worldPoint);
+                    for (int x = -(int) (r + .99) + 1; x < r; x++) {
+                        for (int y = -(int) (r + .99) + 1; y < r; y++) {
+                            if (x * x + y * y < r * r) {
+                                changeTileFromGridCoordinates(new Point(gridPoint.x + x, gridPoint.y + y));
+                            }
+                        }
+                    }
                     break;
                 case 3:
-                    MapEditor.getTileFromWindowCoordinates(m.getPoint());
+                    
                     break;
                 case 4:
+                    MapEditor.getTileFromWindowCoordinates(m.getPoint());
                     break;
             }
         }
@@ -205,11 +232,13 @@ public class ToolPanel extends JPanel {
                 MapEditor.mapPanel.repaint();
                 break;
             case 2:
-                break;
-            case 3:
                 MapEditor.mapPanel.repaint();
                 break;
+            case 3:
+                
+                break;
             case 4:
+                MapEditor.mapPanel.repaint();
                 break;
         }
     }
@@ -241,22 +270,32 @@ public class ToolPanel extends JPanel {
                     g.drawRect((int) worldPoint2.x, (int) worldPoint2.y, 16, 16);
                     break;
                 case 1:
+                    r = cr/MapPanel.camera.scale;
                     for (int x = -(int) (r + .99) + 1; x < r; x++) {
                         for (int y = -(int) (r + .99) + 1; y < r; y++) {
                             if (x * x + y * y < r * r) {
                                 g.setColor(Color.DARK_GRAY);
-                                g.drawRect((int) worldPoint2.x + x * world.squareSize, (int) worldPoint2.y + y * world.squareSize, 16, 16);
+                                g.drawRect((int) worldPoint2.x + x * World.squareSize, (int) worldPoint2.y + y * World.squareSize, 16, 16);
                             }
                         }
                     }
                     break;
                 case 2:
+                    r = dr;
+                    for (int x = -(int) (r + .99) + 1; x < r; x++) {
+                        for (int y = -(int) (r + .99) + 1; y < r; y++) {
+                            if (x * x + y * y < r * r) {
+                                g.setColor(Color.DARK_GRAY);
+                                g.drawRect((int) worldPoint2.x + x * World.squareSize, (int) worldPoint2.y + y * World.squareSize, 16, 16);
+                            }
+                        }
+                    }
                     break;
                 case 3:
-                    g.setColor(Color.DARK_GRAY);
-                    g.drawRect((int) worldPoint2.x, (int) worldPoint2.y, 16, 16);
                     break;
                 case 4:
+                    g.setColor(Color.DARK_GRAY);
+                    g.drawRect((int) worldPoint2.x, (int) worldPoint2.y, 16, 16);
                     break;
             }
         }
