@@ -233,6 +233,13 @@ public class MapEditor extends JFrame {
                 };
                 if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                     World newWorld = World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText().replaceAll(",", "")), Integer.parseInt(height.getText().replaceAll(",", "")), BufferedImage.TYPE_INT_ARGB), tileSet);
+                    for (int x = 0;x<newWorld.width;x++) {
+                        for (int y = 0;y<newWorld.height;y++) {
+                            newWorld.textureMap1[x][y] = 5;
+                            newWorld.textureMap2[x][y] = TileSet.INVISIBLE;
+                        }
+                    }
+                    newWorld.renderMap();
                     Point.Double startPoint = mapPanel.camera.windowToWorldCoordinates(new Point(mapPanel.camera.width / 2, mapPanel.camera.height / 2));
                     double halfWidth = newWorld.pixelWidth / 2;
                     double halfHeight = newWorld.pixelHeight / 2;
