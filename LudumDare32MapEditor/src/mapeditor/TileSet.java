@@ -1,4 +1,4 @@
-package ludumdare32mapeditor;
+package mapeditor;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;

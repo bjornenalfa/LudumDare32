@@ -1,4 +1,4 @@
-package ludumdare32mapeditor;
+package mapeditor;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,7 +15,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import static ludumdare32mapeditor.MapEditor.ctrlDown;
+import static mapeditor.MapEditor.ctrlDown;
 
 public class MapPanel extends JPanel {
 

@@ -1,4 +1,4 @@
-package ludumdare32mapeditor;
+package mapeditor;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,11 +12,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.Objects;
 import javax.swing.JPanel;
-import static ludumdare32mapeditor.MapEditor.ctrlDown;
-import static ludumdare32mapeditor.MapEditor.tileSet;
+import static mapeditor.MapEditor.ctrlDown;
+import static mapeditor.MapEditor.tileSet;
 
 class TilePanel extends JPanel {
-
     static Camera camera = new Camera(800, 608);
     boolean mouseDown = false;
     Point lastPoint = new Point(0, 0);

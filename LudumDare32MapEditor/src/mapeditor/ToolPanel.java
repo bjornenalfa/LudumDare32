@@ -1,4 +1,4 @@
-package ludumdare32mapeditor;
+package mapeditor;
 
 import java.awt.Color;
 import java.awt.Dimension;

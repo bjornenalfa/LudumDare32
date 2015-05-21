@@ -1,4 +1,4 @@
-package ludumdare32mapeditor;
+package mapeditor;
 
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;

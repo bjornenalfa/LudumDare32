@@ -1,4 +1,4 @@
-package ludumdare32mapeditor;
+package mapeditor;
 
 public class Tile {
 
