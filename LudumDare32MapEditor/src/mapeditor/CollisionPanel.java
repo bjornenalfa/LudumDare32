@@ -2,7 +2,6 @@ package mapeditor;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -14,9 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class CollisionPanel extends JPanel {
+    
+    static final int amountOfButtons = 8;
 
-    JButton[] buttons = new JButton[8];
-    boolean[] selected = new boolean[8];
+    JButton[] buttons = new JButton[amountOfButtons];
+    boolean[] selected = new boolean[amountOfButtons];
     byte result = 0;
     static JLabel preview = new JLabel();
     
@@ -28,7 +29,7 @@ public class CollisionPanel extends JPanel {
     }
 
     private void addButtons() {
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < amountOfButtons; i++) {
             addButton(i);
         }
     }
