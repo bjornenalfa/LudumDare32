@@ -30,4 +30,3 @@ Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
 + Undo (not super important)
 + Metadata editor (teleports, monsters, objects, triggers, etc)
 + Close world (ask if you are sure you want to close; ask if you want to save first)
-+ Collision editor!important
