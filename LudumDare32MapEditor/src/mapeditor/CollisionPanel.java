@@ -23,6 +23,7 @@ public class CollisionPanel extends JPanel {
     public CollisionPanel() {
         addButtons();
         add(preview);
+        updatePreview();
         setPreferredSize(new Dimension(80, 608));
     }
 
@@ -182,7 +183,7 @@ public class CollisionPanel extends JPanel {
         
     }
 
-    public static void updateTileImage() {
+    public static void updatePreview() {
         BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics g = img.getGraphics();
         g.setColor(Color.MAGENTA);
