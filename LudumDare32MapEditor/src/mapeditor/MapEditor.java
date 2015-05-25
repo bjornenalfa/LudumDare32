@@ -41,6 +41,7 @@ public class MapEditor extends JFrame {
     static MapPanel mapPanel = new MapPanel();
     static TilePanel tilePanel = new TilePanel();
     static ToolPanel toolPanel = new ToolPanel();
+    static CollisionPanel collisionPanel = new CollisionPanel();
     JLabel label = new JLabel("");
 
     public MapEditor() {
@@ -79,26 +80,18 @@ public class MapEditor extends JFrame {
         inPanel.add(label, BorderLayout.CENTER);
         inPanel.add(checkBoxPanel, BorderLayout.EAST);
 
-        //JSplitPane tileCollisionPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tilePanel, );
-        //tileCollisionPane.setResizeWeight(0.75);
-        //tileCollisionPane.setOneTouchExpandable(true);
-        //tileCollisionPane.setContinuousLayout(true);
-        //tileCollisionPane.setDividerSize(6);
-        //JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapPanel, tileCollisionPane);
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapPanel, tilePanel);
         splitPane.setResizeWeight(0.75);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setDividerSize(6);
 
-        JPanel anotherPanel = new JPanel(new BorderLayout());
-        anotherPanel.add(toolPanel, BorderLayout.WEST);
-        anotherPanel.add(splitPane, BorderLayout.CENTER);
-
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(anotherPanel, BorderLayout.CENTER);
+        panel.add(toolPanel, BorderLayout.WEST);
+        panel.add(splitPane, BorderLayout.CENTER);
+        panel.add(collisionPanel, BorderLayout.EAST);
         panel.add(inPanel, BorderLayout.NORTH);
-
+        
         addKeyBindings(panel);
         
         setContentPane(panel);
