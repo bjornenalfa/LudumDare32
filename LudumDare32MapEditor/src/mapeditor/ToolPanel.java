@@ -31,10 +31,12 @@ import static mapeditor.MapEditor.getSelectedWorld;
 public class ToolPanel extends JPanel {
 
     final static int PENCIL = 0;
-    final static int BRUSH = 1;
-    final static int BUCKET = 2;
-    final static int PICKTILE = 3;
-    final static int RECTANGLE = 4;
+    final static int SCREEN_BRUSH = 1;
+    final static int WORLD_BRUSH = 2;
+    final static int FILL = 3;
+    final static int PICKTILE = 4;
+    final static int RESIZE = 5;
+    final static int PASTE_IN = 5;
 
     static Tile tile = new Tile();
     static int amountOfButtons;
@@ -54,6 +56,9 @@ public class ToolPanel extends JPanel {
     double cr = 2;
     double dr = 3.1;
     double r = 4.1;
+
+    //SLIDER VARIABLES
+    int sliderTarget = 0;
 
     public ToolPanel() {
         addKeyBindings();
@@ -105,6 +110,7 @@ public class ToolPanel extends JPanel {
 
     private void changeTool(int toolID) {
         currentTool = toolID;
+        changeSliderTarget(toolID);
         for (int i = 0; i < amountOfButtons; i++) {
             buttons[i].setIcon(new ImageIcon(toolTiles.images[imageIDs[i]]));
         }
@@ -159,10 +165,10 @@ public class ToolPanel extends JPanel {
 
     public void mousePressedTool(MouseEvent m, int button) {
         switch (currentTool) {
-            case 0:
+            case PENCIL:
                 changeTileFromWindowCoordinates(m.getPoint());
                 break;
-            case 1:
+            case SCREEN_BRUSH:
                 Point.Double worldPoint = MapPanel.camera.windowToWorldCoordinates(m.getPoint());
                 Point gridPoint = getSelectedWorld().worldPointToGridPoint(worldPoint);
                 for (int x = -(int) (r + .99) + 1; x < r; x++) {
@@ -173,7 +179,7 @@ public class ToolPanel extends JPanel {
                     }
                 }
                 break;
-            case 2:
+            case WORLD_BRUSH:
                 worldPoint = MapPanel.camera.windowToWorldCoordinates(m.getPoint());
                 gridPoint = getSelectedWorld().worldPointToGridPoint(worldPoint);
                 for (int x = -(int) (r + .99) + 1; x < r; x++) {
@@ -184,10 +190,10 @@ public class ToolPanel extends JPanel {
                     }
                 }
                 break;
-            case 3:
-                
+            case FILL:
+
                 break;
-            case 4:
+            case PICKTILE:
                 changeActiveTile(MapEditor.getTileFromWindowCoordinates(m.getPoint()));
                 break;
         }
@@ -197,10 +203,10 @@ public class ToolPanel extends JPanel {
         lastPoint = m.getPoint();
         if (button == 1) {
             switch (currentTool) {
-                case 0:
+                case PENCIL:
                     changeTileFromWindowCoordinates(m.getPoint());
                     break;
-                case 1:
+                case SCREEN_BRUSH:
                     Point.Double worldPoint = MapPanel.camera.windowToWorldCoordinates(m.getPoint());
                     Point gridPoint = getSelectedWorld().worldPointToGridPoint(worldPoint);
                     for (int x = -(int) (r + .99) + 1; x < r; x++) {
@@ -211,7 +217,7 @@ public class ToolPanel extends JPanel {
                         }
                     }
                     break;
-                case 2:
+                case WORLD_BRUSH:
                     worldPoint = MapPanel.camera.windowToWorldCoordinates(m.getPoint());
                     gridPoint = getSelectedWorld().worldPointToGridPoint(worldPoint);
                     for (int x = -(int) (r + .99) + 1; x < r; x++) {
@@ -222,10 +228,10 @@ public class ToolPanel extends JPanel {
                         }
                     }
                     break;
-                case 3:
-                    
+                case FILL:
+
                     break;
-                case 4:
+                case PICKTILE:
                     MapEditor.getTileFromWindowCoordinates(m.getPoint());
                     break;
             }
@@ -235,19 +241,19 @@ public class ToolPanel extends JPanel {
     public void mouseMovedTool(MouseEvent m, int button) {
         lastPoint = m.getPoint();
         switch (currentTool) {
-            case 0:
+            case PENCIL:
                 MapEditor.mapPanel.repaint();
                 break;
-            case 1:
+            case SCREEN_BRUSH:
                 MapEditor.mapPanel.repaint();
                 break;
-            case 2:
+            case WORLD_BRUSH:
                 MapEditor.mapPanel.repaint();
                 break;
-            case 3:
-                
+            case FILL:
+
                 break;
-            case 4:
+            case PICKTILE:
                 MapEditor.mapPanel.repaint();
                 break;
         }
@@ -255,15 +261,15 @@ public class ToolPanel extends JPanel {
 
     public void mouseReleasedTool(MouseEvent m, int button) {
         switch (currentTool) {
-            case 0:
+            case PENCIL:
                 break;
-            case 1:
+            case SCREEN_BRUSH:
                 break;
-            case 2:
+            case WORLD_BRUSH:
                 break;
-            case 3:
+            case FILL:
                 break;
-            case 4:
+            case PICKTILE:
                 break;
         }
     }
@@ -275,12 +281,12 @@ public class ToolPanel extends JPanel {
             Point gridPoint = world.worldPointToGridPoint(worldPoint);
             Point.Double worldPoint2 = world.gridPointToWorldPoint(gridPoint);
             switch (currentTool) {
-                case 0:
+                case PENCIL:
                     g.setColor(Color.DARK_GRAY);
                     g.drawRect((int) worldPoint2.x, (int) worldPoint2.y, 16, 16);
                     break;
-                case 1:
-                    r = cr/MapPanel.camera.scale;
+                case SCREEN_BRUSH:
+                    r = cr / MapPanel.camera.scale;
                     for (int x = -(int) (r + .99) + 1; x < r; x++) {
                         for (int y = -(int) (r + .99) + 1; y < r; y++) {
                             if (x * x + y * y < r * r) {
@@ -290,7 +296,7 @@ public class ToolPanel extends JPanel {
                         }
                     }
                     break;
-                case 2:
+                case WORLD_BRUSH:
                     r = dr;
                     for (int x = -(int) (r + .99) + 1; x < r; x++) {
                         for (int y = -(int) (r + .99) + 1; y < r; y++) {
@@ -301,9 +307,9 @@ public class ToolPanel extends JPanel {
                         }
                     }
                     break;
-                case 3:
+                case FILL:
                     break;
-                case 4:
+                case PICKTILE:
                     g.setColor(Color.DARK_GRAY);
                     g.drawRect((int) worldPoint2.x, (int) worldPoint2.y, 16, 16);
                     break;
@@ -361,9 +367,10 @@ public class ToolPanel extends JPanel {
         };
     }
 
-    class SliderPanel extends JPanel implements ChangeListener {
+    JSlider slider;
+    int sliderPrecision = 100;
 
-        JSlider slider;
+    class SliderPanel extends JPanel implements ChangeListener {
 
         public SliderPanel(int lowestValue, int highestValue) {
 
@@ -373,14 +380,15 @@ public class ToolPanel extends JPanel {
                 Logger.getLogger(MapEditor.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            slider = new JSlider(SwingConstants.HORIZONTAL, lowestValue * 10, highestValue * 10, lowestValue * 10);
-            slider.setPreferredSize(new Dimension(75,50));
+            slider = new JSlider(SwingConstants.HORIZONTAL, lowestValue * sliderPrecision, highestValue * sliderPrecision, lowestValue * sliderPrecision);
+            slider.setPreferredSize(new Dimension(75, 50));
             slider.setMajorTickSpacing(10);
             slider.setMinorTickSpacing(1);
             slider.setPaintLabels(true);
+            slider.addChangeListener(this);
             Hashtable labelTable = new Hashtable();
-            labelTable.put(new Integer(lowestValue*10), new JLabel("" + lowestValue));
-            labelTable.put(new Integer(highestValue*10), new JLabel("" + highestValue));
+            labelTable.put(new Integer(lowestValue * sliderPrecision), new JLabel("" + lowestValue));
+            labelTable.put(new Integer(highestValue * sliderPrecision), new JLabel("" + highestValue));
             slider.setLabelTable(labelTable);
             add(slider);
         }
@@ -389,11 +397,46 @@ public class ToolPanel extends JPanel {
         public void stateChanged(ChangeEvent e) {
             JSlider source = (JSlider) e.getSource();
             if (source == slider) {
-                if (!source.getValueIsAdjusting()) {
-                    dr = source.getValue() / 10.0;
+                switch (currentTool) {
+                    case PENCIL:
+                        break;
+                    case SCREEN_BRUSH:
+                        cr = source.getValue() / (double) sliderPrecision;
+                        MapEditor.mapPanel.repaint();
+                        break;
+                    case WORLD_BRUSH:
+                        dr = source.getValue() / (double) sliderPrecision;
+                        MapEditor.mapPanel.repaint();
+                        break;
+                    case FILL:
+                        break;
+                    case PICKTILE:
+                        break;
                 }
             }
+
+        }
+    }
+
+        public void setSliderValue(double value) {
+            slider.setValue((int) (value * sliderPrecision));
         }
 
+        private void changeSliderTarget(int toolID) {
+            sliderTarget = toolID;
+            switch (toolID) {
+                case PENCIL:
+                    break;
+                case SCREEN_BRUSH:
+                    setSliderValue(cr);
+                    break;
+                case WORLD_BRUSH:
+                    setSliderValue(dr);
+                    break;
+                case FILL:
+                    break;
+                case PICKTILE:
+                    break;
+            }
+        }
     }
-}
