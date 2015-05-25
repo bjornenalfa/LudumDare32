@@ -19,12 +19,15 @@ public class CollisionPanel extends JPanel {
     JButton[] buttons = new JButton[amountOfButtons];
     boolean[] selected = new boolean[amountOfButtons];
     byte result = 0;
-    static JLabel preview = new JLabel();
+    JLabel preview = new JLabel();
     
+    WeatherPanel weatherPanel = new WeatherPanel();
+
     public CollisionPanel() {
         addButtons();
         add(preview);
         updatePreview();
+        add(weatherPanel);
         setPreferredSize(new Dimension(80, 608));
     }
 
@@ -44,11 +47,6 @@ public class CollisionPanel extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                if ((result & (1 << (ID-1))) == (1 << (ID-1))) {
-//                    result -= Math.pow(2, ID-1);
-//                } else {
-//                    result += Math.pow(2, ID-1);
-//                }
                 pressed(ID);
             }
         });

@@ -2,6 +2,7 @@ package mapeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
@@ -42,7 +43,6 @@ public class MapEditor extends JFrame {
     static TilePanel tilePanel = new TilePanel();
     static ToolPanel toolPanel = new ToolPanel();
     static CollisionPanel collisionPanel = new CollisionPanel();
-    JLabel label = new JLabel("");
 
     public MapEditor() {
         try {
@@ -72,20 +72,16 @@ public class MapEditor extends JFrame {
         buttonPanel.add(button2);
         buttonPanel.add(button3);
 
-        CheckBoxPanel checkBoxPanel = new CheckBoxPanel();
-
         JPanel inPanel = new JPanel(new BorderLayout());
         inPanel.setPreferredSize(new Dimension(1600, 20));
         inPanel.add(buttonPanel, BorderLayout.WEST);
-        inPanel.add(label, BorderLayout.CENTER);
-        inPanel.add(checkBoxPanel, BorderLayout.EAST);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, mapPanel, tilePanel);
         splitPane.setResizeWeight(0.75);
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setDividerSize(6);
-
+        
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(toolPanel, BorderLayout.WEST);
         panel.add(splitPane, BorderLayout.CENTER);
