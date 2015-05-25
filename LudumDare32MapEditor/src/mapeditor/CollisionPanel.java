@@ -2,6 +2,7 @@ package mapeditor;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -9,12 +10,20 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class CollisionPanel extends JPanel {
 
+    JButton[] buttons = new JButton[8];
+    boolean[] selected = new boolean[8];
+    byte result = 0;
+    JLabel preview = new JLabel();
+    
     public CollisionPanel() {
         addButtons();
+        add(preview);
+        setPreferredSize(new Dimension(80, 608));
     }
 
     private void addButtons() {
@@ -108,14 +117,33 @@ public class CollisionPanel extends JPanel {
 
         JButton button = new JButton(new ImageIcon(img));
         button.setFocusPainted(false);
+        final int ID = i;
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+//                if ((result & (1 << (ID-1))) == (1 << (ID-1))) {
+//                    result -= Math.pow(2, ID-1);
+//                } else {
+//                    result += Math.pow(2, ID-1);
+//                }
+                pressed(ID);
             }
         });
         button.setPreferredSize(new Dimension(30, 30));
+        buttons[i - 1] = button;
         add(button);
     }
 
+    private void pressed(int ID) {
+        selected[ID] = !selected[ID];
+        
+    }
+
+    public static void updateTileImage() {
+        BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
+        Graphics g = img.getGraphics();
+        g.setColor(Color.MAGENTA);
+        g.fillRect(0, 0, 32, 32);
+        preview.setIcon(new ImageIcon(img));
+    }
 }
