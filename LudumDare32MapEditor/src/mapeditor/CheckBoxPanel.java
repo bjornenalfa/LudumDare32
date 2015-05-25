@@ -3,6 +3,7 @@ package mapeditor;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -15,11 +16,14 @@ class CheckBoxPanel extends JPanel implements ItemListener {
     JCheckBox aboveBox;
 
     public CheckBoxPanel() {
+        TileSet weatherSet = new TileSet("img/weatherIconsBlue.png", 221, 16, 66, 100, 82);
+        weatherSet.changeTileSize(30);
+        
         setLayout(new GridLayout(1, 0));
-        cloudyBox = new JCheckBox("CloudyCollision", false);
-        rainyBox = new JCheckBox("RainyCollision", false);
-        sunnyBox = new JCheckBox("SunnyCollision", false);
-        snowyBox = new JCheckBox("SnowyCollision", false);
+        cloudyBox = new JCheckBox(new ImageIcon(weatherSet.images[0]), false);
+        rainyBox = new JCheckBox(new ImageIcon(weatherSet.images[5]), false);
+        sunnyBox = new JCheckBox(new ImageIcon(weatherSet.images[1]), false);
+        snowyBox = new JCheckBox(new ImageIcon(weatherSet.images[8]), false);
         aboveBox = new JCheckBox("RenderAboveCharacters", false);
 
         cloudyBox.addItemListener(this);
