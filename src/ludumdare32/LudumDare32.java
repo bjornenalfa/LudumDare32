@@ -87,8 +87,8 @@ public class LudumDare32 extends JFrame {
                     double cx = x - tile.x;
                     double cy = y - tile.y;
                     if ((collisionType & 1) == 1) {// BIT 1 = BASE SQUARE COLLISION
-                        cx = Math.max(0, Math.min(32, cx));
-                        cy = Math.max(0, Math.min(32, cy));
+                        cx = Math.max(0, Math.min(31, cx));
+                        cy = Math.max(0, Math.min(31, cy));
                     }
                     if ((collisionType & 2) == 2) {// BIT 2 = TOP LEFT NO COLLISION
                         if (cx + cy < 32) {
@@ -143,11 +143,13 @@ public class LudumDare32 extends JFrame {
                     }
                     Vector2D collisionVector = new Vector2D(new Point.Double(x - cx - tile.x, y - cy - tile.y));
                     double sqDist = collisionVector.point.x * collisionVector.point.x + collisionVector.point.y * collisionVector.point.y;
-                    if (sqDist < 13 * 13) {
+                    if (sqDist < 16 * 16) {
                         if (sqDist == 0) {
                             g2d.setColor(new Color(255, 255, 255, 32));
                         } else {
-                            g2d.setColor(new Color(255, 255, 255, 255-(int)(255*(Math.sqrt(sqDist)/(13)))));
+                            //int k = (int) (255*(Math.sqrt(sqDist)/(16)));
+                            int k = (int) (255*(sqDist/(16*16)));
+                            g2d.setColor(new Color(255-k, 255, 255, 255-k));
                         }
                         g2d.fillRect(x, y, 1, 1);
                     }
