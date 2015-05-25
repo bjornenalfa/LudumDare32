@@ -419,25 +419,40 @@ public class ToolPanel extends JPanel {
         }
     }
 
-        public void setSliderValue(double value) {
-            slider.setValue((int) (value * sliderPrecision));
-        }
+    public void setSliderValue(double value) {
+        slider.setValue((int) (value * sliderPrecision));
+    }
 
-        private void changeSliderTarget(int toolID) {
-            sliderTarget = toolID;
-            switch (toolID) {
-                case PENCIL:
-                    break;
-                case SCREEN_BRUSH:
-                    setSliderValue(cr);
-                    break;
-                case WORLD_BRUSH:
-                    setSliderValue(dr);
-                    break;
-                case FILL:
-                    break;
-                case PICKTILE:
-                    break;
-            }
+    private void changeSliderTarget(int toolID) {
+        sliderTarget = toolID;
+        switch (toolID) {
+            case PENCIL:
+                hideSlider();
+                break;
+            case SCREEN_BRUSH:
+                showSlider();
+                setSliderValue(cr);
+                break;
+            case WORLD_BRUSH:
+                showSlider();
+                setSliderValue(dr);
+                break;
+            case FILL:
+                hideSlider();
+                break;
+            case PICKTILE:
+                hideSlider();
+                break;
         }
     }
+
+    private void showSlider() {
+        slider.setVisible(true);
+    }
+
+    private void hideSlider() {
+        if (slider != null) {
+            slider.setVisible(false);
+        }
+    }
+}
