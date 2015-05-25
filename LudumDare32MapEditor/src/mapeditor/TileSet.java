@@ -56,6 +56,8 @@ public class TileSet {
         int height = img.getHeight() - yOffset * 2;
         horizontalTiles = (int) Math.ceil((double) width / (size + xMargin));
         verticalTiles = (int) Math.ceil((double) height / (size + yMargin));
+        System.out.println("ht"+horizontalTiles);
+        System.out.println("vt"+verticalTiles);
 
         images = new BufferedImage[horizontalTiles * verticalTiles];
         int iterator = 0;
