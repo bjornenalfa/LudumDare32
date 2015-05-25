@@ -59,6 +59,12 @@ class TilePanel extends JPanel {
         worldPoint.y -= worldPoint.y % 16;
         g.setColor(Color.DARK_GRAY);
         g.drawRect((int) worldPoint.x, (int) worldPoint.y, World.squareSize, World.squareSize);
+        
+        g.setXORMode(Color.BLACK);
+        g.setColor(Color.WHITE);
+        g.drawString("1", first.x+1, first.y+10);
+        g.drawString("2", second.x+8, second.y+10);
+        
         camera.resetTransform(g);
     }
 
