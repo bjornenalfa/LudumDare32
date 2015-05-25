@@ -212,7 +212,7 @@ public class Character {
                     }
                 }
                 if ((collisionType & 128) == 128) {// BIT 8 = TOP EDGE NO COLLISION
-                    if (cy > 30) {
+                    if (cy < 1) {
                         cy = 100000;
                     }
                 }
