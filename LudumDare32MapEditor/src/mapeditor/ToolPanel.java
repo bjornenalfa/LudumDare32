@@ -146,10 +146,11 @@ public class ToolPanel extends JPanel {
     public static void updateTileImage() {
         BufferedImage img = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
         Graphics g = img.getGraphics();
-        g.setColor(Color.MAGENTA);
+        g.setColor(Color.YELLOW);
         g.fillRect(0, 0, 32, 32);
         g.drawImage(MapEditor.tileSet.images[tile.texture1], 0, 0, 32, 32, null);
         texture1Label.setIcon(new ImageIcon(new BufferedImage(img.getColorModel(), img.copyData(null), img.isAlphaPremultiplied(), null)));
+        g.setColor(Color.MAGENTA);
         g.fillRect(0, 0, 32, 32);
         g.drawImage(MapEditor.tileSet.images[tile.texture2], 0, 0, 32, 32, null);
         texture2Label.setIcon(new ImageIcon(img));
