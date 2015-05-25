@@ -244,7 +244,22 @@ public class World {
 
     public Tile getTileFromGridCoordinates(int x, int y) {
         if (gridPointInWorld(x, y)) {
-            return new Tile(textureMap1[x][y], textureMap2[x][y], renderAbove[x][y], collisionMap[x][y]);
+            return new Tile(textureMap1[x][y], textureMap2[x][y], renderAbove[x][y]);
+        }
+        return null;
+    }
+
+    public boolean[] getCollisionFromWorldCoordinates(double x, double y) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        return getCollisionFromGridCoordinates((int) x, (int) y);
+    }
+
+    public boolean[] getCollisionFromGridCoordinates(int x, int y) {
+        if (gridPointInWorld(x, y)) {
+            return collisionMap[x][y];
         }
         return null;
     }
@@ -270,9 +285,9 @@ public class World {
     public Point worldPointToGridPoint(Point.Double p) {
         return new Point((int) ((p.x - xOffset) / squareSize), (int) ((p.y - yOffset) / squareSize));
     }
-    
+
     public Point.Double gridPointToWorldPoint(Point p) {
-        return new Point.Double(p.x*squareSize+xOffset,p.y*squareSize+yOffset);
+        return new Point.Double(p.x * squareSize + xOffset, p.y * squareSize + yOffset);
     }
 
     public void changeTileWorldCoordinates(double x, double y, int tile1, int tile2, boolean cloudy, boolean sunny, boolean rainy, boolean snowy, boolean renderAbov) {
@@ -316,7 +331,6 @@ public class World {
 
     public void changeTileGridCoordinates(int x, int y, Tile tile, int layer) {
         if (gridPointInWorld(x, y)) {
-            collisionMap[x][y] = tile.collisionMap;
             if (layer == 1 || layer == 0) {
                 textureMap1[x][y] = tile.texture1;
                 Graphics2D g2d = (Graphics2D) layer1.getGraphics();
@@ -334,6 +348,20 @@ public class World {
                 g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
                 layer2.createGraphics().drawImage(currentTileSet.images[textureMap2[x][y]], x * squareSize, y * squareSize, nothing);
             }
+        }
+    }
+
+    public void changeCollisionWorldCoordinates(double x, double y, boolean[] collisions) {
+        x -= xOffset;
+        y -= yOffset;
+        x /= squareSize;
+        y /= squareSize;
+        changeCollisionGridCoordinates((int) x, (int) y, collisions);
+    }
+
+    public void changeCollisionGridCoordinates(int x, int y, boolean[] collisions) {
+        if (gridPointInWorld(x, y)) {
+            collisionMap[x][y] = collisions;
         }
     }
 
