@@ -39,6 +39,7 @@ public class ToolPanel extends JPanel {
     final static int PASTE_IN = 5;
 
     static Tile tile = new Tile();
+    static boolean[] collisions = new boolean[4];
     static int amountOfButtons;
     JButton[] buttons;
     int[] imageIDs;
@@ -48,6 +49,7 @@ public class ToolPanel extends JPanel {
     Point lastPoint = new Point(0, 0);
 
     int layer = 1;
+    boolean changingCollisions = false;
 
     TileSet toolTiles = new TileSet("img/Art-Icons-Transparent.png", 64, 23, 34, 77, 74);
     TileSet selectedToolTiles = new TileSet("img/Art-Icons-Blue-Transparent.png", 64, 23, 34, 77, 74);
