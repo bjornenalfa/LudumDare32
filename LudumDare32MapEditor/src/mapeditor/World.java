@@ -331,7 +331,7 @@ public class World {
 
     public void changeTileGridCoordinates(int x, int y, Tile tile, int layer) {
         if (gridPointInWorld(x, y)) {
-            if (layer == 1 || layer == 0) {
+            if ((layer & 1) == 1) {
                 textureMap1[x][y] = tile.texture1;
                 Graphics2D g2d = (Graphics2D) layer1.getGraphics();
                 g2d.setComposite(composite);
@@ -339,7 +339,7 @@ public class World {
                 g2d.fillRect(x * squareSize, y * squareSize, squareSize, squareSize);
                 layer1.createGraphics().drawImage(currentTileSet.images[textureMap1[x][y]], x * squareSize, y * squareSize, nothing);
             }
-            if (layer == 2 || layer == 0) {
+            if ((layer & 2) == 2) {
                 renderAbove[x][y] = tile.renderAbove;
                 textureMap2[x][y] = tile.texture2;
                 Graphics2D g2d = (Graphics2D) layer2.getGraphics();
