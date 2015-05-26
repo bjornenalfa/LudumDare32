@@ -13,14 +13,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class CollisionPanel extends JPanel {
-    
+
     static final int amountOfButtons = 8;
 
     JButton[] buttons = new JButton[amountOfButtons];
     boolean[] selected = new boolean[amountOfButtons];
     byte result = 0;
     JLabel preview = new JLabel();
-    
+
     WeatherPanel weatherPanel = new WeatherPanel();
 
     public CollisionPanel() {
@@ -41,7 +41,7 @@ public class CollisionPanel extends JPanel {
     int glowRadius = 5;
 
     private void addButton(int i) {
-        JButton button = new JButton(new ImageIcon(getImage(1<<i,squareSize,glowRadius,false)));
+        JButton button = new JButton(new ImageIcon(getImage(1 << i, squareSize, glowRadius, false)));
         button.setFocusPainted(false);
         final int ID = i;
         button.addActionListener(new ActionListener() {
@@ -51,36 +51,47 @@ public class CollisionPanel extends JPanel {
             }
         });
         buttons[i] = button;
-        button.setPreferredSize(new Dimension(squareSize+2*glowRadius, squareSize+2*glowRadius));
+        button.setPreferredSize(new Dimension(squareSize + 2 * glowRadius, squareSize + 2 * glowRadius));
         add(button);
     }
 
     private void pressed(int ID) {
         selected[ID] = !selected[ID];
-        buttons[ID].setIcon(new ImageIcon(getImage(1<<ID,squareSize,glowRadius,selected[ID])));
+        buttons[ID].setIcon(new ImageIcon(getImage(1 << ID, squareSize, glowRadius, selected[ID])));
         updatePreview();
+        updateButtons();
+    }
+
+    private void updateButtons() {
+        for (int ID = 0; ID < amountOfButtons; ID++) {
+            if ((result & (1 << (ID))) == (1 << (ID))) {
+                buttons[ID].setIcon(new ImageIcon(getImage(result - (1 << ID), squareSize, glowRadius, selected[ID])));
+            } else {
+                buttons[ID].setIcon(new ImageIcon(getImage(result + (1 << ID), squareSize, glowRadius, selected[ID])));
+            }
+        }
     }
 
     public void updatePreview() {
         result = 0;
-        for (int i = 0;i<selected.length;i++) {
+        for (int i = 0; i < selected.length; i++) {
             if (selected[i]) {
-                result += 1<<i;
+                result += 1 << i;
             }
         }
-        preview.setIcon(new ImageIcon(getImage(result,45,10,false)));
+        preview.setIcon(new ImageIcon(getImage(result, 45, 10, false)));
     }
-    
+
     public BufferedImage getImage(int i, int squareSize, int glowRadius, boolean selected) {
-        int width = squareSize+2*glowRadius;
-        int rsq = glowRadius*glowRadius;
-        
+        int width = squareSize + 2 * glowRadius;
+        int rsq = glowRadius * glowRadius;
+
         BufferedImage img = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) img.getGraphics();
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(0, 0, width, width);
         if (selected) {
-            g.setColor(new Color(70,255,70,70));
+            g.setColor(new Color(70, 255, 70, 70));
             g.fillRect(0, 0, width, width);
         }
 
@@ -89,8 +100,8 @@ public class CollisionPanel extends JPanel {
                 double cx = x - glowRadius;
                 double cy = y - glowRadius;
                 if ((i & 1) == 1) {// BIT 1 = BASE SQUARE COLLISION
-                    cx = Math.max(0, Math.min(squareSize-1, cx));
-                    cy = Math.max(0, Math.min(squareSize-1, cy));
+                    cx = Math.max(0, Math.min(squareSize - 1, cx));
+                    cy = Math.max(0, Math.min(squareSize - 1, cy));
                 }
                 if ((i & 2) == 2) {// BIT 2 = TOP LEFT NO COLLISION
                     if (cx + cy < squareSize) {
@@ -139,7 +150,7 @@ public class CollisionPanel extends JPanel {
                             } else {
                                 //int k = (int) (255*(Math.sqrt(sqDist)/(16)));
                                 int k = (int) (255 * (sqDist / (rsq)));
-                                g.setColor(new Color(255, 255-k, 255-k, 255 - k));
+                                g.setColor(new Color(255, 255 - k, 255 - k, 255 - k));
                             }
                             g.fillRect(x, y, 1, 1);
                         }
@@ -147,8 +158,8 @@ public class CollisionPanel extends JPanel {
                     }
                 }
                 if ((i & 64) == 64) {// BIT 7 = RIGHT EDGE NO COLLISION
-                    cx = Math.max(-glowRadius, Math.min(squareSize-1, cx));
-                    if (cx > squareSize-2) {
+                    cx = Math.max(-glowRadius, Math.min(squareSize - 1, cx));
+                    if (cx > squareSize - 2) {
                         Point.Double collisionVector = new Point.Double(x - cx - glowRadius, y - cy - glowRadius);
                         double sqDist = collisionVector.x * collisionVector.x + collisionVector.y * collisionVector.y;
                         if (sqDist < rsq) {
@@ -157,7 +168,7 @@ public class CollisionPanel extends JPanel {
                             } else {
                                 //int k = (int) (255*(Math.sqrt(sqDist)/(16)));
                                 int k = (int) (255 * (sqDist / (rsq)));
-                                g.setColor(new Color(255, 255-k, 255-k, 255 - k));
+                                g.setColor(new Color(255, 255 - k, 255 - k, 255 - k));
                             }
                             g.fillRect(x, y, 1, 1);
                         }
@@ -175,7 +186,7 @@ public class CollisionPanel extends JPanel {
                             } else {
                                 //int k = (int) (255*(Math.sqrt(sqDist)/(16)));
                                 int k = (int) (255 * (sqDist / (rsq)));
-                                g.setColor(new Color(255, 255-k, 255-k, 255 - k));
+                                g.setColor(new Color(255, 255 - k, 255 - k, 255 - k));
                             }
                             g.fillRect(x, y, 1, 1);
                         }
@@ -190,7 +201,7 @@ public class CollisionPanel extends JPanel {
                     } else {
                         //int k = (int) (255*(Math.sqrt(sqDist)/(16)));
                         int k = (int) (255 * (sqDist / (rsq)));
-                        g.setColor(new Color(255-k, 255, 255, 255 - k));
+                        g.setColor(new Color(255 - k, 255, 255, 255 - k));
                     }
                     g.fillRect(x, y, 1, 1);
                 }

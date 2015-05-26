@@ -48,7 +48,7 @@ public class MapPanel extends JPanel {
                 MapEditor.worlds.get(i).paintLayer1(g);
             }
         }
-        if (((showLayers >> 1) & 1) == 1) {
+        if ((showLayers & 2) == 2) {
             for (int i = 0; i < MapEditor.worlds.size(); i++) {
                 MapEditor.worlds.get(i).paintLayer2(g);
             }
