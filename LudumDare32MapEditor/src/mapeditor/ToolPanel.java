@@ -36,7 +36,7 @@ public class ToolPanel extends JPanel {
     final static int FILL = 3;
     final static int PICKTILE = 4;
     final static int RESIZE = 5;
-    final static int PASTE_IN = 5;
+    final static int PASTE_IN = 6;
 
     static Tile tile = new Tile();
     static boolean[] collisions = new boolean[4];
@@ -48,6 +48,7 @@ public class ToolPanel extends JPanel {
 
     Point lastPoint = new Point(0, 0);
 
+    int weather = 1;
     int layer = 1;
     boolean changingCollisions = false;
 
@@ -159,11 +160,21 @@ public class ToolPanel extends JPanel {
     }
 
     public void changeTileFromWindowCoordinates(Point p) {
-        MapEditor.changeTileFromWindowCoordinates(p, tile, layer);
+        if (layer > 0) {
+            MapEditor.changeTileFromWindowCoordinates(p, tile, layer);
+        }
+        if (changingCollisions) {
+            MapEditor.changeCollisionsFromWindowCoordinates(p, collisions, weather);
+        }
     }
 
     public void changeTileFromGridCoordinates(Point p) {
-        MapEditor.changeTileFromGridCoordinates(p, tile, layer);
+        if (layer > 0) {
+            MapEditor.changeTileFromGridCoordinates(p, tile, layer);
+        }
+        if (changingCollisions) {
+            MapEditor.changeCollisionsFromGridCoordinates(p, collisions, weather);
+        }
     }
 
     public void mousePressedTool(MouseEvent m, int button) {

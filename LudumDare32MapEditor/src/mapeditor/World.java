@@ -351,17 +351,21 @@ public class World {
         }
     }
 
-    public void changeCollisionWorldCoordinates(double x, double y, boolean[] collisions) {
+    public void changeCollisionsWorldCoordinates(double x, double y, boolean[] collisions, int weather) {
         x -= xOffset;
         y -= yOffset;
         x /= squareSize;
         y /= squareSize;
-        changeCollisionGridCoordinates((int) x, (int) y, collisions);
+        changeCollisionsGridCoordinates((int) x, (int) y, collisions, weather);
     }
 
-    public void changeCollisionGridCoordinates(int x, int y, boolean[] collisions) {
+    public void changeCollisionsGridCoordinates(int x, int y, boolean[] collisions, int weather) {
         if (gridPointInWorld(x, y)) {
-            collisionMap[x][y] = collisions;
+            for (int i = 0; i < 3; i++) {
+                if ((weather & (1 << i)) == (1 << i)) {
+                    collisionMap[x][y][i] = collisions[i];
+                }
+            }
         }
     }
 

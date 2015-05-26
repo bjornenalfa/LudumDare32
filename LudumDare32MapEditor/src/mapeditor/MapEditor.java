@@ -81,15 +81,15 @@ public class MapEditor extends JFrame {
         splitPane.setOneTouchExpandable(true);
         splitPane.setContinuousLayout(true);
         splitPane.setDividerSize(6);
-        
+
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(toolPanel, BorderLayout.WEST);
         panel.add(splitPane, BorderLayout.CENTER);
         panel.add(collisionPanel, BorderLayout.EAST);
         panel.add(inPanel, BorderLayout.NORTH);
-        
+
         addKeyBindings(panel);
-        
+
         setContentPane(panel);
         getContentPane().setPreferredSize(new Dimension(1600, 608));
         setResizable(true);
@@ -102,7 +102,7 @@ public class MapEditor extends JFrame {
     private void addKeyBindings(JPanel panel) {
         panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "exit");
         panel.getActionMap().put("exit", exit());
-        
+
         panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_CONTROL, InputEvent.CTRL_DOWN_MASK), "ctrl_down");
         panel.getActionMap().put("ctrl_down", ctrl_down());
 
@@ -127,11 +127,11 @@ public class MapEditor extends JFrame {
             }
         };
     }
-    
+
     public static World getSelectedWorld() {
         return worlds.get(selectedWorld);
     }
-    
+
     public static void changeTileFromWindowCoordinates(Point screenPoint, Tile tile, int layer) {
         Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
         worlds.get(selectedWorld).changeTileWorldCoordinates(p.x, p.y, tile, layer);
@@ -140,6 +140,17 @@ public class MapEditor extends JFrame {
 
     public static void changeTileFromGridCoordinates(Point p, Tile tile, int layer) {
         worlds.get(selectedWorld).changeTileGridCoordinates(p.x, p.y, tile, layer);
+        mapPanel.repaint();
+    }
+
+    public static void changeCollisionsFromWindowCoordinates(Point screenPoint, boolean[] collisions, int weather) {
+        Point.Double p = MapPanel.camera.windowToWorldCoordinates(screenPoint.x, screenPoint.y);
+        worlds.get(selectedWorld).changeCollisionsWorldCoordinates(p.x, p.y, collisions, weather);
+        mapPanel.repaint();
+    }
+
+    public static void changeCollisionsFromGridCoordinates(Point p, boolean[] collisions, int weather) {
+        worlds.get(selectedWorld).changeCollisionsGridCoordinates(p.x, p.y, collisions, weather);
         mapPanel.repaint();
     }
 
@@ -227,8 +238,8 @@ public class MapEditor extends JFrame {
                 if (JOptionPane.showConfirmDialog(null, message, "Input size", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                     World newWorld = World.loadFromImage(new BufferedImage(Integer.parseInt(width.getText()), Integer.parseInt(height.getText()), BufferedImage.TYPE_INT_ARGB), tileSet);
                     Point.Double startPoint = MapPanel.camera.windowToWorldCoordinates(new Point(MapPanel.camera.width / 2, MapPanel.camera.height / 2));
-                    for (int x = 0;x<newWorld.width;x++) {
-                        for (int y = 0;y<newWorld.height;y++) {
+                    for (int x = 0; x < newWorld.width; x++) {
+                        for (int y = 0; y < newWorld.height; y++) {
                             newWorld.textureMap1[x][y] = 5;
                             newWorld.textureMap2[x][y] = TileSet.INVISIBLE;
                         }
