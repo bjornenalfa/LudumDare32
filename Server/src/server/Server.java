@@ -7,8 +7,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -112,7 +116,7 @@ public class Server implements Runnable {
                 d.setVisible(true);
             }
         } while (portErr);
-        addOut("Server starting up on TCP port: " + srvPort);
+        addOut("Server starting up on UDP port: " + srvPort);
     }
 
     private void addOut(String str) {
@@ -123,6 +127,15 @@ public class Server implements Runnable {
         }
     }
 
+    private void sendStr(String str) {
+        DatagramPacket pack = new DatagramPacket(str.getBytes(), str.getBytes().length);
+        try {
+            srvSocket.send(pack);
+        } catch (IOException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
