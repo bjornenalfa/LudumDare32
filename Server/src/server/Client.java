@@ -23,6 +23,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.logging.Level;
@@ -79,7 +80,7 @@ public class Client implements Runnable {
         boolean disconnect = true;
         while (disconnect) {
             try {
-                srvSocket = new DatagramSocket(srvPort, InetAddress.getByName(srvIP));
+                srvSocket = new DatagramSocket();
                 disconnect = false;
             } catch (IllegalArgumentException ex) {
                 disconnect = true;
@@ -416,6 +417,12 @@ public class Client implements Runnable {
                 text[i] = str2.charAt(new SecureRandom().nextInt(str2.length()));
             }
             str += "(STX)" + (System.currentTimeMillis() / 1000L) + "(ETX)" + new String(text);
+
+            try {
+                DatagramPacket data = new DatagramPacket(str.getBytes(), str.getBytes().length, InetAddress.getByName(srvIP), srvPort);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
