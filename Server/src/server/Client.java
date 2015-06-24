@@ -326,29 +326,13 @@ public class Client implements Runnable {
         mainFr.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
         mainFr.getRootPane().getActionMap().put("ESCAPE", escapeAction);
         running = true;
-        sendStr(myID);
+        connected = true;
+        OutThread.start();
         InThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (running) {
-                    String s = getStr();
-                    s = rmTime(s);
-                    if (s.trim().length() > 0 && (!s.isEmpty() || s != null)) {
-                        if (s.contains("(SRV-ID)") && connected == false) {
-                            Matcher matcher = Pattern.compile("\\(SRV-ID\\)(.+?)\\(SRV-ID\\)").matcher(s);
-                            matcher.find();
-                            s = (String) matcher.group(1);
-                            myID = s;
-                            addOut("Your username has been changed to: " + myID + " by the server!");
-                        } else if (s.contains("(SRV)CONNECTED(SRV)") && connected == false) {
-                            addOut("ALL SYSTEMS NORMAL!");
-                            addOut("You are now connected to the server!");
-                            connected = true;
-                            OutThread.start();
-                        } else {
-                            addOut(s);
-                        }
-                    }
+                    addOut(getStr());
                 }
                 OutThread.interrupt();
             }

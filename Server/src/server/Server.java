@@ -142,18 +142,28 @@ public class Server implements Runnable {
 
             @Override
             public void run() {
-                try {
-                    DatagramPacket incomingPacket = new DatagramPacket(new byte[1024], new byte[1024].length);
-                    srvSocket.receive(incomingPacket);
-                    ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
-                    ObjectInputStream is = new ObjectInputStream(in);
-                    Object obj = (Object) is.readObject();
-                    toSend.put((InetSocketAddress) incomingPacket.getSocketAddress(), obj);
-
-                } catch (IOException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                while (srvRunning) {
+                    try {
+                        DatagramPacket incomingPacket = new DatagramPacket(new byte[1024], new byte[1024].length);
+                        srvSocket.receive(incomingPacket);
+                        ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
+                        ObjectInputStream is = new ObjectInputStream(in);
+                        Object obj = (Object) is.readObject();
+                        if (obj instanceof String){
+                            System.out.println(obj);
+                        }
+                        toSend.put((InetSocketAddress) incomingPacket.getSocketAddress(), obj);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (ClassNotFoundException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
 
@@ -161,16 +171,23 @@ public class Server implements Runnable {
         in.start();
 
         Thread out = new Thread(new Runnable() {
-
             @Override
             public void run() {
-                for (InetSocketAddress s : usersL) {
-                    Iterator it = toSend.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Entry ent = (Entry) it.next();
-                        if (ent.getKey() != s) {
-                            sendObj(ent.getValue(), s.getHostString(), s.getPort());
+                while (srvRunning) {
+                    for (InetSocketAddress s : usersL) {
+                        Iterator it = toSend.entrySet().iterator();
+                        while (it.hasNext()) {
+                            Entry ent = (Entry) it.next();
+                            if (ent.getKey() != s) {
+                                sendObj(ent.getValue(), s.getHostString(), s.getPort());
+                            }
                         }
+                    }
+                    
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
