@@ -7,10 +7,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -38,6 +50,10 @@ public class Server implements Runnable {
     private int srvPort;
     private JFrame startFr;
     private JTextArea inA;
+    private final ArrayList<InetSocketAddress> usersL;
+    private final Map<InetSocketAddress, Object> toSend;
+    private Long srvTime;
+    private boolean srvRunning;
 
     public Server(int port) {
         srvPort = port;
@@ -65,6 +81,8 @@ public class Server implements Runnable {
         JScrollPane scrollP = new JScrollPane(inA);
         startFr.add(scrollP);
         startFr.setVisible(true);
+        usersL = new ArrayList();
+        toSend = new HashMap();
     }
 
     @Override
@@ -116,7 +134,48 @@ public class Server implements Runnable {
                 d.setVisible(true);
             }
         } while (portErr);
+        srvTime = (System.currentTimeMillis() / 1000L);
+        srvRunning = true;
         addOut("Server starting up on UDP port: " + srvPort);
+
+        Thread in = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    DatagramPacket incomingPacket = new DatagramPacket(new byte[1024], new byte[1024].length);
+                    srvSocket.receive(incomingPacket);
+                    ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
+                    ObjectInputStream is = new ObjectInputStream(in);
+                    Object obj = (Object) is.readObject();
+                    toSend.put((InetSocketAddress) incomingPacket.getSocketAddress(), obj);
+
+                } catch (IOException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        });
+        in.start();
+
+        Thread out = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                for (InetSocketAddress s : usersL) {
+                    Iterator it = toSend.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Entry ent = (Entry) it.next();
+                        if (ent.getKey() != s) {
+                            sendObj(ent.getValue(), s.getHostString(), s.getPort());
+                        }
+                    }
+                }
+            }
+        });
+        out.start();
     }
 
     private void addOut(String str) {
@@ -127,15 +186,22 @@ public class Server implements Runnable {
         }
     }
 
-    private void sendStr(String str) {
-        DatagramPacket pack = new DatagramPacket(str.getBytes(), str.getBytes().length);
+    private void sendObj(Object obj, String ipaddr, int port) {
         try {
-            srvSocket.send(pack);
+            DatagramSocket socket = new DatagramSocket();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            os.writeObject(obj);
+            byte[] data = outputStream.toByteArray();
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
+            socket.send(sendPacket);
+        } catch (SocketException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * @param args the command line arguments
      */
