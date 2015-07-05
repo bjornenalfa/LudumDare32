@@ -15,7 +15,7 @@ public class TileSet {
     public TileSet(String path,int size,int margin) {
         BufferedImage img = null;
         try {
-            img = ImageIO.read(TileSet.class.getResourceAsStream(path));
+            img = ImageIO.read(LudumDare32.class.getResourceAsStream(path));
         } catch (IOException e) {
             System.out.println("Spritesheet not found");
             return;
@@ -24,6 +24,8 @@ public class TileSet {
         int height = img.getHeight();
         horizontalTiles = (int) Math.ceil((double)width/(size+margin));
         verticalTiles = (int) Math.ceil((double)height/(size+margin));
+        
+        System.out.println("path:"+path+" ht:"+horizontalTiles+" vt:"+verticalTiles);
         
         images = new BufferedImage[horizontalTiles*verticalTiles];
         int iterator = 0;

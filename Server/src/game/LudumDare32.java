@@ -18,6 +18,7 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import server.Client;
 
 public class LudumDare32 extends JFrame {
 
@@ -34,6 +35,9 @@ public class LudumDare32 extends JFrame {
     static Player player = new Player(655, 450, 0);
     MyPanel panel;
     static Camera camera;
+    
+    static Client client = new Client();
+    static PlayerDataList players = new PlayerDataList();
 
     BufferedImage image;
 
@@ -215,6 +219,10 @@ public class LudumDare32 extends JFrame {
         public void run() {
 
             while (true) { // UPDATING =========================================================================================================
+                PlayerDataList newPlayerDataList = client.getPlayerDataList();
+                if (newPlayerDataList != null) {
+                    players = newPlayerDataList;
+                }
                 player.changeV((leftDown ? -1 : 0) + (rightDown ? 1 : 0), (upDown ? -1 : 0) + (downDown ? 1 : 0), player.acceleration);
 
                 Weather.updateTransition();
@@ -272,6 +280,9 @@ public class LudumDare32 extends JFrame {
                 g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
             }
             Character.paintCharacters(g2);
+            for (PlayerData p : LudumDare32.players.list) {
+                new Player(p.x,p.y,0).paint(g2);
+            }
             Weather.paintTransition2(g2);
             World.paint2(g2);
             Particles.paintAll(g2);
