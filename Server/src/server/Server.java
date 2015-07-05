@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -139,7 +140,7 @@ public class Server implements Runnable {
         addOut("Server starting up on UDP port: " + srvPort);
 
         Thread in = new Thread(new Runnable() {
-            
+
             @Override
             public void run() {
                 while (srvRunning) {
@@ -149,16 +150,21 @@ public class Server implements Runnable {
                         ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
                         ObjectInputStream is = new ObjectInputStream(in);
                         Object obj = (Object) is.readObject();
-                        if (obj instanceof String){
+                        if (obj instanceof String) {
                             System.out.println(obj);
                         }
-                        toSend.put((InetSocketAddress) incomingPacket.getSocketAddress(), obj);
+                        InetSocketAddress e = (InetSocketAddress) incomingPacket.getSocketAddress();
+                        toSend.put(e, obj);
+                        System.out.println(e);
+                        if (!usersL.contains(e)) {
+                            usersL.add(e);
+                        }
                     } catch (IOException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
@@ -183,7 +189,7 @@ public class Server implements Runnable {
                             }
                         }
                     }
-                    
+
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
@@ -215,7 +221,7 @@ public class Server implements Runnable {
         } catch (SocketException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

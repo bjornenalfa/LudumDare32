@@ -17,9 +17,11 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -382,20 +384,19 @@ public class Client implements Runnable {
             reset();
         }
     }
-    
+
     private void sendObj(Object obj) {
         try {
-            DatagramSocket socket = new DatagramSocket();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
-            socket.send(sendPacket);
+            srvSocket.send(sendPacket);
         } catch (SocketException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -413,24 +414,19 @@ public class Client implements Runnable {
         } else if (str.matches("!l") || str.matches("!list")) {
             sendStr("(STX)" + "listusers" + "(ETX)");
         } else if (!str.isEmpty() && running) {
-            String str2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            int j = new SecureRandom().nextInt(100 - 0 + 1) + 0;
-            char[] text = new char[j];
-            for (int i = 0; i < j; i++) {
-                text[i] = str2.charAt(new SecureRandom().nextInt(str2.length()));
-            }
-            str += "(STX)" + (System.currentTimeMillis() / 1000L) + "(ETX)" + new String(text);
-
+            str += "(STX)" + (System.currentTimeMillis() / 1000L) + "(ETX)";
             sendObj(str);
         }
     }
 
-    private String getStr() {
+    private Object getObj() {
         try {
-            DatagramPacket receivePacket = new DatagramPacket(new byte[1024], new byte[1024].length);
-            srvSocket.receive(receivePacket);
-            String str = new String(receivePacket.getData());
-            return new String(str.getBytes(Charset.defaultCharset()));
+            DatagramPacket incomingPacket = new DatagramPacket(new byte[1024], new byte[1024].length);
+            srvSocket.receive(incomingPacket);
+            ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
+            ObjectInputStream is = new ObjectInputStream(in);
+            Object obj = (Object) is.readObject();
+            return obj;
         } catch (SocketException ex) {
             if (running) {
                 addOut("You have been disconnected from the server!");
@@ -444,8 +440,16 @@ public class Client implements Runnable {
             }
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
+    }
+
+    private String getStr() {
+        String str = (String) getObj();
+        System.out.println(str);
+        return new String(str.getBytes(Charset.defaultCharset()));
     }
 
     private static String rmTime(String str) {
