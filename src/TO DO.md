@@ -33,3 +33,4 @@ Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
 + Client behöver sendPlayerData som skickar spelarens PlayerData till servern. (se punkt 4)
 + Server behöver skicka PlayerDataList till alla kopplade clients (ofta)
 + "1 Thread x Client"-server? bra idè eller?
++  Lägga till en "heartbeat", något sätt för clienten/servern att verifiera att clienten/servern är uppe om inte den får ett svar inom X sekunder... (10-15s?)
