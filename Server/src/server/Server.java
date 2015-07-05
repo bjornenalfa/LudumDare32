@@ -96,7 +96,6 @@ public class Server implements Runnable {
                             ent = (Entry) it.next();
                             if (ent.getKey() != s) {
                                 sendObj(ent.getValue(), s.getHostString(), s.getPort());
-
                             }
                         }
                         it.remove();
@@ -122,7 +121,7 @@ public class Server implements Runnable {
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-            
+
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
             srvSocket.send(sendPacket);
         } catch (IOException ex) {
@@ -131,6 +130,7 @@ public class Server implements Runnable {
     }
 
     private void handleObject(Object obj, InetSocketAddress sender) {
+        System.out.println("RECEIVED PACKET FROM: "+sender);
         if (obj instanceof String) {
             String s = (String) obj;
             if (s.matches("heartbeat")) {

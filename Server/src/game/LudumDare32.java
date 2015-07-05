@@ -22,7 +22,7 @@ import server.Client;
 
 public class LudumDare32 extends JFrame {
     
-    static String SERVER_IP = "0.0.0.0";
+    static String SERVER_IP = "127.0.0.1";
     static int SERVER_PORT = 9010;
     static String CLIENT_ID = "ld32";
 
@@ -47,6 +47,7 @@ public class LudumDare32 extends JFrame {
 
     public LudumDare32() {
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
+        new Thread(client).start();
         World.setTileSet(Cloudy.tileSet);
         World.loadFromFile("levels/test.png");
 

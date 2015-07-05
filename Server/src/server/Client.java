@@ -80,44 +80,45 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-        running = true;
-        connected = true;
-        InThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (running) {
-                    handleObject(getObj(new byte[1024], 1024));
-                }
-                OutThread.interrupt();
-            }
-        });
-        OutThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (running) {
-                    String s = new Scanner(System.in).nextLine();
-                    if (s.trim().length() > 0) {
-                        sendObj(s);
-                        System.out.println("Sent: " + s);
+        if (connected) {
+            running = true;
+            InThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (running) {
+                        handleObject(getObj(new byte[1024], 1024));
                     }
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException ex) {
-                    }
+                    OutThread.interrupt();
                 }
-                InThread.interrupt();
+            });
+            OutThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (running) {
+                        String s = new Scanner(System.in).nextLine();
+                        if (s.trim().length() > 0) {
+                            sendObj(s);
+                            System.out.println("Sent: " + s);
+                        }
+                        try {
+                            Thread.sleep(250);
+                        } catch (InterruptedException ex) {
+                        }
+                    }
+                    InThread.interrupt();
+                }
+            });
+            OutThread.start();
+            InThread.start();
+            while (running) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                }
             }
-        });
-        OutThread.start();
-        InThread.start();
-        while (running) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException ex) {
-            }
-        }
 
-        srvSocket.close();
+            srvSocket.close();
+        }
     }
 
     private void sendObj(Object obj) {
@@ -192,6 +193,6 @@ public class Client implements Runnable {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new Client("localhost", 9010, "abcdef").sendPlayerData(new PlayerData(100, 100));
+        new Client("dariorostirolla.se", 9010, "abcdef").run();
     }
 }
