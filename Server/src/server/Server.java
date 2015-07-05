@@ -211,13 +211,12 @@ public class Server implements Runnable {
 
     private void sendObj(Object obj, String ipaddr, int port) {
         try {
-            DatagramSocket socket = new DatagramSocket();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
-            socket.send(sendPacket);
+            srvSocket.send(sendPacket);
         } catch (SocketException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
