@@ -22,4 +22,8 @@ public class PlayerDataList implements Serializable {
     public void clear() {
         list.clear();
     }
+
+    public ArrayList<PlayerData> getL(){
+        return list;
+    }
 }
