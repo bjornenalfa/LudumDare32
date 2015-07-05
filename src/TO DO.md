@@ -29,6 +29,7 @@ Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
 
 # Multiplayer
 
-+ Client behöver getPlayerDataList som returnerar senaste PlayerDataList som servern skickat.
-+ Client behöver sendPlayerData som skickar spelarens PlayerData till servern.
++ Client behöver getPlayerDataList som returnerar senaste PlayerDataList som servern skickat. (done?)
++ Client behöver sendPlayerData som skickar spelarens PlayerData till servern. (done?)
 + Server behöver skicka PlayerDataList till alla kopplade clients (ofta)
++ "1 Thread x Client"-server? bra idè eller?
