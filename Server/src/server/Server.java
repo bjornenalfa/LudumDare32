@@ -70,13 +70,10 @@ public class Server implements Runnable {
                         }
                         InetSocketAddress e = (InetSocketAddress) incomingPacket.getSocketAddress();
                         toSend.put(e, obj);
-                        System.out.println(e);
                         if (!usersL.contains(e)) {
                             usersL.add(e);
                         }
-                    } catch (IOException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ClassNotFoundException ex) {
+                    } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
@@ -95,14 +92,16 @@ public class Server implements Runnable {
             @Override
             public void run() {
                 while (srvRunning) {
-                    for (InetSocketAddress s : usersL) {
-                        Iterator it = toSend.entrySet().iterator();
-                        while (it.hasNext()) {
-                            Entry ent = (Entry) it.next();
+                    Iterator it = toSend.entrySet().iterator();
+                    Entry ent;
+                    while (it.hasNext()) {
+                        for (InetSocketAddress s : usersL) {
+                            ent = (Entry) it.next();
                             if (ent.getKey() != s) {
                                 sendObj(ent.getValue(), s.getHostString(), s.getPort());
-                            }
+                            }                            
                         }
+                        it.remove();
                     }
 
                     try {
@@ -124,8 +123,6 @@ public class Server implements Runnable {
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
             srvSocket.send(sendPacket);
-        } catch (SocketException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }

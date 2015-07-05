@@ -7,7 +7,6 @@ package server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,12 +14,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.nio.charset.Charset;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -55,7 +51,7 @@ public class Client implements Runnable {
             @Override
             public void run() {
                 while (running) {
-                    System.out.println(getStr());
+                    System.out.println(getObj());
                 }
                 OutThread.interrupt();
             }
@@ -66,7 +62,7 @@ public class Client implements Runnable {
                 while (running) {
                     String s = new Scanner(System.in).nextLine();
                     if (s.trim().length() > 0) {
-                        sendStr(s);
+                        sendObj(s);
                         System.out.println("\nYou: " + s);
                     }
                     try {
@@ -104,25 +100,6 @@ public class Client implements Runnable {
         }
     }
 
-    private void sendStr(String str) {
-        if (str.matches("!quit") || str.matches("!q")) {
-            sendStr("(STX)" + "close" + "(ETX)");
-            System.out.println("You have disconnected!");
-            reset = false;
-            running = false;
-        } else if (str.matches("!disconnect") || str.matches("!dc")) {
-            sendStr("(STX)" + "close" + "(ETX)");
-            System.out.println("You have disconnected!");
-            running = false;
-            reset = true;
-        } else if (str.matches("!l") || str.matches("!list")) {
-            sendStr("(STX)" + "listusers" + "(ETX)");
-        } else if (!str.isEmpty() && running) {
-            str += "(STX)" + (System.currentTimeMillis() / 1000L) + "(ETX)";
-            sendObj(str);
-        }
-    }
-
     private Object getObj() {
         try {
             DatagramPacket incomingPacket = new DatagramPacket(new byte[1024], new byte[1024].length);
@@ -138,24 +115,7 @@ public class Client implements Runnable {
         }
         return "";
     }
-
-    private String getStr() {
-        String str = (String) getObj();
-        System.out.println(str);
-        return new String(str.getBytes(Charset.defaultCharset()));
-    }
-
-    private static String rmTime(String str) {
-        String ogStr = str;
-        try {
-            Matcher matcher = Pattern.compile("\\(STX\\)(.+?)\\(ETX\\)").matcher(str);
-            matcher.find();
-            return (String) str.subSequence(0, matcher.start(0));
-        } catch (IllegalStateException ex) {
-        }
-        return str;
-    }
-
+    
     /**
      * @param args the command line arguments
      */

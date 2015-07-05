@@ -7,3 +7,5 @@
 /LudumDare32MapEditor/build/
 /Server/nbproject/private/
 /Server/build/
+Server/nbproject/build-impl.xml
+Server/nbproject/genfiles.properties
