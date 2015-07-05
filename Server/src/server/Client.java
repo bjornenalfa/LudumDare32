@@ -53,7 +53,6 @@ public class Client implements Runnable {
                 while (running) {
                     String str = (String) getObj(new byte[1024], 1024);
                     if (str.matches("heartbeat")) {
-                        System.out.println("got heartbeat!!!");
                         connected = true;
                         running = false;
                         break;

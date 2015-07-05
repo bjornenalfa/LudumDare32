@@ -39,6 +39,7 @@ public class Server implements Runnable {
         srvPort = port;
         usersL = new ArrayList();
         toSend = new HashMap();
+        mainPlayerDataList = new PlayerDataList();
     }
 
     @Override
@@ -67,13 +68,8 @@ public class Server implements Runnable {
                         srvSocket.receive(incomingPacket);
                         ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
                         ObjectInputStream is = new ObjectInputStream(in);
-                        Object obj = (Object) is.readObject();
-                        InetSocketAddress e = (InetSocketAddress) incomingPacket.getSocketAddress();
-                        if (!usersL.contains(e)) {
-                            usersL.add(e);
-                        }
 
-                        handleObject(obj, e);
+                        handleObject((Object) is.readObject(), (InetSocketAddress) incomingPacket.getSocketAddress());
                     } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -105,6 +101,9 @@ public class Server implements Runnable {
                         }
                         it.remove();
                     }
+                    for (InetSocketAddress s : usersL) {
+                        sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
+                    }
 
                     try {
                         Thread.sleep(100);
@@ -123,6 +122,7 @@ public class Server implements Runnable {
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
+            
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
             srvSocket.send(sendPacket);
         } catch (IOException ex) {
@@ -134,14 +134,16 @@ public class Server implements Runnable {
         if (obj instanceof String) {
             String s = (String) obj;
             if (s.matches("heartbeat")) {
-                System.out.println("got heartbeat, sending heartbeat...");
                 sendObj("heartbeat", sender.getHostString(), sender.getPort());
+                if (!usersL.contains(sender)) {
+                    usersL.add(sender);
+                }
             } else {
                 toSend.put(sender, obj);
                 System.out.println("Received: " + obj);
             }
         } else if (obj instanceof PlayerData) {
-            System.out.println("PlayerData: " + obj);
+            mainPlayerDataList.add((PlayerData) obj);
         }
     }
 
