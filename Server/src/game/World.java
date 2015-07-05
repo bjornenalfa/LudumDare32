@@ -1,5 +1,6 @@
 package game;
 
+import static game.LudumDare32.players;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -28,7 +29,7 @@ public class World {
     static BufferedImage layer1;
 //    static BufferedImage layer2;
     static BufferedImage layer3;
-    
+
     static AlphaComposite overwriteAlpha = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
 
     static ImageObserver nothing = new ImageObserver() {
@@ -72,7 +73,6 @@ public class World {
 //                g2d.drawImage(currentTileSet.images[textureMap2[x][y]], x * 32, y * 32, 32, 32, nothing);
 //            }
 //        }
-
         layer3 = new BufferedImage(pixelWidth, pixelHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D) layer3.getGraphics();
         g2d.setComposite(overwriteAlpha);
@@ -100,17 +100,17 @@ public class World {
 
     static void paint2(Graphics2D g) {
         BufferedImage layer = new BufferedImage(layer3.getColorModel(), layer3.copyData(null), layer3.isAlphaPremultiplied(), null);
-        
+
         Graphics2D g2 = layer.createGraphics();
 //        g2.setComposite(overwriteAlpha);
 //        g2.setColor(new Color(0, 0, 0, 0));
 //        g2.fillRect(0, 0, pixelWidth, pixelHeight);
-        
+
         //g2.setComposite(SourceAlphaComposite.createComposite(BufferedImage.TYPE_INT_ARGB));
         g2.setComposite(AlphaComposite.SrcAtop);
         LudumDare32.player.paintBehind(g2);
-        for (PlayerData p : LudumDare32.players.list) {
-            new Player(p.x,p.y,0).paintBehind(g2);
+        for (int i = 0; i < LudumDare32.players.list.length; i++) {
+            new Player(LudumDare32.players.list[i].x, LudumDare32.players.list[i].y, 0).paint(g2);
         }
         g2.dispose();
 

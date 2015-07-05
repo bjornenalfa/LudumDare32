@@ -21,7 +21,7 @@ import javax.swing.KeyStroke;
 import server.Client;
 
 public class LudumDare32 extends JFrame {
-    
+
     static String SERVER_IP = "127.0.0.1";
     static int SERVER_PORT = 9010;
     static String CLIENT_ID = "ld33";
@@ -39,8 +39,8 @@ public class LudumDare32 extends JFrame {
     static Player player = new Player(655, 450, 0);
     MyPanel panel;
     static Camera camera;
-    
-    static Client client = new Client(SERVER_IP,SERVER_PORT,CLIENT_ID);
+
+    static Client client = new Client(SERVER_IP, SERVER_PORT, CLIENT_ID);
     static PlayerDataList players = new PlayerDataList();
 
     BufferedImage image;
@@ -158,8 +158,8 @@ public class LudumDare32 extends JFrame {
                             g2d.setColor(new Color(255, 255, 255, 32));
                         } else {
                             //int k = (int) (255*(Math.sqrt(sqDist)/(16)));
-                            int k = (int) (255*(sqDist/(16*16)));
-                            g2d.setColor(new Color(255-k, 255, 255, 255-k));
+                            int k = (int) (255 * (sqDist / (16 * 16)));
+                            g2d.setColor(new Color(255 - k, 255, 255, 255 - k));
                         }
                         g2d.fillRect(x, y, 1, 1);
                     }
@@ -247,8 +247,8 @@ public class LudumDare32 extends JFrame {
                 camera.update(player, true);
 
                 panel.repaint();
-                
-                client.sendPlayerData(new PlayerData((float)player.getX(),(float)player.getY()));
+
+                client.sendPlayerData(new PlayerData((float) player.getX(), (float) player.getY()));
                 try {
                     sleep((int) (1000 / 60d));
                 } catch (Exception e) {
@@ -288,8 +288,8 @@ public class LudumDare32 extends JFrame {
                 g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
             }
             Character.paintCharacters(g2);
-            for (PlayerData p : LudumDare32.players.list) {
-                new Player(p.x,p.y,0).paint(g2);
+            for (int i = 0; i < players.list.length; i++) {
+                new Player(players.list[i].x, players.list[i].y, 0).paint(g2);
             }
             Weather.paintTransition2(g2);
             World.paint2(g2);

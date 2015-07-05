@@ -5,25 +5,29 @@ import java.util.ArrayList;
 
 public class PlayerDataList implements Serializable {
 
-    ArrayList<PlayerData> list;
+    PlayerData[] list;
 
-    public PlayerDataList(ArrayList dataList) {
+    public PlayerDataList(PlayerData[] dataList) {
         list = dataList;
     }
-
+    
     public PlayerDataList() {
-        list = new ArrayList();
+        list = new PlayerData[0];
     }
 
-    public void add(PlayerData data) {
-        list.add(data);
-    }
+//    public PlayerDataList(int size) {
+//        list = new PlayerData[size];
+//    }
 
-    public void clear() {
-        list.clear();
-    }
+//    public void add(PlayerData data) {
+//        list.add(data);
+//    }
 
-    public ArrayList<PlayerData> getL(){
-        return list;
-    }
+//    public void clear() {
+//        list.clear();
+//    }
+
+//    public ArrayList<PlayerData> getL(){
+//        return list;
+//    }
 }
