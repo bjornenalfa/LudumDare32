@@ -241,6 +241,8 @@ public class LudumDare32 extends JFrame {
                 camera.update(player, true);
 
                 panel.repaint();
+                
+                Client.sendPlayerData(new PlayerData((float)player.getX(),(float)player.getY()));
                 try {
                     sleep((int) (1000 / 60d));
                 } catch (Exception e) {

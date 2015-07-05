@@ -26,3 +26,9 @@ Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
 + Metadata editor (teleports, monsters, objects, triggers, etc)
 + Close world (ask if you are sure you want to close; ask if you want to save first)
 + Collision editor!important
+
+# Multiplayer
+
++ Client behöver getPlayerDataList som returnerar senaste PlayerDataList som servern skickat.
++ Client behöver sendPlayerData som skickar spelarens PlayerData till servern.
++ Server behöver skicka PlayerDataList till alla kopplade clients (ofta)
