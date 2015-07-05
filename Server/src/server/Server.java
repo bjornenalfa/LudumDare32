@@ -73,7 +73,7 @@ public class Server implements Runnable {
                     } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                    
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException ex) {
@@ -103,7 +103,7 @@ public class Server implements Runnable {
                     for (InetSocketAddress s : usersL) {
                         sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
                     }
-
+                    
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {

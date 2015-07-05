@@ -18,4 +18,8 @@ public class PlayerDataList implements Serializable {
     public void add(PlayerData data) {
         list.add(data);
     }
+
+    public void clear() {
+        list.clear();
+    }
 }
