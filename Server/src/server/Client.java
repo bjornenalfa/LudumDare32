@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 public class Client implements Runnable {
 
     private DatagramSocket srvSocket;
-    private final int srvPort;
-    private final String myID, srvIP;
+    private int srvPort;
+    private String myID, srvIP;
     private boolean running, connected;
     private Thread InThread, OutThread;
     private PlayerDataList srvPlayerDataList;
@@ -38,11 +38,44 @@ public class Client implements Runnable {
         srvIP = ip;
         srvPort = port;
         myID = id;
-        connected = false;
         try {
             srvSocket = new DatagramSocket();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        connected = true;
+        sendObj("heartbeat");
+        running = true;
+
+        Thread heartbeat = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (running) {
+                    String str = (String) getObj(new byte[1024], 1024);
+                    if (str.matches("heartbeat")) {
+                        System.out.println("got heartbeat!!!");
+                        connected = true;
+                        running = false;
+                        break;
+                    } else {
+                        connected = false;
+                        running = false;
+                        break;
+                    }
+                }
+            }
+        });
+        heartbeat.start();
+        Long time = System.currentTimeMillis();
+        while (running) {
+            if ((System.currentTimeMillis() - time) >= 10000) { //10s
+                System.out.println("Unable to connect to the server!");
+                connected = false;
+                running = false;
+                srvSocket.close();
+                heartbeat.interrupt();
+                break;
+            }
         }
     }
 
@@ -96,10 +129,6 @@ public class Client implements Runnable {
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
 
-            if (data.length > 1024) {
-                //send smaller package with next package size... (may not be possible?! server doesn't know packet's sender until the package is there...)
-            }
-
             sendObj(data, data.length);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,27 +142,32 @@ public class Client implements Runnable {
     }
 
     private void sendObj(byte[] data, int dataLength) {
-        try {
-            DatagramPacket sendPacket = new DatagramPacket(data, dataLength, InetAddress.getByName(srvIP), srvPort);
-            srvSocket.send(sendPacket);
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        if (connected) {
+            try {
+                DatagramPacket sendPacket = new DatagramPacket(data, dataLength, InetAddress.getByName(srvIP), srvPort);
+                srvSocket.send(sendPacket);
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-
     }
 
     private Object getObj(byte[] buf, int bufLength) {
-        try {
-            DatagramPacket incomingPacket = new DatagramPacket(buf, bufLength);
-            srvSocket.receive(incomingPacket);
-            ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
-            ObjectInputStream is = new ObjectInputStream(in);
-            Object obj = (Object) is.readObject();
-            return obj;
-        } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        if (connected) {
+            try {
+                DatagramPacket incomingPacket = new DatagramPacket(buf, bufLength);
+                srvSocket.receive(incomingPacket);
+                ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
+                ObjectInputStream is = new ObjectInputStream(in);
+                Object obj = (Object) is.readObject();
+                return obj;
+            } catch (SocketException ex) {
+                System.out.println("The socket has been closed!");
+            } catch (IOException | ClassNotFoundException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return "";
     }

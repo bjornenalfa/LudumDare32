@@ -72,7 +72,7 @@ public class Server implements Runnable {
                         if (!usersL.contains(e)) {
                             usersL.add(e);
                         }
-                        
+
                         handleObject(obj, e);
                     } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,8 +132,14 @@ public class Server implements Runnable {
 
     private void handleObject(Object obj, InetSocketAddress sender) {
         if (obj instanceof String) {
-            toSend.put(sender, obj);
-            System.out.println("Received: " + obj);
+            String s = (String) obj;
+            if (s.matches("heartbeat")) {
+                System.out.println("got heartbeat, sending heartbeat...");
+                sendObj("heartbeat", sender.getHostString(), sender.getPort());
+            } else {
+                toSend.put(sender, obj);
+                System.out.println("Received: " + obj);
+            }
         } else if (obj instanceof PlayerData) {
             System.out.println("PlayerData: " + obj);
         }
