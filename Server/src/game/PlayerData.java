@@ -1,6 +1,8 @@
 package game;
 
-public class PlayerData {
+import java.io.Serializable;
+
+public class PlayerData implements Serializable{
     float x;
     float y;
     

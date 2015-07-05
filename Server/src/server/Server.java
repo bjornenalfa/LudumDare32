@@ -1,5 +1,6 @@
 package server;
 
+import game.PlayerDataList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class Server implements Runnable {
     private final Map<InetSocketAddress, Object> toSend;
     private Long srvTime;
     private boolean srvRunning;
+    private PlayerDataList mainPlayerDataList;
 
     public Server(int port) {
         srvPort = port;
@@ -65,14 +67,13 @@ public class Server implements Runnable {
                         ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
                         ObjectInputStream is = new ObjectInputStream(in);
                         Object obj = (Object) is.readObject();
-                        if (obj instanceof String) {
-                            System.out.println(obj);
-                        }
                         InetSocketAddress e = (InetSocketAddress) incomingPacket.getSocketAddress();
                         toSend.put(e, obj);
                         if (!usersL.contains(e)) {
                             usersL.add(e);
                         }
+                        
+                        handleObject(obj);
                     } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -99,13 +100,14 @@ public class Server implements Runnable {
                             ent = (Entry) it.next();
                             if (ent.getKey() != s) {
                                 sendObj(ent.getValue(), s.getHostString(), s.getPort());
-                            }                            
+                                
+                            }
                         }
                         it.remove();
                     }
 
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(100);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -125,6 +127,12 @@ public class Server implements Runnable {
             srvSocket.send(sendPacket);
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void handleObject(Object obj) {
+        if (obj instanceof String) {
+            System.out.println("Received: " + obj);
         }
     }
 
