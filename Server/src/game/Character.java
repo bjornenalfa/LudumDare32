@@ -9,6 +9,7 @@ public class Character {
     static final TileSet spriteSheet = new TileSet("img/Spritesheet/roguelikeChar_transparent.png", 16, 1);
     
     static ArrayList<Character> characters = new ArrayList();
+    static Player localPlayer;
 
     private double x, y, vx, vy, hp, r, acceleration;
     private final double maxhp;
@@ -22,19 +23,23 @@ public class Character {
         this.r = r;
         this.acceleration = acceleration;
 
-        characters.add(this);
+        if (! (this instanceof Player)) {
+            characters.add(this);
+        }
     }
 
     public static void updateCharacters() {
         for (Character character : characters) {
             character.update();
         }
+        localPlayer.update();
     }
 
     public static void paintCharacters(Graphics2D g) {
         for (Character character : characters) {
             character.paint(g);
         }
+        localPlayer.paint(g);
     }
 
     public void update() {
