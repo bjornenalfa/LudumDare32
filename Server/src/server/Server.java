@@ -69,12 +69,11 @@ public class Server implements Runnable {
                         ObjectInputStream is = new ObjectInputStream(in);
                         Object obj = (Object) is.readObject();
                         InetSocketAddress e = (InetSocketAddress) incomingPacket.getSocketAddress();
-                        toSend.put(e, obj);
                         if (!usersL.contains(e)) {
                             usersL.add(e);
                         }
-
-                        handleObject(obj);
+                        
+                        handleObject(obj, e);
                     } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -131,8 +130,9 @@ public class Server implements Runnable {
         }
     }
 
-    private void handleObject(Object obj) {
+    private void handleObject(Object obj, InetSocketAddress sender) {
         if (obj instanceof String) {
+            toSend.put(sender, obj);
             System.out.println("Received: " + obj);
         } else if (obj instanceof PlayerData) {
             System.out.println("PlayerData: " + obj);
