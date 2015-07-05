@@ -21,6 +21,10 @@ import javax.swing.KeyStroke;
 import server.Client;
 
 public class LudumDare32 extends JFrame {
+    
+    static String SERVER_IP = "0.0.0.0";
+    static int SERVER_PORT = 9010;
+    static String CLIENT_ID = "ld32";
 
     private boolean leftDown = false;
     private boolean rightDown = false;
@@ -36,7 +40,7 @@ public class LudumDare32 extends JFrame {
     MyPanel panel;
     static Camera camera;
     
-    static Client client = new Client();
+    static Client client = new Client(SERVER_IP,SERVER_PORT,CLIENT_ID);
     static PlayerDataList players = new PlayerDataList();
 
     BufferedImage image;
@@ -242,7 +246,7 @@ public class LudumDare32 extends JFrame {
 
                 panel.repaint();
                 
-                Client.sendPlayerData(new PlayerData((float)player.getX(),(float)player.getY()));
+                client.sendPlayerData(new PlayerData((float)player.getX(),(float)player.getY()));
                 try {
                     sleep((int) (1000 / 60d));
                 } catch (Exception e) {
