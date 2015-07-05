@@ -139,7 +139,7 @@ public class Server implements Runnable {
         addOut("Server starting up on UDP port: " + srvPort);
 
         Thread in = new Thread(new Runnable() {
-
+            
             @Override
             public void run() {
                 while (srvRunning) {
@@ -215,7 +215,7 @@ public class Server implements Runnable {
         } catch (SocketException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

@@ -17,8 +17,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -327,6 +329,7 @@ public class Client implements Runnable {
         mainFr.getRootPane().getActionMap().put("ESCAPE", escapeAction);
         running = true;
         connected = true;
+        OutThread = new Thread();
         OutThread.start();
         InThread = new Thread(new Runnable() {
             @Override
@@ -379,6 +382,22 @@ public class Client implements Runnable {
             reset();
         }
     }
+    
+    private void sendObj(Object obj) {
+        try {
+            DatagramSocket socket = new DatagramSocket();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            os.writeObject(obj);
+            byte[] data = outputStream.toByteArray();
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
+            socket.send(sendPacket);
+        } catch (SocketException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     private void sendStr(String str) {
         if (str.matches("!quit") || str.matches("!q")) {
@@ -402,11 +421,7 @@ public class Client implements Runnable {
             }
             str += "(STX)" + (System.currentTimeMillis() / 1000L) + "(ETX)" + new String(text);
 
-            try {
-                DatagramPacket data = new DatagramPacket(str.getBytes(), str.getBytes().length, InetAddress.getByName(srvIP), srvPort);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            sendObj(str);
         }
     }
 
