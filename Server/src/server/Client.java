@@ -51,18 +51,13 @@ public class Client implements Runnable {
         Thread heartbeat = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (running) {
-                    String str = (String) getObj(new byte[4096], 4096);
-                    if (str.matches("heartbeat")) {
-                        connected = true;
-                        running = false;
-                        System.out.println("Connected!");
-                        break;
-                    } else {
-                        connected = false;
-                        running = false;
-                        break;
-                    }
+                String str = (String) getObj(new byte[4096], 4096);
+                if (str.matches("heartbeat")) {
+                    connected = true;
+                    running = false;
+                    System.out.println("Connected!");
+                } else {
+                    connected = false;
                 }
             }
         });

@@ -14,9 +14,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,11 +72,11 @@ public class Server implements Runnable {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+//                    try {
+//                        Thread.sleep(100);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
                 }
             }
 
@@ -89,28 +87,20 @@ public class Server implements Runnable {
             @Override
             public void run() {
                 while (srvRunning) {
-                    Iterator it = toSend.entrySet().iterator();
-                    Entry ent;
-                    while (it.hasNext()) {
+                    synchronized (mainPlayerDataList) {
                         for (InetSocketAddress s : usersL) {
-                            ent = (Entry) it.next();
-                            if (ent.getKey() != s) {
-                                sendObj(ent.getValue(), s.getHostString(), s.getPort());
+                            if (!mainPlayerDataList.getL().isEmpty()) {
+                                sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
                             }
                         }
-                        it.remove();
-                    }
-                    for (InetSocketAddress s : usersL) {
-                        if (!mainPlayerDataList.getL().isEmpty()) {
-                            sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
-                        }
+                        mainPlayerDataList.clear();
                     }
 
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+//                    try {
+//                        Thread.sleep(100);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
                 }
             }
         });
@@ -133,6 +123,7 @@ public class Server implements Runnable {
 
     private void handleObject(Object obj, InetSocketAddress sender) {
         System.out.println("RECEIVED PACKET FROM: " + sender);
+
         if (obj instanceof String) {
             String s = (String) obj;
             if (s.matches("heartbeat")) {
@@ -140,12 +131,11 @@ public class Server implements Runnable {
                 if (!usersL.contains(sender)) {
                     usersL.add(sender);
                 }
-            } else {
-                toSend.put(sender, obj);
-                System.out.println("Received: " + obj);
             }
         } else if (obj instanceof PlayerData) {
-            mainPlayerDataList.add((PlayerData) obj);
+            synchronized (mainPlayerDataList) {
+                mainPlayerDataList.add((PlayerData) obj);
+            }
         }
     }
 
