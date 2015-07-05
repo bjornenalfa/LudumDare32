@@ -62,7 +62,7 @@ public class Server implements Runnable {
             public void run() {
                 while (srvRunning) {
                     try {
-                        DatagramPacket incomingPacket = new DatagramPacket(new byte[4096], new byte[4096].length);
+                        DatagramPacket incomingPacket = new DatagramPacket(new byte[1024], new byte[1024].length);
                         srvSocket.receive(incomingPacket);
                         ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
                         ObjectInputStream is = new ObjectInputStream(in);
@@ -72,11 +72,11 @@ public class Server implements Runnable {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-//                    try {
-//                        Thread.sleep(100);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+                    try {
+                        Thread.sleep(1000/64);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
 
@@ -96,11 +96,11 @@ public class Server implements Runnable {
                         mainPlayerDataList.clear();
                     }
 
-//                    try {
-//                        Thread.sleep(100);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+                    try {
+                        Thread.sleep(1000/64);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });

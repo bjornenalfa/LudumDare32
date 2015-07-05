@@ -51,7 +51,7 @@ public class Client implements Runnable {
         Thread heartbeat = new Thread(new Runnable() {
             @Override
             public void run() {
-                String str = (String) getObj(new byte[4096], 4096);
+                String str = (String) getObj(new byte[1024], 1024);
                 if (str.matches("heartbeat")) {
                     connected = true;
                     running = false;
@@ -83,7 +83,7 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        handleObject(getObj(new byte[4096], 4096));
+                        handleObject(getObj(new byte[1024], 1024));
                     }
                     OutThread.interrupt();
                 }
@@ -98,7 +98,7 @@ public class Client implements Runnable {
                             System.out.println("Sent: " + s);
                         }
                         try {
-                            Thread.sleep(250);
+                            Thread.sleep(1000/64);
                         } catch (InterruptedException ex) {
                         }
                     }
@@ -109,7 +109,7 @@ public class Client implements Runnable {
             InThread.start();
             while (running) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000/64);
                 } catch (InterruptedException ex) {
                 }
             }
