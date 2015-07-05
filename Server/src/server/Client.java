@@ -52,7 +52,7 @@ public class Client implements Runnable {
             @Override
             public void run() {
                 while (running) {
-                    String str = (String) getObj(new byte[1024], 1024);
+                    String str = (String) getObj(new byte[4096], 4096);
                     if (str.matches("heartbeat")) {
                         connected = true;
                         running = false;
@@ -73,8 +73,8 @@ public class Client implements Runnable {
                 System.out.println("Unable to connect to the server!");
                 connected = false;
                 running = false;
-                srvSocket.close();
                 heartbeat.interrupt();
+                srvSocket.close();
                 break;
             }
         }
@@ -88,7 +88,7 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        handleObject(getObj(new byte[1024], 1024));
+                        handleObject(getObj(new byte[4096], 4096));
                     }
                     OutThread.interrupt();
                 }
