@@ -39,15 +39,15 @@ public class Client implements Runnable {
         srvPort = port;
         myID = id;
         connected = false;
-    }
-
-    @Override
-    public void run() {
         try {
             srvSocket = new DatagramSocket();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void run() {
         running = true;
         connected = true;
         InThread = new Thread(new Runnable() {
@@ -95,11 +95,11 @@ public class Client implements Runnable {
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-            
-            if (data.length > 1024){
+
+            if (data.length > 1024) {
                 //send smaller package with next package size... (may not be possible?! server doesn't know packet's sender until the package is there...)
             }
-            
+
             sendObj(data, data.length);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -159,6 +159,6 @@ public class Client implements Runnable {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new Client("localhost", 9002, "abcdef").run();
+        new Client("localhost", 9010, "abcdef").sendPlayerData(new PlayerData(100, 100));
     }
 }

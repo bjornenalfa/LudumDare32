@@ -1,5 +1,6 @@
 package server;
 
+import game.PlayerData;
 import game.PlayerDataList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -72,7 +73,7 @@ public class Server implements Runnable {
                         if (!usersL.contains(e)) {
                             usersL.add(e);
                         }
-                        
+
                         handleObject(obj);
                     } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,7 +101,7 @@ public class Server implements Runnable {
                             ent = (Entry) it.next();
                             if (ent.getKey() != s) {
                                 sendObj(ent.getValue(), s.getHostString(), s.getPort());
-                                
+
                             }
                         }
                         it.remove();
@@ -133,6 +134,8 @@ public class Server implements Runnable {
     private void handleObject(Object obj) {
         if (obj instanceof String) {
             System.out.println("Received: " + obj);
+        } else if (obj instanceof PlayerData) {
+            System.out.println("PlayerData: " + obj);
         }
     }
 
@@ -140,6 +143,6 @@ public class Server implements Runnable {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new Server(9002).run();
+        new Server(9010).run();
     }
 }
