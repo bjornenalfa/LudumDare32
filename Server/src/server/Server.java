@@ -130,7 +130,7 @@ public class Server implements Runnable {
     }
 
     private void handleObject(Object obj, InetSocketAddress sender) {
-        System.out.println("RECEIVED PACKET FROM: "+sender);
+        System.out.println("RECEIVED PACKET FROM: " + sender);
         if (obj instanceof String) {
             String s = (String) obj;
             if (s.matches("heartbeat")) {

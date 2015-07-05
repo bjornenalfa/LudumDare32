@@ -44,6 +44,7 @@ public class Client implements Runnable {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         connected = true;
+        System.out.println("Connecting...");
         sendObj("heartbeat");
         running = true;
 
@@ -55,6 +56,7 @@ public class Client implements Runnable {
                     if (str.matches("heartbeat")) {
                         connected = true;
                         running = false;
+                        System.out.println("Connected!");
                         break;
                     } else {
                         connected = false;
@@ -193,6 +195,6 @@ public class Client implements Runnable {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new Client("dariorostirolla.se", 9010, "abcdef").run();
+        new Client("127.0.0.1", 9010, "abcdef").run();
     }
 }
