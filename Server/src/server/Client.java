@@ -19,6 +19,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static server.Server.PACKAGE_SIZE;
 
 /**
  *
@@ -34,7 +35,6 @@ public class Client implements Runnable {
     private PlayerDataList srvPlayerDataList;
     private ArrayList<PlayerData> list;
     private Long heartTime;
-    public static final int packetSize = 256;
 
     public Client(String ip, int port, String id) {
         srvIP = ip;
@@ -55,7 +55,7 @@ public class Client implements Runnable {
         heartBeat = new Thread(new Runnable() {
             @Override
             public void run() {
-                String str = (String) getObj(new byte[packetSize], packetSize);
+                String str = (String) getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE);
                 if (str.matches("heartbeat")) {
                     connected = true;
                     running = false;
@@ -80,7 +80,7 @@ public class Client implements Runnable {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+//                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -102,7 +102,7 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        handleObject(getObj(new byte[packetSize], packetSize));
+                        handleObject(getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE));
                     }
                     OutThread.interrupt();
                 }
