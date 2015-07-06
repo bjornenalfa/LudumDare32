@@ -25,6 +25,9 @@ import java.util.logging.Logger;
  */
 public class Server implements Runnable {
     
+    public static final int PACKAGE_SIZE = 256;
+    public static final int TICK_RATE = 32;
+    
     private DatagramSocket srvSocket;
     private int srvPort;
 //    private ArrayList<PlayerData> data;
@@ -66,7 +69,7 @@ public class Server implements Runnable {
             public void run() {
                 while (srvRunning) {
                     try {
-                        DatagramPacket incomingPacket = new DatagramPacket(new byte[512], new byte[512].length);
+                        DatagramPacket incomingPacket = new DatagramPacket(new byte[PACKAGE_SIZE], new byte[PACKAGE_SIZE].length);
                         srvSocket.receive(incomingPacket);
                         ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
                         ObjectInputStream is = new ObjectInputStream(in);
@@ -104,13 +107,13 @@ public class Server implements Runnable {
                             sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
                         }
                         
-//                        System.out.println("Sent data containing "+pl.length+" playerData to "+usersL.size()+" users.");
+//                      System.out.println("Sent data containing "+pl.length+" playerData to "+usersL.size()+" users.");
                     }
 //                    data.clear();
 //                    mainPlayerDataList.clear();
 
                     try {
-                        Thread.sleep(1000 / 64);
+                        Thread.sleep(1000 / TICK_RATE);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -149,6 +152,7 @@ public class Server implements Runnable {
             String s = (String) obj;
             if (s.matches("heartbeat")) {
                 sendObj("heartbeat", sender.getHostString(), sender.getPort());
+                System.out.println("Got heartbeat from " + sender + " sent one back <3");
             }
         } else if (obj instanceof PlayerData) {
 //            mainPlayerDataList.add((PlayerData) obj);
