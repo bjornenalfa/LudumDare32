@@ -16,9 +16,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +34,7 @@ public class Client implements Runnable {
     private PlayerDataList srvPlayerDataList;
     private ArrayList<PlayerData> list;
     private Long heartTime;
+    public static final int packetSize = 256;
 
     public Client(String ip, int port, String id) {
         srvIP = ip;
@@ -56,7 +55,7 @@ public class Client implements Runnable {
         heartBeat = new Thread(new Runnable() {
             @Override
             public void run() {
-                String str = (String) getObj(new byte[512], 512);
+                String str = (String) getObj(new byte[packetSize], packetSize);
                 if (str.matches("heartbeat")) {
                     connected = true;
                     running = false;
@@ -78,6 +77,11 @@ public class Client implements Runnable {
                         heartBeat.interrupt();
                         srvSocket.close();
                     }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
@@ -98,7 +102,7 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        handleObject(getObj(new byte[512], 512));
+                        handleObject(getObj(new byte[packetSize], packetSize));
                     }
                     OutThread.interrupt();
                 }
