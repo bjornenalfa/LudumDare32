@@ -32,9 +32,10 @@ public class Client implements Runnable {
     private int srvPort;
     private String myID, srvIP;
     private boolean running, connected;
-    private Thread InThread, OutThread;
+    private Thread InThread, OutThread, heartBeat, heartAttack;
     private PlayerDataList srvPlayerDataList;
     private ArrayList<PlayerData> list;
+    private Long heartTime;
 
     public Client(String ip, int port, String id) {
         srvIP = ip;
@@ -49,9 +50,10 @@ public class Client implements Runnable {
         connected = true;
         System.out.println("Connecting...");
         sendObj("heartbeat");
+        heartTime = System.currentTimeMillis();
         running = true;
 
-        Thread heartbeat = new Thread(new Runnable() {
+        heartBeat = new Thread(new Runnable() {
             @Override
             public void run() {
                 String str = (String) getObj(new byte[512], 512);
@@ -59,22 +61,32 @@ public class Client implements Runnable {
                     connected = true;
                     running = false;
                     System.out.println("Connected!");
+                    heartAttack.interrupt();
                 } else {
                     connected = false;
                 }
             }
         });
-        heartbeat.start();
-        Long time = System.currentTimeMillis();
-        while (running) {
-            if ((System.currentTimeMillis() - time) >= 10000) { //10s
-                System.out.println("Unable to connect to the server!");
-                connected = false;
-                running = false;
-                heartbeat.interrupt();
-                srvSocket.close();
-                break;
+        heartAttack = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (running) {
+                    if ((System.currentTimeMillis() - heartTime) >= 10000) { //10s
+                        System.out.println("Unable to connect to the server!");
+                        connected = false;
+                        running = false;
+                        heartBeat.interrupt();
+                        srvSocket.close();
+                    }
+                }
             }
+        });
+        heartBeat.start();
+        heartAttack.start();
+        try {
+            heartAttack.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -92,7 +104,7 @@ public class Client implements Runnable {
                 }
             });
             InThread.start();
-            
+
             OutThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
