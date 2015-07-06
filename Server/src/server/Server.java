@@ -64,7 +64,7 @@ public class Server implements Runnable {
             public void run() {
                 while (srvRunning) {
                     try {
-                        DatagramPacket incomingPacket = new DatagramPacket(new byte[256], new byte[256].length);
+                        DatagramPacket incomingPacket = new DatagramPacket(new byte[512], new byte[512].length);
                         srvSocket.receive(incomingPacket);
                         ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
                         ObjectInputStream is = new ObjectInputStream(in);
@@ -106,8 +106,7 @@ public class Server implements Runnable {
 //                    }
                 }
             }
-        }
-        );
+        });
         out.start();
     }
     

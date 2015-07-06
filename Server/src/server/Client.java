@@ -17,6 +17,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,11 +34,13 @@ public class Client implements Runnable {
     private boolean running, connected;
     private Thread InThread, OutThread;
     private PlayerDataList srvPlayerDataList;
+    private ArrayList<PlayerData> list;
 
     public Client(String ip, int port, String id) {
         srvIP = ip;
         srvPort = port;
         myID = id;
+        list = new ArrayList();
         try {
             srvSocket = new DatagramSocket();
         } catch (IOException ex) {
@@ -51,7 +54,7 @@ public class Client implements Runnable {
         Thread heartbeat = new Thread(new Runnable() {
             @Override
             public void run() {
-                String str = (String) getObj(new byte[256], 256);
+                String str = (String) getObj(new byte[512], 512);
                 if (str.matches("heartbeat")) {
                     connected = true;
                     running = false;
@@ -83,33 +86,36 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        handleObject(getObj(new byte[256], 256));
+                        handleObject(getObj(new byte[512], 512));
                     }
                     OutThread.interrupt();
                 }
             });
+            InThread.start();
+            
             OutThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     while (running) {
-                        String s = new Scanner(System.in).nextLine();
-                        if (s.trim().length() > 0) {
-                            sendObj(s);
-                            System.out.println("Sent: " + s);
+                        synchronized (list) {
+                            for (PlayerData data : list) {
+                                sendObj(data);
+                            }
                         }
                         try {
-                            Thread.sleep(1000/64);
+                            Thread.sleep((long) (1000 / 20d));
                         } catch (InterruptedException ex) {
+                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     InThread.interrupt();
                 }
             });
             OutThread.start();
-            InThread.start();
+
             while (running) {
                 try {
-                    Thread.sleep(1000/64);
+                    Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                 }
             }
@@ -125,26 +131,13 @@ public class Client implements Runnable {
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-
-            sendObj(data, data.length);
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
+            srvSocket.send(sendPacket);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 os.close();
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-
-    private void sendObj(byte[] data, int dataLength) {
-        if (connected) {
-            try {
-                DatagramPacket sendPacket = new DatagramPacket(data, dataLength, InetAddress.getByName(srvIP), srvPort);
-                srvSocket.send(sendPacket);
-            } catch (UnknownHostException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -183,7 +176,9 @@ public class Client implements Runnable {
     }
 
     public void sendPlayerData(PlayerData data) {
-        sendObj(data);
+        synchronized (list) {
+            list.add(data);
+        }
     }
 
     /**
