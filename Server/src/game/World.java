@@ -110,7 +110,7 @@ public class World {
         g2.setComposite(AlphaComposite.SrcAtop);
         LudumDare32.player.paintBehind(g2);
         for (int i = 0; i < LudumDare32.players.list.length; i++) {
-            new Player(LudumDare32.players.list[i].x, LudumDare32.players.list[i].y, 0).paint(g2);
+            new Player(LudumDare32.players.list[i].x, LudumDare32.players.list[i].y, 0).paintBehind(g2);
         }
         g2.dispose();
 
