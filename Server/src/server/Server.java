@@ -126,7 +126,7 @@ public class Server implements Runnable {
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-            System.out.println("SIZE: " + data.length);
+//            System.out.println("SIZE: " + data.length);
             
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
             srvSocket.send(sendPacket);
