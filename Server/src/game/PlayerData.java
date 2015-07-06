@@ -10,4 +10,9 @@ public class PlayerData implements Serializable{
         this.x = x;
         this.y = y;
     }
+    
+    public PlayerData(PlayerData data) {
+        this.x = data.x;
+        this.y = data.y;
+    }
 }

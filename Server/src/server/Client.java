@@ -33,14 +33,15 @@ public class Client implements Runnable {
     private boolean running, connected;
     private Thread InThread, OutThread, heartBeat, heartAttack;
     private PlayerDataList srvPlayerDataList;
-    private ArrayList<PlayerData> list;
+//    private ArrayList<PlayerData> list;
+    private PlayerData bufferedPlayerData;
     private Long heartTime;
 
     public Client(String ip, int port, String id) {
         srvIP = ip;
         srvPort = port;
         myID = id;
-        list = new ArrayList();
+//        list = new ArrayList();
         try {
             srvSocket = new DatagramSocket();
         } catch (IOException ex) {
@@ -113,11 +114,14 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        synchronized (list) {
-                            for (PlayerData data : list) {
-                                sendObj(data);
-                            }
+//                        synchronized (list) {
+//                            for (PlayerData data : list) {
+//                                sendObj(data);
+//                            }
+                        if (bufferedPlayerData != null) {
+                            sendObj(new PlayerData(bufferedPlayerData));
                         }
+//                        }
                         try {
                             Thread.sleep((long) (1000 / 20d));
                         } catch (InterruptedException ex) {
@@ -192,9 +196,10 @@ public class Client implements Runnable {
     }
 
     public void sendPlayerData(PlayerData data) {
-        synchronized (list) {
-            list.add(data);
-        }
+//        synchronized (list) {
+//            list.add(data);
+//        }
+        bufferedPlayerData = data;
     }
 
     /**
