@@ -104,7 +104,7 @@ public class Server implements Runnable {
                             sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
                         }
                         
-                        System.out.println("Sent data containing "+pl.length+" playerData to "+usersL.size()+" users.");
+//                        System.out.println("Sent data containing "+pl.length+" playerData to "+usersL.size()+" users.");
                     }
 //                    data.clear();
 //                    mainPlayerDataList.clear();
