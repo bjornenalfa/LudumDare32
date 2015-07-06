@@ -9,3 +9,5 @@
 /Server/build/
 Server/nbproject/build-impl.xml
 Server/nbproject/genfiles.properties
+Server/dist/Server.jar
+Server/dist/README.TXT

@@ -40,6 +40,7 @@ public class Client implements Runnable {
         srvIP = ip;
         srvPort = port;
         myID = id;
+        lastPacket = (long) 0;
         try {
             srvSocket = new DatagramSocket();
         } catch (IOException ex) {
@@ -113,10 +114,6 @@ public class Client implements Runnable {
                 public void run() {
                     while (running) {
                         handleObject(getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE));
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException ex) {
-                        }
                     }
                     OutThread.interrupt();
                 }
@@ -137,7 +134,6 @@ public class Client implements Runnable {
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     InThread.interrupt();

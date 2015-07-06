@@ -80,7 +80,6 @@ public class Server implements Runnable {
         Thread out = new Thread(new Runnable() {
             @Override
             public void run() {
-                int originalTickRate = TICK_RATE;
                 while (srvRunning) {
                     for (InetSocketAddress user : (ArrayList<InetSocketAddress>) usersL.clone()) {
                         if (System.currentTimeMillis() - data.get(user).time >= 5000) {
@@ -89,11 +88,7 @@ public class Server implements Runnable {
                             data.remove(user);
                         }
                     }
-                    if (usersL.size() == 1) {
-                        TICK_RATE = 1;
-                        sendObj("keepalive", usersL.get(0));
-                    } else if (usersL.size() > 1) {
-                        TICK_RATE = originalTickRate;
+                    if (usersL.size() > 1) {
                         PlayerData[] pdl = new PlayerData[usersL.size()];
 
                         int i = 0;
@@ -115,12 +110,17 @@ public class Server implements Runnable {
                                 i++;
                             }
                         }
-                    }
 
-                    try {
-                        Thread.sleep(1000 / TICK_RATE);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                        try {
+                            Thread.sleep(1000 / TICK_RATE);
+                        } catch (InterruptedException ex) {
+                        }
+                    } else if (usersL.size() == 1) {
+                        sendObj("keepalive", usersL.get(0));
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {
+                        }
                     }
                 }
             }
