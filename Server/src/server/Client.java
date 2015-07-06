@@ -32,7 +32,7 @@ public class Client implements Runnable {
     private Thread InThread, OutThread, heartBeat, heartAttack;
     private PlayerDataList srvPlayerDataList;
     private PlayerData bufferedPlayerData;
-    private Long heartTime;
+    private Long heartTime, lastPacket;
     private int PACKAGE_SIZE, TICK_RATE;
 
     public Client(String ip, int port, String id) {
@@ -55,16 +55,19 @@ public class Client implements Runnable {
             @Override
             public void run() {
                 while (running) {
-                    String str = (String) getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE);
-                    if (str.contains("heartbeat-")) {
-                        connected = true;
-                        running = false;
-                        System.out.println("Connected!");
-                        PACKAGE_SIZE = Integer.parseInt(str.substring(str.indexOf("-") + 1, str.lastIndexOf("-")));
-                        TICK_RATE = Integer.parseInt(str.substring(str.lastIndexOf("-") + 1, str.length()));
-                        heartAttack.interrupt();
-                    } else {
-                        connected = false;
+                    Object obj = getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE);
+                    if (obj instanceof String) {
+                        String str = (String) obj;
+                        if (str.contains("heartbeat-")) {
+                            connected = true;
+                            running = false;
+                            System.out.println("Connected!");
+                            PACKAGE_SIZE = Integer.parseInt(str.substring(str.indexOf("-") + 1, str.lastIndexOf("-")));
+                            TICK_RATE = Integer.parseInt(str.substring(str.lastIndexOf("-") + 1, str.length()));
+                            heartAttack.interrupt();
+                        } else {
+                            connected = false;
+                        }
                     }
                     try {
                         Thread.sleep(100);
@@ -110,6 +113,10 @@ public class Client implements Runnable {
                 public void run() {
                     while (running) {
                         handleObject(getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE));
+                        try {
+                            Thread.sleep(50);
+                        } catch (InterruptedException ex) {
+                        }
                     }
                     OutThread.interrupt();
                 }
@@ -120,6 +127,10 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
+                        if (System.currentTimeMillis() - lastPacket >= 10000) {
+                            System.out.println("The server is not responding! :(");
+                            running = false;
+                        }
                         if (bufferedPlayerData != null) {
                             sendObj(new PlayerData(bufferedPlayerData));
                         }
@@ -185,6 +196,7 @@ public class Client implements Runnable {
     }
 
     private void handleObject(Object obj) {
+        lastPacket = System.currentTimeMillis();
         if (obj instanceof String) {
             System.out.println("Received: " + obj);
         } else if (obj instanceof PlayerDataList) {

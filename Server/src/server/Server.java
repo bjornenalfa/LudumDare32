@@ -105,12 +105,14 @@ public class Server implements Runnable {
 
                         i = 0;
                         for (InetSocketAddress s : usersL) {
-                            sendObj(new PlayerDataList(pl), s.getHostString(), s.getPort());
+                            sendObj(new PlayerDataList(pl), s);
                             if (i < usersL.size() - 1) {
                                 pl[i] = pdl[i];
                                 i++;
                             }
                         }
+                    } else if (!usersL.isEmpty()) {
+                        sendObj("", usersL.get(0));
                     }
 
                     try {
@@ -124,13 +126,13 @@ public class Server implements Runnable {
         out.start();
     }
 
-    private void sendObj(Object obj, String ipaddr, int port) {
+    private void sendObj(Object obj, InetSocketAddress s) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-            DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(s.getHostString()), s.getPort());
             srvSocket.send(sendPacket);
             System.out.println("SIZE: " + sendPacket.getLength());
         } catch (IOException ex) {
@@ -147,7 +149,7 @@ public class Server implements Runnable {
                     data.put(sender, new PlayerData(-1000, -1000));
                     System.out.println("New client connected! Address:" + sender);
                 }
-                sendObj("heartbeat-" + PACKAGE_SIZE + "-" + TICK_RATE, sender.getHostString(), sender.getPort());
+                sendObj("heartbeat-" + PACKAGE_SIZE + "-" + TICK_RATE, sender);
                 System.out.println("Got heartbeat from " + sender + " sent one back <3");
             }
         } else if (obj instanceof PlayerData) {
