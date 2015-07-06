@@ -123,7 +123,7 @@ public class Server implements Runnable {
                         i = 0;
                         for (InetSocketAddress s : usersL) {
                             sendObj(new PlayerDataList(pl), s.getHostString(), s.getPort());
-                            if (i == usersL.size()) {
+                            if (i < usersL.size()) {
                                 pl[i] = pdl[i];
                                 i++;
                             }
