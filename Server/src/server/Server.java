@@ -123,8 +123,10 @@ public class Server implements Runnable {
                         i = 0;
                         for (InetSocketAddress s : usersL) {
                             sendObj(new PlayerDataList(pl), s.getHostString(), s.getPort());
-                            pl[i] = pdl[i];
-                            i++;
+                            if (i == usersL.size()) {
+                                pl[i] = pdl[i];
+                                i++;
+                            }
                         }
 
 //                      System.out.println("Sent data containing "+pl.length+" playerData to "+usersL.size()+" users.");
