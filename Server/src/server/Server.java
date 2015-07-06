@@ -24,22 +24,24 @@ import java.util.logging.Logger;
  * @author bjodet982
  */
 public class Server implements Runnable {
-
+    
     private DatagramSocket srvSocket;
     private int srvPort;
+    private final ArrayList<PlayerData> data;
     private final ArrayList<InetSocketAddress> usersL;
     private final Map<InetSocketAddress, Object> toSend;
     private Long srvTime;
     private boolean srvRunning;
     private PlayerDataList mainPlayerDataList;
-
+    
     public Server(int port) {
         srvPort = port;
         usersL = new ArrayList();
         toSend = new HashMap();
         mainPlayerDataList = new PlayerDataList();
+        data = new ArrayList();
     }
-
+    
     @Override
     public void run() {
         boolean portErr = false;
@@ -56,86 +58,90 @@ public class Server implements Runnable {
         srvTime = (System.currentTimeMillis() / 1000L);
         srvRunning = true;
         System.out.println("Server starting up on UDP port: " + srvPort);
-
+        
         Thread in = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (srvRunning) {
                     try {
-                        DatagramPacket incomingPacket = new DatagramPacket(new byte[1024], new byte[1024].length);
+                        DatagramPacket incomingPacket = new DatagramPacket(new byte[256], new byte[256].length);
                         srvSocket.receive(incomingPacket);
                         ByteArrayInputStream in = new ByteArrayInputStream(incomingPacket.getData());
                         ObjectInputStream is = new ObjectInputStream(in);
-
+                        
                         handleObject((Object) is.readObject(), (InetSocketAddress) incomingPacket.getSocketAddress());
                     } catch (IOException | ClassNotFoundException ex) {
                         Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
-                    try {
-                        Thread.sleep(1000/64);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 }
             }
-
+            
         });
         in.start();
-
+        
         Thread out = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (srvRunning) {
-                    synchronized (mainPlayerDataList) {
-                        for (InetSocketAddress s : usersL) {
-                            if (!mainPlayerDataList.getL().isEmpty()) {
-                                sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
-                            }
+//                    if (!mainPlayerDataList.getL().isEmpty()) {
+                    if (!data.isEmpty()) {
+                        PlayerData[] pl = new PlayerData[data.size()];
+                        for (int i = 0; i < data.size(); i++) {
+                            pl[i] = data.get(i);
                         }
-                        mainPlayerDataList.clear();
+                        
+                        mainPlayerDataList = new PlayerDataList(pl);
+                        
+                        for (InetSocketAddress s : usersL) {
+                            sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
+                        }
                     }
+                    data.clear();
+//                    mainPlayerDataList.clear();
 
-                    try {
-                        Thread.sleep(1000/64);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+//                    try {
+//                        Thread.sleep(1000 / 64);
+//                    } catch (InterruptedException ex) {
+//                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
                 }
             }
-        });
+        }
+        );
         out.start();
     }
-
+    
     private void sendObj(Object obj, String ipaddr, int port) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-
+            System.out.println("SIZE: " + data.length);
+            
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
             srvSocket.send(sendPacket);
+            
         } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private void handleObject(Object obj, InetSocketAddress sender) {
         System.out.println("RECEIVED PACKET FROM: " + sender);
-
+        if (!usersL.contains(sender)) {
+            usersL.add(sender);
+        }
+        
         if (obj instanceof String) {
             String s = (String) obj;
             if (s.matches("heartbeat")) {
                 sendObj("heartbeat", sender.getHostString(), sender.getPort());
-                if (!usersL.contains(sender)) {
-                    usersL.add(sender);
-                }
             }
         } else if (obj instanceof PlayerData) {
-            synchronized (mainPlayerDataList) {
-                mainPlayerDataList.add((PlayerData) obj);
-            }
+//            mainPlayerDataList.add((PlayerData) obj);
+            data.add((PlayerData) obj);
         }
     }
 

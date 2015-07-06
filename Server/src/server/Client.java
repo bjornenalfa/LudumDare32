@@ -51,7 +51,7 @@ public class Client implements Runnable {
         Thread heartbeat = new Thread(new Runnable() {
             @Override
             public void run() {
-                String str = (String) getObj(new byte[1024], 1024);
+                String str = (String) getObj(new byte[256], 256);
                 if (str.matches("heartbeat")) {
                     connected = true;
                     running = false;
@@ -83,7 +83,7 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        handleObject(getObj(new byte[1024], 1024));
+                        handleObject(getObj(new byte[256], 256));
                     }
                     OutThread.interrupt();
                 }
