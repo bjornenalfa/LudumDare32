@@ -29,8 +29,7 @@ Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
 
 # Multiplayer
 
-+ Client behöver getPlayerDataList som returnerar senaste PlayerDataList som servern skickat. (done?)
-+ Client behöver sendPlayerData som skickar spelarens PlayerData till servern. (se punkt 4)
-+ Server behöver skicka PlayerDataList till alla kopplade clients (ofta)
-+ "1 Thread x Client"-server? bra idè eller?
-+  Lägga till en "heartbeat", något sätt för clienten/servern att verifiera att clienten/servern är uppe om inte den får ett svar inom X sekunder... (10-15s?)
++ timestamps för paket
++ ta bort clients som inte är kopplade
++ ta emot tickRate & packetSize från servern
++ optimera paket, ta ner storlek så mycket så möjligt, helst power of 2 (...128?!)
