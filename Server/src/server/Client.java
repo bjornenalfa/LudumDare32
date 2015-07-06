@@ -18,7 +18,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static server.Server.PACKAGE_SIZE;
 
 /**
  *
@@ -34,8 +33,10 @@ public class Client implements Runnable {
     private PlayerDataList srvPlayerDataList;
     private PlayerData bufferedPlayerData;
     private Long heartTime;
+    private int PACKAGE_SIZE, TICK_RATE;
 
     public Client(String ip, int port, String id) {
+        PACKAGE_SIZE = 32;
         srvIP = ip;
         srvPort = port;
         myID = id;
@@ -53,14 +54,22 @@ public class Client implements Runnable {
         heartBeat = new Thread(new Runnable() {
             @Override
             public void run() {
-                String str = (String) getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE);
-                if (str.matches("heartbeat")) {
-                    connected = true;
-                    running = false;
-                    System.out.println("Connected!");
-                    heartAttack.interrupt();
-                } else {
-                    connected = false;
+                while (running) {
+                    String str = (String) getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE);
+                    if (str.contains("heartbeat-")) {
+                        connected = true;
+                        running = false;
+                        System.out.println("Connected!");
+                        PACKAGE_SIZE = Integer.parseInt(str.substring(str.indexOf("-") + 1, str.lastIndexOf("-")));
+                        TICK_RATE = Integer.parseInt(str.substring(str.lastIndexOf("-") + 1, str.length()));
+                        heartAttack.interrupt();
+                    } else {
+                        connected = false;
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                    }
                 }
             }
         });
@@ -68,6 +77,7 @@ public class Client implements Runnable {
             @Override
             public void run() {
                 while (running) {
+                    sendObj("heartbeat");
                     if ((System.currentTimeMillis() - heartTime) >= 10000) { //10s
                         System.out.println("Unable to connect to the server!");
                         connected = false;
@@ -114,7 +124,7 @@ public class Client implements Runnable {
                             sendObj(new PlayerData(bufferedPlayerData));
                         }
                         try {
-                            Thread.sleep((long) (1000 / 64d));
+                            Thread.sleep((long) (1000 / TICK_RATE));
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -142,9 +152,9 @@ public class Client implements Runnable {
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-            System.out.println("SIZE: " + data.length);
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
             srvSocket.send(sendPacket);
+            System.out.println("SIZE: " + sendPacket.getLength());
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

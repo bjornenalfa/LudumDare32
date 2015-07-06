@@ -29,7 +29,4 @@ Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
 
 # Multiplayer
 
-+ timestamps för paket
-+ ta bort clients som inte är kopplade
-+ ta emot tickRate & packetSize från servern
 + optimera paket, ta ner storlek så mycket så möjligt, helst power of 2 (...128?!)

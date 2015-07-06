@@ -31,20 +31,13 @@ public class Server implements Runnable {
 
     private DatagramSocket srvSocket;
     private int srvPort;
-//    private ArrayList<PlayerData> data;
     private ArrayList<InetSocketAddress> usersL;
     private Map<InetSocketAddress, PlayerData> data;
-    private Map<InetSocketAddress, Object> toSend;
-    private Long srvTime;
     private boolean srvRunning;
-    private PlayerDataList mainPlayerDataList;
 
     public Server(int port) {
         srvPort = port;
         usersL = new ArrayList();
-        toSend = new HashMap();
-        mainPlayerDataList = new PlayerDataList();
-//        data = new ArrayList();
         data = new HashMap();
     }
 
@@ -61,7 +54,6 @@ public class Server implements Runnable {
                 srvPort = new Scanner(System.in).nextInt();
             }
         } while (portErr);
-        srvTime = (System.currentTimeMillis() / 1000L);
         srvRunning = true;
         System.out.println("Server starting up on UDP port: " + srvPort);
 
@@ -89,6 +81,14 @@ public class Server implements Runnable {
             @Override
             public void run() {
                 while (srvRunning) {
+                    for (InetSocketAddress user : (ArrayList<InetSocketAddress>) usersL.clone()) {
+                        if (System.currentTimeMillis() - data.get(user).time >= 5000) {
+                            System.out.println(user + " disconnected! :(");
+                            usersL.remove(user);
+                            data.remove(user);
+                        }
+                    }
+
                     if (usersL.size() > 1) {
                         PlayerData[] pdl = new PlayerData[usersL.size()];
 
@@ -106,7 +106,7 @@ public class Server implements Runnable {
                         i = 0;
                         for (InetSocketAddress s : usersL) {
                             sendObj(new PlayerDataList(pl), s.getHostString(), s.getPort());
-                            if (i < usersL.size()-1) {
+                            if (i < usersL.size() - 1) {
                                 pl[i] = pdl[i];
                                 i++;
                             }
@@ -130,28 +130,24 @@ public class Server implements Runnable {
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-            System.out.println("SIZE: " + data.length);
-
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
             srvSocket.send(sendPacket);
-
+            System.out.println("SIZE: " + sendPacket.getLength());
         } catch (IOException ex) {
-            Logger.getLogger(Server.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     private void handleObject(Object obj, InetSocketAddress sender) {
-        if (!usersL.contains(sender)) {
-            usersL.add(sender);
-            data.put(sender, new PlayerData(-1000, -1000));
-            System.out.println("New client connected! Address:" + sender);
-        }
-
         if (obj instanceof String) {
             String s = (String) obj;
             if (s.matches("heartbeat")) {
-                sendObj("heartbeat", sender.getHostString(), sender.getPort());
+                if (!usersL.contains(sender)) {
+                    usersL.add(sender);
+                    data.put(sender, new PlayerData(-1000, -1000));
+                    System.out.println("New client connected! Address:" + sender);
+                }
+                sendObj("heartbeat-" + PACKAGE_SIZE + "-" + TICK_RATE, sender.getHostString(), sender.getPort());
                 System.out.println("Got heartbeat from " + sender + " sent one back <3");
             }
         } else if (obj instanceof PlayerData) {
