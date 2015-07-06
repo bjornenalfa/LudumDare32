@@ -27,9 +27,10 @@ public class Server implements Runnable {
     
     private DatagramSocket srvSocket;
     private int srvPort;
-    private final ArrayList<PlayerData> data;
-    private final ArrayList<InetSocketAddress> usersL;
-    private final Map<InetSocketAddress, Object> toSend;
+//    private ArrayList<PlayerData> data;
+    private ArrayList<InetSocketAddress> usersL;
+    private Map<InetSocketAddress, PlayerData> data;
+    private Map<InetSocketAddress, Object> toSend;
     private Long srvTime;
     private boolean srvRunning;
     private PlayerDataList mainPlayerDataList;
@@ -39,7 +40,8 @@ public class Server implements Runnable {
         usersL = new ArrayList();
         toSend = new HashMap();
         mainPlayerDataList = new PlayerDataList();
-        data = new ArrayList();
+//        data = new ArrayList();
+        data = new HashMap();
     }
     
     @Override
@@ -84,10 +86,16 @@ public class Server implements Runnable {
             public void run() {
                 while (srvRunning) {
 //                    if (!mainPlayerDataList.getL().isEmpty()) {
-                    if (!data.isEmpty()) {
-                        PlayerData[] pl = new PlayerData[data.size()];
-                        for (int i = 0; i < data.size(); i++) {
-                            pl[i] = data.get(i);
+                    if (!usersL.isEmpty()) {
+//                        System.out.println("Data.size() = "+data.size());
+                        PlayerData[] pl = new PlayerData[usersL.size()];
+//                        for (int i = 0; i < data.size(); i++) {
+//                            pl[i] = data.get(i);
+//                        }
+                        int i = 0;
+                        for (InetSocketAddress user : usersL) {
+                            pl[i] = data.get(user);
+                            i++;
                         }
                         
                         mainPlayerDataList = new PlayerDataList(pl);
@@ -95,15 +103,17 @@ public class Server implements Runnable {
                         for (InetSocketAddress s : usersL) {
                             sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
                         }
+                        
+                        System.out.println("Sent data containing "+pl.length+" playerData to "+usersL.size()+" users.");
                     }
-                    data.clear();
+//                    data.clear();
 //                    mainPlayerDataList.clear();
 
-//                    try {
-//                        Thread.sleep(1000 / 64);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+                    try {
+                        Thread.sleep(1000 / 64);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
@@ -128,9 +138,11 @@ public class Server implements Runnable {
     }
     
     private void handleObject(Object obj, InetSocketAddress sender) {
-        System.out.println("RECEIVED PACKET FROM: " + sender);
+        //System.out.println("RECEIVED PACKET FROM: " + sender);
         if (!usersL.contains(sender)) {
             usersL.add(sender);
+            data.put(sender, new PlayerData(-1000,-1000));
+            System.out.println("New client connected! Address:"+sender);
         }
         
         if (obj instanceof String) {
@@ -140,7 +152,9 @@ public class Server implements Runnable {
             }
         } else if (obj instanceof PlayerData) {
 //            mainPlayerDataList.add((PlayerData) obj);
-            data.add((PlayerData) obj);
+            PlayerData rpd = (PlayerData) obj;
+            data.put(sender, rpd);
+//            System.out.println("Got new player data from:"+sender+" x:"+rpd.x+" y:"+rpd.y);
         }
     }
 

@@ -3,8 +3,8 @@ package game;
 import java.io.Serializable;
 
 public class PlayerData implements Serializable{
-    float x;
-    float y;
+    public float x;
+    public float y;
     
     public PlayerData(float x, float y) {
         this.x = x;
