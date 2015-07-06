@@ -22,7 +22,7 @@ import server.Client;
 
 public class LudumDare32 extends JFrame {
 
-    static String SERVER_IP = "127.0.0.1";
+    static String SERVER_IP = "dariorostirolla.se";
     static int SERVER_PORT = 9010;
     static String CLIENT_ID = "ld33";
 
