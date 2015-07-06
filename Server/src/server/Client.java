@@ -165,7 +165,7 @@ public class Client implements Runnable {
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
             srvSocket.send(sendPacket);
-            System.out.println("SIZE: " + sendPacket.getLength());
+//            System.out.println("SIZE: " + sendPacket.getLength());
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -201,6 +201,8 @@ public class Client implements Runnable {
             System.out.println("Received: " + obj);
         } else if (obj instanceof PlayerDataList) {
             srvPlayerDataList = (PlayerDataList) obj;
+        } else {
+            System.out.println("Received unknown object: " + obj);
         }
 
     }

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class Server implements Runnable {
 
     public static final int PACKAGE_SIZE = 256;
-    public static final int TICK_RATE = 64;
+    public static int TICK_RATE = 64;
 
     private DatagramSocket srvSocket;
     private int srvPort;
@@ -80,6 +80,7 @@ public class Server implements Runnable {
         Thread out = new Thread(new Runnable() {
             @Override
             public void run() {
+                int originalTickRate = TICK_RATE;
                 while (srvRunning) {
                     for (InetSocketAddress user : (ArrayList<InetSocketAddress>) usersL.clone()) {
                         if (System.currentTimeMillis() - data.get(user).time >= 5000) {
@@ -88,8 +89,11 @@ public class Server implements Runnable {
                             data.remove(user);
                         }
                     }
-
-                    if (usersL.size() > 1) {
+                    if (usersL.size() == 1) {
+                        TICK_RATE = 1;
+                        sendObj("keepalive", usersL.get(0));
+                    } else if (usersL.size() > 1) {
+                        TICK_RATE = originalTickRate;
                         PlayerData[] pdl = new PlayerData[usersL.size()];
 
                         int i = 0;
@@ -111,8 +115,6 @@ public class Server implements Runnable {
                                 i++;
                             }
                         }
-                    } else if (!usersL.isEmpty()) {
-                        sendObj("", usersL.get(0));
                     }
 
                     try {
@@ -134,7 +136,7 @@ public class Server implements Runnable {
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(s.getHostString()), s.getPort());
             srvSocket.send(sendPacket);
-            System.out.println("SIZE: " + sendPacket.getLength());
+//            System.out.println("SIZE: " + sendPacket.getLength());
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
