@@ -16,7 +16,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static server.Server.PACKAGE_SIZE;
@@ -33,7 +32,6 @@ public class Client implements Runnable {
     private boolean running, connected;
     private Thread InThread, OutThread, heartBeat, heartAttack;
     private PlayerDataList srvPlayerDataList;
-//    private ArrayList<PlayerData> list;
     private PlayerData bufferedPlayerData;
     private Long heartTime;
 
@@ -41,7 +39,6 @@ public class Client implements Runnable {
         srvIP = ip;
         srvPort = port;
         myID = id;
-//        list = new ArrayList();
         try {
             srvSocket = new DatagramSocket();
         } catch (IOException ex) {
@@ -81,7 +78,6 @@ public class Client implements Runnable {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException ex) {
-//                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -114,16 +110,11 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-//                        synchronized (list) {
-//                            for (PlayerData data : list) {
-//                                sendObj(data);
-//                            }
                         if (bufferedPlayerData != null) {
                             sendObj(new PlayerData(bufferedPlayerData));
                         }
-//                        }
                         try {
-                            Thread.sleep((long) (1000 / 20d));
+                            Thread.sleep((long) (1000 / 64d));
                         } catch (InterruptedException ex) {
                             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -151,6 +142,7 @@ public class Client implements Runnable {
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
+            System.out.println("SIZE: " + data.length);
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
             srvSocket.send(sendPacket);
         } catch (IOException ex) {
@@ -196,9 +188,6 @@ public class Client implements Runnable {
     }
 
     public void sendPlayerData(PlayerData data) {
-//        synchronized (list) {
-//            list.add(data);
-//        }
         bufferedPlayerData = data;
     }
 

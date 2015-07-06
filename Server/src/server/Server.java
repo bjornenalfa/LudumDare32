@@ -20,13 +20,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * s
  *
  * @author bjodet982
  */
 public class Server implements Runnable {
 
     public static final int PACKAGE_SIZE = 256;
-    public static final int TICK_RATE = 32;
+    public static final int TICK_RATE = 64;
 
     private DatagramSocket srvSocket;
     private int srvPort;
@@ -88,25 +89,7 @@ public class Server implements Runnable {
             @Override
             public void run() {
                 while (srvRunning) {
-//                    if (!mainPlayerDataList.getL().isEmpty()) {
                     if (usersL.size() > 1) {
-//                        System.out.println("Data.size() = "+data.size());
-//                        PlayerData[] pl = new PlayerData[usersL.size()];
-//                        for (int i = 0; i < data.size(); i++) {
-//                            pl[i] = data.get(i);
-//                        }
-//                        int i = 0;
-//                        for (InetSocketAddress user : usersL) {
-//                            pl[i] = data.get(user);
-//                            i++;
-//                        }
-//                        
-//                        mainPlayerDataList = new PlayerDataList(pl);
-//                        
-//                        for (InetSocketAddress s : usersL) {
-//                            sendObj(mainPlayerDataList, s.getHostString(), s.getPort());
-//                        }
-
                         PlayerData[] pdl = new PlayerData[usersL.size()];
 
                         int i = 0;
@@ -128,11 +111,7 @@ public class Server implements Runnable {
                                 i++;
                             }
                         }
-
-//                      System.out.println("Sent data containing "+pl.length+" playerData to "+usersL.size()+" users.");
                     }
-//                    data.clear();
-//                    mainPlayerDataList.clear();
 
                     try {
                         Thread.sleep(1000 / TICK_RATE);
@@ -151,7 +130,7 @@ public class Server implements Runnable {
             ObjectOutputStream os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
             byte[] data = outputStream.toByteArray();
-//            System.out.println("SIZE: " + data.length);
+            System.out.println("SIZE: " + data.length);
 
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(ipaddr), port);
             srvSocket.send(sendPacket);
@@ -163,7 +142,6 @@ public class Server implements Runnable {
     }
 
     private void handleObject(Object obj, InetSocketAddress sender) {
-        //System.out.println("RECEIVED PACKET FROM: " + sender);
         if (!usersL.contains(sender)) {
             usersL.add(sender);
             data.put(sender, new PlayerData(-1000, -1000));
@@ -177,10 +155,8 @@ public class Server implements Runnable {
                 System.out.println("Got heartbeat from " + sender + " sent one back <3");
             }
         } else if (obj instanceof PlayerData) {
-//            mainPlayerDataList.add((PlayerData) obj);
             PlayerData rpd = (PlayerData) obj;
             data.put(sender, rpd);
-//            System.out.println("Got new player data from:"+sender+" x:"+rpd.x+" y:"+rpd.y);
         }
     }
 
