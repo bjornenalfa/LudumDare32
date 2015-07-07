@@ -125,14 +125,14 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        if (System.currentTimeMillis() - lastPacket >= 20000) {
-                            System.out.println("The server is not responding! :(");
-                            running = false;
-                        } else {
+//                        if (System.currentTimeMillis() - lastPacket >= 20000) {
+//                            System.out.println("The server is not responding! :(");
+//                            running = false;
+//                        } else {
                             if (bufferedPlayerData != null) {
                                 sendObj(new PlayerData(bufferedPlayerData));
                             }
-                        }
+//                        }
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
                         } catch (InterruptedException ex) {
@@ -160,7 +160,7 @@ public class Client implements Runnable {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
-            os.flush();
+//            os.flush();
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
             srvSocket.send(sendPacket);

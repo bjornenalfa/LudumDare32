@@ -33,13 +33,13 @@ public class Server implements Runnable {
 
     private DatagramSocket srvSocket;
     private int srvPort;
-    private List<InetSocketAddress> usersL;
+    private ArrayList<InetSocketAddress> usersL;
     private Map<InetSocketAddress, PlayerData> data;
     private boolean srvRunning;
 
     public Server(int port) {
         srvPort = port;
-        usersL = Collections.synchronizedList(new ArrayList<InetSocketAddress>());
+        usersL = new ArrayList<>();
         data = new HashMap();
     }
 
@@ -83,47 +83,41 @@ public class Server implements Runnable {
             @Override
             public void run() {
                 while (srvRunning) {
-                    for (InetSocketAddress user : new ArrayList<>(usersL)) {
-                        Map<InetSocketAddress, PlayerData> plData = data;
+                    Map<InetSocketAddress, PlayerData> plData = data;
+                    ArrayList<InetSocketAddress> plList = usersL;
+
+                    for (InetSocketAddress user : new ArrayList<>(plList)) {
                         if (plData.get(user) != null && System.currentTimeMillis() - plData.get(user).time >= 20000) {
                             System.out.println(user + " disconnected! :(");
                             usersL.remove(user);
                             data.remove(user);
                         }
                     }
-                    if (usersL.size() > 1) {
-                        PlayerData[] pdl = new PlayerData[usersL.size()];
+                    plList = usersL;
 
+                    if (plList.size() > 1) {
+                        PlayerData[] pdl = new PlayerData[plList.size()];
+                        PlayerData[] pl = new PlayerData[plList.size() - 1];
+
+                        for (int i = 1; i < plList.size(); i++) {
+                            pdl[i - 1] = plData.get(plList.get(i - 1));
+                            pl[i - 1] = plData.get(plList.get(i));
+                        }
                         int i = 0;
-                        for (InetSocketAddress user : usersL) {
-                            pdl[i] = data.get(user);
-                            i++;
-                        }
-
-                        PlayerData[] pl = new PlayerData[usersL.size() - 1];
-                        for (i = 1; i < usersL.size(); i++) {
-                            pl[i - 1] = pdl[i];
-                        }
-
-                        i = 0;
-                        for (InetSocketAddress s : usersL) {
+                        for (InetSocketAddress s : plList) {
                             sendObj(new PlayerDataList(pl), s);
-                            if (i < usersL.size() - 1) {
+                            if (i < plList.size() - 1) {
                                 pl[i] = pdl[i];
                                 i++;
                             }
                         }
 
-                        try {
-                            Thread.sleep(1000 / TICK_RATE);
-                        } catch (InterruptedException ex) {
-                        }
-                    } else if (usersL.size() == 1) {
-                        sendObj("keepalive", usersL.get(0));
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException ex) {
-                        }
+                    } else if (plList.size() == 1) {
+                        sendObj("keepalive", plList.get(0));
+                    }
+                    try {
+                        Thread.sleep(1000 / TICK_RATE);
+                    } catch (InterruptedException ex) {
                     }
                 }
             }
@@ -137,13 +131,13 @@ public class Server implements Runnable {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
-            os.flush();
+//            os.flush();
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(s.getHostString()), s.getPort());
             if (sendPacket.getLength() >= PACKAGE_SIZE) {
                 PACKAGE_SIZE *= 2;
             }
-            
+
             srvSocket.send(sendPacket);
 //            System.out.println("SIZE: " + sendPacket.getLength());
         } catch (IOException ex) {
