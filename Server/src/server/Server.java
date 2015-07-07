@@ -13,7 +13,9 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -26,18 +28,18 @@ import java.util.logging.Logger;
  */
 public class Server implements Runnable {
 
-    public static final int PACKAGE_SIZE = 256;
-    public static int TICK_RATE = 64;
+    public int PACKAGE_SIZE = 4096;
+    public int TICK_RATE = 64;
 
     private DatagramSocket srvSocket;
     private int srvPort;
-    private ArrayList<InetSocketAddress> usersL;
+    private List<InetSocketAddress> usersL;
     private Map<InetSocketAddress, PlayerData> data;
     private boolean srvRunning;
 
     public Server(int port) {
         srvPort = port;
-        usersL = new ArrayList();
+        usersL = Collections.synchronizedList(new ArrayList<InetSocketAddress>());
         data = new HashMap();
     }
 
@@ -81,8 +83,9 @@ public class Server implements Runnable {
             @Override
             public void run() {
                 while (srvRunning) {
-                    for (InetSocketAddress user : (ArrayList<InetSocketAddress>) usersL.clone()) {
-                        if (System.currentTimeMillis() - data.get(user).time >= 5000) {
+                    for (InetSocketAddress user : new ArrayList<>(usersL)) {
+                        Map<InetSocketAddress, PlayerData> plData = data;
+                        if (plData.get(user) != null && System.currentTimeMillis() - plData.get(user).time >= 20000) {
                             System.out.println(user + " disconnected! :(");
                             usersL.remove(user);
                             data.remove(user);
@@ -129,16 +132,28 @@ public class Server implements Runnable {
     }
 
     private void sendObj(Object obj, InetSocketAddress s) {
+        ObjectOutputStream os = null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
+            os.flush();
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(s.getHostString()), s.getPort());
+            if (sendPacket.getLength() >= PACKAGE_SIZE) {
+                PACKAGE_SIZE *= 2;
+            }
+            
             srvSocket.send(sendPacket);
 //            System.out.println("SIZE: " + sendPacket.getLength());
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                os.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 

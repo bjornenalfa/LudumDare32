@@ -9,6 +9,7 @@ import game.PlayerData;
 import game.PlayerDataList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -124,12 +125,13 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        if (System.currentTimeMillis() - lastPacket >= 10000) {
+                        if (System.currentTimeMillis() - lastPacket >= 20000) {
                             System.out.println("The server is not responding! :(");
                             running = false;
-                        }
-                        if (bufferedPlayerData != null) {
-                            sendObj(new PlayerData(bufferedPlayerData));
+                        } else {
+                            if (bufferedPlayerData != null) {
+                                sendObj(new PlayerData(bufferedPlayerData));
+                            }
                         }
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
@@ -158,6 +160,7 @@ public class Client implements Runnable {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
+            os.flush();
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
             srvSocket.send(sendPacket);
@@ -184,6 +187,9 @@ public class Client implements Runnable {
                 return obj;
             } catch (SocketException ex) {
                 System.out.println("The socket has been closed!");
+            } catch (EOFException ex) {
+                System.out.println("Package bigger than expectd...\nPACKAGE_SIZE is being expanded");
+                PACKAGE_SIZE *= 2;
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
