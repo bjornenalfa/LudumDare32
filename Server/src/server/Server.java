@@ -90,8 +90,10 @@ public class Server implements Runnable {
                             usersL.remove(user);
                             plList.remove(user);
                             data.remove(user);
+                            usersL.trimToSize();
                         }
                     }
+                    
                     plList = usersL;
                     plData = data;
 
