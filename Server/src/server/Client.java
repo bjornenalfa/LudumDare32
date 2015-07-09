@@ -61,6 +61,7 @@ public class Client implements Runnable {
                     if (obj instanceof String) {
                         String str = (String) obj;
                         if (str.contains("heartbeat-")) {
+                            System.out.println("Received heartbeat:"+str);
                             connected = true;
                             running = false;
                             System.out.println("Connected!");
@@ -82,7 +83,7 @@ public class Client implements Runnable {
             @Override
             public void run() {
                 while (running) {
-                    sendObj("heartbeat");
+//                    sendObj("heartbeat"); //Useless? already sends one
                     if ((System.currentTimeMillis() - heartTime) >= 10000) { //10s
                         System.out.println("Unable to connect to the server!");
                         connected = false;
@@ -91,7 +92,7 @@ public class Client implements Runnable {
                         srvSocket.close();
                     }
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(5000); //increased sleep time because you really don't need to look that much
                     } catch (InterruptedException ex) {
                     }
                 }
@@ -155,6 +156,7 @@ public class Client implements Runnable {
     }
 
     private void sendObj(Object obj) {
+        System.out.println("Sending: "+obj);
         ObjectOutputStream os = null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -203,6 +205,7 @@ public class Client implements Runnable {
             System.out.println("Received: " + obj);
         } else if (obj instanceof PlayerDataList) {
             srvPlayerDataList = (PlayerDataList) obj;
+            System.out.println("Received new player data list");
         } else {
             System.out.println("Received unknown object: " + obj);
         }

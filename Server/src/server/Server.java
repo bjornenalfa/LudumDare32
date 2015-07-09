@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class Server implements Runnable {
 
     public int PACKAGE_SIZE = 4096;
-    public int TICK_RATE = 64;
+    public int TICK_RATE = 1;
 
     private DatagramSocket srvSocket;
     private int srvPort;
@@ -84,12 +84,13 @@ public class Server implements Runnable {
             public void run() {
                 while (srvRunning) {
                     Map<InetSocketAddress, PlayerData> plData = data;
-                    ArrayList<InetSocketAddress> plList = usersL;
+                    ArrayList<InetSocketAddress> plList = (ArrayList<InetSocketAddress>) usersL.clone();
 
-                    for (InetSocketAddress user : new ArrayList<>(plList)) {
+                    for (InetSocketAddress user : plList) {
                         if (plData.get(user) != null && System.currentTimeMillis() - plData.get(user).time >= 20000) {
                             System.out.println(user + " disconnected! :(");
                             usersL.remove(user);
+                            plList.remove(user);
                             data.remove(user);
                         }
                     }
@@ -114,6 +115,7 @@ public class Server implements Runnable {
 
                     } else if (plList.size() == 1) {
                         sendObj("keepalive", plList.get(0));
+                        System.out.println("Sent keepalive!");
                     }
                     try {
                         Thread.sleep(1000 / TICK_RATE);
