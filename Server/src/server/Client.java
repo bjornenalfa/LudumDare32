@@ -62,7 +62,7 @@ public class Client implements Runnable {
                     if (obj instanceof String) {
                         String str = (String) obj;
                         if (str.contains("heartbeat-")) {
-                            System.out.println("Received heartbeat:"+str);
+                            System.out.println("Received heartbeat:" + str);
                             connected = true;
                             running = false;
                             System.out.println("Connected!");
@@ -74,7 +74,7 @@ public class Client implements Runnable {
                         }
                     }
                     try {
-                        Thread.sleep(5);
+                        Thread.sleep(1);
                     } catch (InterruptedException ex) {
                     }
                 }
@@ -84,7 +84,7 @@ public class Client implements Runnable {
             @Override
             public void run() {
                 while (running) {
-//                    sendObj("heartbeat"); //Useless? already sends one
+                    sendObj("heartbeat"); //udp, cant know if it arrives, best to send more than one....
                     if ((System.currentTimeMillis() - heartTime) >= 10000) { //10s
                         System.out.println("Unable to connect to the server!");
                         connected = false;
@@ -93,7 +93,7 @@ public class Client implements Runnable {
                         srvSocket.close();
                     }
                     try {
-                        Thread.sleep(5000); //increased sleep time because you really don't need to look that much
+                        Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                     }
                 }
@@ -117,6 +117,10 @@ public class Client implements Runnable {
                 public void run() {
                     while (running) {
                         handleObject(getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE));
+                        try {
+                            Thread.sleep(1); //need to sleep to allow boolean check...
+                        } catch (InterruptedException ex) {
+                        }
                     }
                     OutThread.interrupt();
                 }
@@ -127,6 +131,7 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
+                        System.out.println("PING: " + (System.currentTimeMillis() - lastPacket));
                         if (bufferedPlayerData != null) {
                             sendObj(new PlayerData(bufferedPlayerData));
                         }
@@ -141,7 +146,6 @@ public class Client implements Runnable {
             OutThread.start();
 
             while (running) {
-                System.out.println("PING: " + (System.currentTimeMillis() - lastPacket));
                 if (System.currentTimeMillis() - lastPacket >= 5000) {
                     System.out.println("The server is not responding! :(");
                     running = false;
@@ -157,7 +161,7 @@ public class Client implements Runnable {
     }
 
     private void sendObj(Object obj) {
-        System.out.println("Sending: "+obj);
+        System.out.println("Sending: " + obj);
         ObjectOutputStream os = null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

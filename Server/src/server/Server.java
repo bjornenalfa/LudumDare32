@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class Server implements Runnable {
 
     public int PACKAGE_SIZE = 4096;
-    public int TICK_RATE = 1;
+    public int TICK_RATE = 64;
 
     private DatagramSocket srvSocket;
     private int srvPort;
@@ -82,18 +82,17 @@ public class Server implements Runnable {
             public void run() {
                 while (srvRunning) {
                     Map<InetSocketAddress, PlayerData> plData = data;
-                    ArrayList<InetSocketAddress> plList = (ArrayList<InetSocketAddress>) usersL.clone();
+                    ArrayList<InetSocketAddress> plList = usersL;
 
-                    for (InetSocketAddress user : plList) {
+                    for (InetSocketAddress user : new ArrayList<InetSocketAddress>(plList)) {
                         if (plData.get(user) != null && System.currentTimeMillis() - plData.get(user).time >= 5000) {
                             System.out.println(user + " disconnected! :(");
                             usersL.remove(user);
-                            plList.remove(user);
                             data.remove(user);
                             usersL.trimToSize();
                         }
                     }
-                    
+
                     plList = usersL;
                     plData = data;
 
@@ -106,7 +105,7 @@ public class Server implements Runnable {
                             pl[i - 1] = plData.get(plList.get(i));
                         }
                         int i = 0;
-                        for (InetSocketAddress s : new ArrayList<>(plList)) {
+                        for (InetSocketAddress s : plList) {
                             sendObj(new PlayerDataList(pl), s);
                             if (i < plList.size() - 1) {
                                 pl[i] = pdl[i];
@@ -116,7 +115,7 @@ public class Server implements Runnable {
 
                     } else if (plList.size() == 1) {
                         sendObj("keepalive", plList.get(0));
-                        System.out.println("Sent keepalive!");
+//                        System.out.println("Sent keepalive!"); //dont spam output 
                     }
                     try {
                         Thread.sleep(1000 / TICK_RATE);
