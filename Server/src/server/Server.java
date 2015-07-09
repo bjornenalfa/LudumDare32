@@ -13,9 +13,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -87,13 +85,14 @@ public class Server implements Runnable {
                     ArrayList<InetSocketAddress> plList = usersL;
 
                     for (InetSocketAddress user : new ArrayList<>(plList)) {
-                        if (plData.get(user) != null && System.currentTimeMillis() - plData.get(user).time >= 20000) {
+                        if (plData.get(user) != null && System.currentTimeMillis() - plData.get(user).time >= 5000) {
                             System.out.println(user + " disconnected! :(");
                             usersL.remove(user);
                             data.remove(user);
                         }
                     }
                     plList = usersL;
+                    plData = data;
 
                     if (plList.size() > 1) {
                         PlayerData[] pdl = new PlayerData[plList.size()];
@@ -104,7 +103,7 @@ public class Server implements Runnable {
                             pl[i - 1] = plData.get(plList.get(i));
                         }
                         int i = 0;
-                        for (InetSocketAddress s : plList) {
+                        for (InetSocketAddress s : new ArrayList<>(plList)) {
                             sendObj(new PlayerDataList(pl), s);
                             if (i < plList.size() - 1) {
                                 pl[i] = pdl[i];
@@ -131,7 +130,7 @@ public class Server implements Runnable {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
-//            os.flush();
+            os.flush();
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(s.getHostString()), s.getPort());
             if (sendPacket.getLength() >= PACKAGE_SIZE) {

@@ -30,5 +30,5 @@ Världen ändras av vädret. Vägar öppnas/stängs. DYNAMISK VÄRLD.
 # Multiplayer
 
 + optimera paket, ta ner storlek så mycket så möjligt, helst power of 2 (...128?!)
-+ optimera servern... behöver vara snabbare... lite många for-loopar... (syncronized hjälper nog inte men den behövs för att kunna ha fler än 2 clients...)
 + buffer storlek för inkommande paket spelar ingen roll?! (måste undersökas... men i teorin så är överdrivet stora buffer inte ett problem...)
++ tester med 10 spelare har utförs... ingen riktigt märbar lagg... borde testas med 10 olika datorer...

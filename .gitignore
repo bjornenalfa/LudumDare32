@@ -5,9 +5,6 @@
 /quickID/build/
 /LudumDare32MapEditor/nbproject/private/
 /LudumDare32MapEditor/build/
-/Server/nbproject/private/
-/Server/build/
-Server/nbproject/build-impl.xml
-Server/nbproject/genfiles.properties
-Server/dist/Server.jar
-Server/dist/README.TXT
+/Server/build/*
+Server/nbproject/*
+Server/dist/*

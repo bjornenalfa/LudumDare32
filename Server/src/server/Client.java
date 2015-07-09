@@ -58,6 +58,7 @@ public class Client implements Runnable {
             public void run() {
                 while (running) {
                     Object obj = getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE);
+                    lastPacket = System.currentTimeMillis();
                     if (obj instanceof String) {
                         String str = (String) obj;
                         if (str.contains("heartbeat-")) {
@@ -125,14 +126,9 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-//                        if (System.currentTimeMillis() - lastPacket >= 20000) {
-//                            System.out.println("The server is not responding! :(");
-//                            running = false;
-//                        } else {
-                            if (bufferedPlayerData != null) {
-                                sendObj(new PlayerData(bufferedPlayerData));
-                            }
-//                        }
+                        if (bufferedPlayerData != null) {
+                            sendObj(new PlayerData(bufferedPlayerData));
+                        }
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
                         } catch (InterruptedException ex) {
@@ -144,6 +140,11 @@ public class Client implements Runnable {
             OutThread.start();
 
             while (running) {
+                System.out.println("PING: " + (System.currentTimeMillis() - lastPacket));
+                if (System.currentTimeMillis() - lastPacket >= 5000) {
+                    System.out.println("The server is not responding! :(");
+                    running = false;
+                }
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
@@ -160,7 +161,7 @@ public class Client implements Runnable {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             os = new ObjectOutputStream(outputStream);
             os.writeObject(obj);
-//            os.flush();
+            os.flush();
             byte[] data = outputStream.toByteArray();
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(srvIP), srvPort);
             srvSocket.send(sendPacket);
@@ -200,7 +201,10 @@ public class Client implements Runnable {
     private void handleObject(Object obj) {
         lastPacket = System.currentTimeMillis();
         if (obj instanceof String) {
-            System.out.println("Received: " + obj);
+            String str = (String) obj;
+            if (!str.equals("keepalive")) {
+                System.out.println("Received: " + str);
+            }
         } else if (obj instanceof PlayerDataList) {
             srvPlayerDataList = (PlayerDataList) obj;
         } else {
