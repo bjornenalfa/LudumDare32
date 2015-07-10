@@ -77,8 +77,6 @@ public class Client {
                             TICK_RATE = Integer.parseInt(str.substring(str.lastIndexOf("-") + 1, str.length()));
                             connectionAttemptTimer.interrupt();
                             startCommunications();
-                        } else {
-                            connected = false;
                         }
                     }
                     try {
