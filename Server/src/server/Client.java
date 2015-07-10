@@ -91,6 +91,7 @@ public class Client implements Runnable {
                         connected = false;
                         running = false;
                         heartBeat.interrupt();
+                        srvSocket.disconnect();
                         srvSocket.close();
                     }
                     try {
@@ -156,7 +157,7 @@ public class Client implements Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
-
+            srvSocket.disconnect();
             srvSocket.close();
         }
     }
