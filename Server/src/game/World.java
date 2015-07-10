@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import network.PlayerData;
 
 public class World {
 
@@ -109,8 +110,8 @@ public class World {
         //g2.setComposite(SourceAlphaComposite.createComposite(BufferedImage.TYPE_INT_ARGB));
         g2.setComposite(AlphaComposite.SrcAtop);
         LudumDare32.player.paintBehind(g2);
-        for (int i = 0; i < LudumDare32.players.list.length; i++) {
-            new Player(LudumDare32.players.list[i].x, LudumDare32.players.list[i].y, 0).paintBehind(g2);
+        for (PlayerData playerData : LudumDare32.players.list) {
+            new Player(playerData.x, playerData.y, 0).paintBehind(g2);
         }
         g2.dispose();
 

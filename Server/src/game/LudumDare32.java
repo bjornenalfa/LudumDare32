@@ -18,6 +18,8 @@ import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import network.PlayerData;
+import network.PlayerDataList;
 import server.Client;
 
 public class LudumDare32 extends JFrame {
@@ -247,7 +249,7 @@ public class LudumDare32 extends JFrame {
 
                 panel.repaint();
 
-                client.sendPlayerData(new PlayerData((float) player.getX(), (float) player.getY()));
+                client.sendPlayerData(new PlayerData((float) player.getX(), (float) player.getY(), CLIENT_ID));
                 try {
                     sleep((int) (1000 / 60d));
                 } catch (Exception e) {
@@ -287,8 +289,8 @@ public class LudumDare32 extends JFrame {
                 g2.drawLine((int) windstartX, (int) windstartY, (int) player.getX(), (int) player.getY());
             }
             Character.paintCharacters(g2);
-            for (int i = 0; i < players.list.length; i++) {
-                new Player(players.list[i].x, players.list[i].y, 0).paint(g2);
+            for (PlayerData playerData : players.list) {
+                new Player(playerData.x, playerData.y, 0).paint(g2);
             }
             Weather.paintTransition2(g2);
             World.paint2(g2);
@@ -296,6 +298,9 @@ public class LudumDare32 extends JFrame {
             Weather.paint(g2);
             Weather.transitionClearClip(g2);
             Weather.paintOldWeather(g2);
+            for (PlayerData playerData : players.list) {
+                g2.drawString(playerData.ID, playerData.x, playerData.y);
+            }
             g2.drawImage(image, 0, 0, this);
             g2.translate(-camera.translateX, -camera.translateY);
 

@@ -5,8 +5,6 @@
  */
 package server;
 
-import game.PlayerData;
-import game.PlayerDataList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -19,6 +17,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import network.PlayerData;
+import network.PlayerDataList;
 
 /**
  *

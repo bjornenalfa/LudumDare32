@@ -1,7 +1,5 @@
 package server;
 
-import game.PlayerData;
-import game.PlayerDataList;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +16,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import network.PlayerData;
+import network.PlayerDataList;
 
 /**
  * s
@@ -93,7 +93,6 @@ public class Server implements Runnable {
                         if (System.currentTimeMillis() - lastDataReceivedTime.get(user) >= TIME_BEFORE_TIMEOUT) {
                             System.out.println(user + " disconnected! :(");
                             usersL.remove(user);
-                            plList.remove(user);
                             data.remove(user);
                             usersL.trimToSize();
                         }
@@ -101,6 +100,8 @@ public class Server implements Runnable {
                             sendObj("keepalive-" + System.currentTimeMillis(), plList.get(0));
                         }
                     }
+                    
+                    plList = (ArrayList<InetSocketAddress>) usersL.clone();
 
                     if (plList.size() > 1) {
                         PlayerData[] pdl = new PlayerData[plList.size()];
@@ -164,7 +165,7 @@ public class Server implements Runnable {
             if (s.matches("connection request")) {
                 if (!usersL.contains(sender)) {
                     usersL.add(sender);
-                    data.put(sender, new PlayerData(-1000, -1000));
+                    data.put(sender, new PlayerData(-1000, -1000, ""));
                     System.out.println("New client connected! Address:" + sender);
                 }
                 sendObj("connection-" + PACKAGE_SIZE + "-" + TICK_RATE, sender);
