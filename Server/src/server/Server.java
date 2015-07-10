@@ -26,19 +26,25 @@ import java.util.logging.Logger;
  */
 public class Server implements Runnable {
 
-    public int PACKAGE_SIZE = 4096;
-    public int TICK_RATE = 1;
+    static public int PACKAGE_SIZE = 4096;
+    static public int TICK_RATE = 1;
+    static public long TIME_BEFORE_KEEPALIVE = 3000;
+    static public long TIME_BEFORE_TIMEOUT = 5000;
 
     private DatagramSocket srvSocket;
     private int srvPort;
     private ArrayList<InetSocketAddress> usersL;
     private Map<InetSocketAddress, PlayerData> data;
+    private Map<InetSocketAddress, Long> lastDataSentTime;
+    private Map<InetSocketAddress, Long> lastDataReceivedTime;
     private boolean srvRunning;
 
     public Server(int port) {
         srvPort = port;
         usersL = new ArrayList<>();
         data = new HashMap();
+        lastDataSentTime = new HashMap();
+        lastDataReceivedTime = new HashMap();
     }
 
     @Override
@@ -81,28 +87,28 @@ public class Server implements Runnable {
             @Override
             public void run() {
                 while (srvRunning) {
-                    Map<InetSocketAddress, PlayerData> plData = data;
-                    ArrayList<InetSocketAddress> plList = usersL;
+                    ArrayList<InetSocketAddress> plList = (ArrayList<InetSocketAddress>) usersL.clone();
 
-                    for (InetSocketAddress user : new ArrayList<InetSocketAddress>(plList)) {
-                        if (plData.get(user) != null && System.currentTimeMillis() - plData.get(user).time >= 5000) {
+                    for (InetSocketAddress user : plList) {
+                        if (System.currentTimeMillis() - lastDataReceivedTime.get(user) >= TIME_BEFORE_TIMEOUT) {
                             System.out.println(user + " disconnected! :(");
                             usersL.remove(user);
+                            plList.remove(user);
                             data.remove(user);
                             usersL.trimToSize();
                         }
+                        if (System.currentTimeMillis() - lastDataSentTime.get(user) >= TIME_BEFORE_KEEPALIVE) {
+                            sendObj("keepalive-" + System.currentTimeMillis(), plList.get(0));
+                        }
                     }
-
-                    plList = usersL;
-                    plData = data;
 
                     if (plList.size() > 1) {
                         PlayerData[] pdl = new PlayerData[plList.size()];
                         PlayerData[] pl = new PlayerData[plList.size() - 1];
 
                         for (int i = 1; i < plList.size(); i++) {
-                            pdl[i - 1] = plData.get(plList.get(i - 1));
-                            pl[i - 1] = plData.get(plList.get(i));
+                            pdl[i - 1] = data.get(plList.get(i - 1));
+                            pl[i - 1] = data.get(plList.get(i));
                         }
                         int i = 0;
                         for (InetSocketAddress s : plList) {
@@ -113,9 +119,6 @@ public class Server implements Runnable {
                             }
                         }
 
-                    } else if (plList.size() == 1) {
-                        sendObj("keepalive-"+System.currentTimeMillis(), plList.get(0));
-//                        System.out.println("Sent keepalive!"); //dont spam output 
                     }
                     try {
                         Thread.sleep(1000 / TICK_RATE);
@@ -127,7 +130,8 @@ public class Server implements Runnable {
         out.start();
     }
 
-    private void sendObj(Object obj, InetSocketAddress s) {
+    private void sendObj(Object obj, InetSocketAddress receiver) {
+        lastDataSentTime.put(receiver, System.currentTimeMillis());
         ObjectOutputStream os = null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -135,7 +139,7 @@ public class Server implements Runnable {
             os.writeObject(obj);
             os.flush();
             byte[] data = outputStream.toByteArray();
-            DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(s.getHostString()), s.getPort());
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, InetAddress.getByName(receiver.getHostString()), receiver.getPort());
             if (sendPacket.getLength() >= PACKAGE_SIZE) {
                 PACKAGE_SIZE *= 2;
             }
@@ -154,6 +158,7 @@ public class Server implements Runnable {
     }
 
     private void handleObject(Object obj, InetSocketAddress sender) {
+        lastDataReceivedTime.put(sender, System.currentTimeMillis());
         if (obj instanceof String) {
             String s = (String) obj;
             if (s.matches("connection request")) {

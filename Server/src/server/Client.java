@@ -25,6 +25,9 @@ import java.util.logging.Logger;
  * @author PastaPojken
  */
 public class Client {
+    static public long TIME_BEFORE_KEEPALIVE = 3000;
+    static public long TIME_BEFORE_TIMEOUT = 5000;
+    static public long TIME_BEFORE_CONNECTIONFAIL = 10000;
 
     private DatagramSocket srvSocket;
     private int srvPort;
@@ -35,6 +38,7 @@ public class Client {
     private PlayerDataList srvPlayerDataList;
     private PlayerData bufferedPlayerData;
     private Long connectionAttemptStartTime, lastPacket, lastPacketTimeStamp;
+    private Long timeWhenLastDataSent = Long.MIN_VALUE;
     private int PACKAGE_SIZE, TICK_RATE;
 
     public Client(String ip, int port, String id) {
@@ -89,7 +93,7 @@ public class Client {
             public void run() {
                 while (connecting) {
                     sendObj("connection request"); //udp, cant know if it arrives, best to send more than one....
-                    if ((System.currentTimeMillis() - connectionAttemptStartTime) >= 10000) { //10s
+                    if ((System.currentTimeMillis() - connectionAttemptStartTime) >= TIME_BEFORE_CONNECTIONFAIL) { //10s
                         System.out.println("Unable to connect to the server!");
                         connected = false;
                         connecting = false;
@@ -140,10 +144,13 @@ public class Client {
                             sendObj(new PlayerData(bufferedPlayerData));
                             bufferedPlayerData = null;
                         }
-                        if (System.currentTimeMillis() - lastPacket >= 5000) {
+                        if (System.currentTimeMillis() - lastPacket >= TIME_BEFORE_TIMEOUT) {
                             System.out.println("The server is not responding! :(");
                             running = false;
                             disconnect();
+                        }
+                        if (System.currentTimeMillis() - timeWhenLastDataSent >= TIME_BEFORE_KEEPALIVE) { //Make sure that the server don't think we disconnected!
+                            sendObj("keepAlive");
                         }
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
@@ -163,6 +170,7 @@ public class Client {
     }
 
     private void sendObj(Object obj) {
+        timeWhenLastDataSent = System.currentTimeMillis();
 //        System.out.println("Sending: " + obj);
         ObjectOutputStream os = null;
         try {
