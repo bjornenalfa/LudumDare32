@@ -101,23 +101,22 @@ public class Server implements Runnable {
                         }
                     }
                     
-                    plList = (ArrayList<InetSocketAddress>) usersL.clone();
-
                     if (plList.size() > 1) {
+                        plList = (ArrayList<InetSocketAddress>) usersL.clone();
+                        Map<InetSocketAddress, PlayerData> plData = data; //points to data (still CMError)?? but whatever
+                        
                         PlayerData[] pdl = new PlayerData[plList.size()];
                         PlayerData[] pl = new PlayerData[plList.size() - 1];
-
-                        for (int i = 1; i < plList.size(); i++) {
-                            pdl[i - 1] = data.get(plList.get(i - 1));
-                            pl[i - 1] = data.get(plList.get(i));
+                        
+                        for (int i = 0; i < pl.length; i++) {
+                            pdl[i] = data.get(plList.get(i));
+                            pl[i] = data.get(plList.get(i + 1));
                         }
-                        int i = 0;
-                        for (InetSocketAddress s : plList) {
-                            sendObj(new PlayerDataList(pl, System.currentTimeMillis()), s);
-                            if (i < plList.size() - 1) {
-                                pl[i] = pdl[i];
-                                i++;
-                            }
+
+                        sendObj(new PlayerDataList(pl, System.currentTimeMillis()), plList.get(0));
+                        for (int i = 0; i < pl.length; i++) {
+                            pl[i] = pdl[i];
+                            sendObj(new PlayerDataList(pl, System.currentTimeMillis()), plList.get(i+1));
                         }
 
                     }

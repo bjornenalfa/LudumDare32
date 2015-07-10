@@ -137,7 +137,7 @@ public class Client {
                 @Override
                 public void run() {
                     while (running) {
-                        System.out.println("PING: " + (lastPacket - lastPacketTimeStamp));
+                        //System.out.println("PING: " + (lastPacket - lastPacketTimeStamp)); Prints waaay too much
                         if (bufferedPlayerData != null) {
                             sendObj(new PlayerData(bufferedPlayerData));
                             bufferedPlayerData = null;
@@ -225,7 +225,7 @@ public class Client {
         } else if (obj instanceof PlayerDataList) {
             srvPlayerDataList = (PlayerDataList) obj;
             lastPacketTimeStamp = srvPlayerDataList.getTime();
-            System.out.println("Received new player data list");
+//            System.out.println("Received new player data list");
         } else {
             System.out.println("Received unknown object: " + obj);
         }
