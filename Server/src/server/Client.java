@@ -33,7 +33,7 @@ public class Client implements Runnable {
     private Thread InThread, OutThread, heartBeat, heartAttack;
     private PlayerDataList srvPlayerDataList;
     private PlayerData bufferedPlayerData;
-    private Long heartTime, lastPacket;
+    private Long heartTime, lastPacket, lastPacketTimeStamp;
     private int PACKAGE_SIZE, TICK_RATE;
 
     public Client(String ip, int port, String id) {
@@ -42,6 +42,7 @@ public class Client implements Runnable {
         srvPort = port;
         myID = id;
         lastPacket = (long) 0;
+        lastPacketTimeStamp = (long) 0;
         try {
             srvSocket = new DatagramSocket();
         } catch (IOException ex) {
@@ -131,7 +132,7 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        System.out.println("PING: " + (System.currentTimeMillis() - lastPacket));
+                        System.out.println("PING: " + (lastPacket-lastPacketTimeStamp));
                         if (bufferedPlayerData != null) {
                             sendObj(new PlayerData(bufferedPlayerData));
                         }
@@ -161,7 +162,7 @@ public class Client implements Runnable {
     }
 
     private void sendObj(Object obj) {
-        System.out.println("Sending: " + obj);
+//        System.out.println("Sending: " + obj);
         ObjectOutputStream os = null;
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -208,11 +209,14 @@ public class Client implements Runnable {
         lastPacket = System.currentTimeMillis();
         if (obj instanceof String) {
             String str = (String) obj;
-            if (!str.equals("keepalive")) {
+            if (str.contains("keepalive-")) {
+                lastPacketTimeStamp = Long.parseLong(str.substring(str.indexOf("-") + 1, str.length()));
+            } else {
                 System.out.println("Received: " + str);
             }
         } else if (obj instanceof PlayerDataList) {
             srvPlayerDataList = (PlayerDataList) obj;
+            lastPacketTimeStamp = srvPlayerDataList.getTime();
             System.out.println("Received new player data list");
         } else {
             System.out.println("Received unknown object: " + obj);

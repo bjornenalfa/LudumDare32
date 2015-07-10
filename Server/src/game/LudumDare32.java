@@ -41,7 +41,7 @@ public class LudumDare32 extends JFrame {
     static Camera camera;
 
     static Client client = new Client(SERVER_IP, SERVER_PORT, CLIENT_ID);
-    static PlayerDataList players = new PlayerDataList();
+    static PlayerDataList players = new PlayerDataList(System.currentTimeMillis());
 
     BufferedImage image;
 

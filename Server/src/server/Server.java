@@ -106,7 +106,7 @@ public class Server implements Runnable {
                         }
                         int i = 0;
                         for (InetSocketAddress s : plList) {
-                            sendObj(new PlayerDataList(pl), s);
+                            sendObj(new PlayerDataList(pl, System.currentTimeMillis()), s);
                             if (i < plList.size() - 1) {
                                 pl[i] = pdl[i];
                                 i++;
@@ -114,7 +114,7 @@ public class Server implements Runnable {
                         }
 
                     } else if (plList.size() == 1) {
-                        sendObj("keepalive", plList.get(0));
+                        sendObj("keepalive-"+System.currentTimeMillis(), plList.get(0));
 //                        System.out.println("Sent keepalive!"); //dont spam output 
                     }
                     try {
