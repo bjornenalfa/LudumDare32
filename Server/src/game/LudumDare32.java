@@ -48,7 +48,7 @@ public class LudumDare32 extends JFrame {
     public LudumDare32() {
         Character.localPlayer = player;
         //Tile.loadTileSet("img/Spritesheet/cloudy.png", 16, 1);
-        new Thread(client).start();
+//        new Thread(client).start();
         World.setTileSet(Cloudy.tileSet);
         World.loadFromFile("levels/test.png");
 

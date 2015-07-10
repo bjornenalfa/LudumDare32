@@ -24,16 +24,17 @@ import java.util.logging.Logger;
  *
  * @author PastaPojken
  */
-public class Client implements Runnable {
+public class Client {
 
     private DatagramSocket srvSocket;
     private int srvPort;
     private String myID, srvIP;
     private boolean running, connected;
-    private Thread InThread, OutThread, heartBeat, heartAttack;
+    private boolean connecting = false;
+    private Thread InThread, OutThread, connectionFinder, connectionAttemptTimer;
     private PlayerDataList srvPlayerDataList;
     private PlayerData bufferedPlayerData;
-    private Long heartTime, lastPacket, lastPacketTimeStamp;
+    private Long connectionAttemptStartTime, lastPacket, lastPacketTimeStamp;
     private int PACKAGE_SIZE, TICK_RATE;
 
     public Client(String ip, int port, String id) {
@@ -48,28 +49,30 @@ public class Client implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        connected = true;
+        connected = false;
+        connecting = true;
         System.out.println("Connecting...");
-        sendObj("heartbeat");
-        heartTime = System.currentTimeMillis();
-        running = true;
+        sendObj("connection request");
+        connectionAttemptStartTime = System.currentTimeMillis();
+        running = false;
 
-        heartBeat = new Thread(new Runnable() {
+        connectionFinder = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (running) {
+                while (connecting) {
                     Object obj = getObj(new byte[PACKAGE_SIZE], PACKAGE_SIZE);
                     lastPacket = System.currentTimeMillis();
                     if (obj instanceof String) {
                         String str = (String) obj;
-                        if (str.contains("heartbeat-")) {
-                            System.out.println("Received heartbeat:" + str);
+                        if (str.contains("connection-")) {
+                            System.out.println("Received connection:" + str);
                             connected = true;
-                            running = false;
+                            connecting = false;
                             System.out.println("Connected!");
                             PACKAGE_SIZE = Integer.parseInt(str.substring(str.indexOf("-") + 1, str.lastIndexOf("-")));
                             TICK_RATE = Integer.parseInt(str.substring(str.lastIndexOf("-") + 1, str.length()));
-                            heartAttack.interrupt();
+                            connectionAttemptTimer.interrupt();
+                            startCommunications();
                         } else {
                             connected = false;
                         }
@@ -81,18 +84,18 @@ public class Client implements Runnable {
                 }
             }
         });
-        heartAttack = new Thread(new Runnable() {
+        connectionAttemptTimer = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (running) {
-                    sendObj("heartbeat"); //udp, cant know if it arrives, best to send more than one....
-                    if ((System.currentTimeMillis() - heartTime) >= 10000) { //10s
+                while (connecting) {
+                    sendObj("connection request"); //udp, cant know if it arrives, best to send more than one....
+                    if ((System.currentTimeMillis() - connectionAttemptStartTime) >= 10000) { //10s
                         System.out.println("Unable to connect to the server!");
                         connected = false;
+                        connecting = false;
                         running = false;
-                        heartBeat.interrupt();
-                        srvSocket.disconnect();
-                        srvSocket.close();
+                        connectionFinder.interrupt();
+                        disconnect();
                     }
                     try {
                         Thread.sleep(1000);
@@ -101,17 +104,16 @@ public class Client implements Runnable {
                 }
             }
         });
-        heartBeat.start();
-        heartAttack.start();
+        connectionFinder.start();
+        connectionAttemptTimer.start();
         try {
-            heartAttack.join();
+            connectionAttemptTimer.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    @Override
-    public void run() {
+    public void startCommunications() {
         if (connected) {
             running = true;
             InThread = new Thread(new Runnable() {
@@ -133,9 +135,15 @@ public class Client implements Runnable {
                 @Override
                 public void run() {
                     while (running) {
-                        System.out.println("PING: " + (lastPacket-lastPacketTimeStamp));
+                        System.out.println("PING: " + (lastPacket - lastPacketTimeStamp));
                         if (bufferedPlayerData != null) {
                             sendObj(new PlayerData(bufferedPlayerData));
+                            bufferedPlayerData = null;
+                        }
+                        if (System.currentTimeMillis() - lastPacket >= 5000) {
+                            System.out.println("The server is not responding! :(");
+                            running = false;
+                            disconnect();
                         }
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
@@ -146,20 +154,12 @@ public class Client implements Runnable {
                 }
             });
             OutThread.start();
-
-            while (running) {
-                if (System.currentTimeMillis() - lastPacket >= 5000) {
-                    System.out.println("The server is not responding! :(");
-                    running = false;
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                }
-            }
-            srvSocket.disconnect();
-            srvSocket.close();
         }
+    }
+
+    private void disconnect() {
+        srvSocket.disconnect();
+        srvSocket.close();
     }
 
     private void sendObj(Object obj) {
@@ -186,7 +186,7 @@ public class Client implements Runnable {
     }
 
     private Object getObj(byte[] buf, int bufLength) {
-        if (connected) {
+        if (connected || connecting) {
             try {
                 DatagramPacket incomingPacket = new DatagramPacket(buf, bufLength);
                 srvSocket.receive(incomingPacket);
@@ -197,14 +197,13 @@ public class Client implements Runnable {
             } catch (SocketException ex) {
                 System.out.println("The socket has been closed!");
             } catch (EOFException ex) {
-                System.out.println("Package bigger than expectd...\nPACKAGE_SIZE is being expanded");
+                System.out.println("Package bigger than expected...\nPACKAGE_SIZE is being expanded");
                 PACKAGE_SIZE *= 2;
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        System.out.println("getObj is returning an empty string! Is client connected?: "+connected);
-        return "";
+        return null;
     }
 
     private void handleObject(Object obj) {
@@ -239,6 +238,6 @@ public class Client implements Runnable {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        new Client("127.0.0.1", 9010, "abcdef").run();
+        new Client("127.0.0.1", 9010, "abcdef");
     }
 }

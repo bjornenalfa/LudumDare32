@@ -156,14 +156,14 @@ public class Server implements Runnable {
     private void handleObject(Object obj, InetSocketAddress sender) {
         if (obj instanceof String) {
             String s = (String) obj;
-            if (s.matches("heartbeat")) {
+            if (s.matches("connection request")) {
                 if (!usersL.contains(sender)) {
                     usersL.add(sender);
                     data.put(sender, new PlayerData(-1000, -1000));
                     System.out.println("New client connected! Address:" + sender);
                 }
-                sendObj("heartbeat-" + PACKAGE_SIZE + "-" + TICK_RATE, sender);
-                System.out.println("Got heartbeat from " + sender + " sent one back <3");
+                sendObj("connection-" + PACKAGE_SIZE + "-" + TICK_RATE, sender);
+                System.out.println("Got connection request from " + sender + " sent connection acknowledgement!");
             }
         } else if (obj instanceof PlayerData) {
             PlayerData rpd = (PlayerData) obj;
