@@ -96,23 +96,23 @@ public class Server {
                             usersL.trimToSize();
                         }
                         if (System.currentTimeMillis() - lastDataSentTime.get(user) >= TIME_BEFORE_KEEPALIVE) {
-                            sendObj("keepalive-" + System.currentTimeMillis(), plList.get(0));
+                            sendObj("keepalive-" + System.currentTimeMillis(), user); //ska du skicka keepalive när de inte behövs ska du fan skicka de till alla :P 
                         }
                     }
                     
                     if (plList.size() > 1) {
                         plList = (ArrayList<InetSocketAddress>) usersL.clone();
-                        Map<InetSocketAddress, PlayerData> plData = data; //points to data (still CMError)?? but whatever
+                        Map<InetSocketAddress, PlayerData> plData = new HashMap<>(data); //fair enough, mah bad
                         
                         PlayerData[] pdl = new PlayerData[plList.size()];
                         PlayerData[] pl = new PlayerData[plList.size() - 1];
                         
                         for (int i = 0; i < pl.length; i++) {
-                            pdl[i] = data.get(plList.get(i));
-                            pl[i] = data.get(plList.get(i + 1));
+                            pdl[i] = plData.get(plList.get(i));
+                            pl[i] = plData.get(plList.get(i + 1));
                         }
 
-                        sendObj(new PlayerDataList(pl, System.currentTimeMillis()), plList.get(0));
+                        sendObj(new PlayerDataList(pl, System.currentTimeMillis()), plList.get(0));  //dafuq
                         for (int i = 0; i < pl.length; i++) {
                             pl[i] = pdl[i];
                             sendObj(new PlayerDataList(pl, System.currentTimeMillis()), plList.get(i+1));

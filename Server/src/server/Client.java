@@ -25,6 +25,7 @@ import network.PlayerDataList;
  * @author PastaPojken
  */
 public class Client {
+
     static public long TIME_BEFORE_KEEPALIVE = 3000;
     static public long TIME_BEFORE_TIMEOUT = 5000;
     static public long TIME_BEFORE_CONNECTIONFAIL = 10000;
@@ -142,13 +143,13 @@ public class Client {
                             sendObj(new PlayerData(bufferedPlayerData));
                             bufferedPlayerData = null;
                         }
+                        if (System.currentTimeMillis() - timeWhenLastDataSent >= TIME_BEFORE_KEEPALIVE) { //Make sure that the server don't think we disconnected!
+                            sendObj("keepAlive");
+                        }
                         if (System.currentTimeMillis() - lastPacket >= TIME_BEFORE_TIMEOUT) {
                             System.out.println("The server is not responding! :(");
                             running = false;
                             disconnect();
-                        }
-                        if (System.currentTimeMillis() - timeWhenLastDataSent >= TIME_BEFORE_KEEPALIVE) { //Make sure that the server don't think we disconnected!
-                            sendObj("keepAlive");
                         }
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
