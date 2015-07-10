@@ -27,7 +27,7 @@ import network.PlayerDataList;
 public class Server implements Runnable {
 
     static public int PACKAGE_SIZE = 4096;
-    static public int TICK_RATE = 1;
+    static public int TICK_RATE = 32;
     static public long TIME_BEFORE_KEEPALIVE = 3000;
     static public long TIME_BEFORE_TIMEOUT = 5000;
 
@@ -96,20 +96,19 @@ public class Server implements Runnable {
                             data.remove(user);
                             usersL.trimToSize();
                         }
-                        if (System.currentTimeMillis() - lastDataSentTime.get(user) >= TIME_BEFORE_KEEPALIVE) {
-                            sendObj("keepalive-" + System.currentTimeMillis(), plList.get(0));
-                        }
+
                     }
-                    
+
                     plList = (ArrayList<InetSocketAddress>) usersL.clone();
+                    Map<InetSocketAddress, PlayerData> plData = data;
 
                     if (plList.size() > 1) {
                         PlayerData[] pdl = new PlayerData[plList.size()];
                         PlayerData[] pl = new PlayerData[plList.size() - 1];
 
                         for (int i = 1; i < plList.size(); i++) {
-                            pdl[i - 1] = data.get(plList.get(i - 1));
-                            pl[i - 1] = data.get(plList.get(i));
+                            pdl[i - 1] = plData.get(plList.get(i - 1));
+                            pl[i - 1] = plData.get(plList.get(i));
                         }
                         int i = 0;
                         for (InetSocketAddress s : plList) {
@@ -120,6 +119,10 @@ public class Server implements Runnable {
                             }
                         }
 
+                    } else if (plList.size() == 1) {
+                        if (System.currentTimeMillis() - lastDataSentTime.get(plList.get(0)) >= TIME_BEFORE_KEEPALIVE) {
+                            sendObj("keepalive-" + System.currentTimeMillis(), plList.get(0));
+                        }
                     }
                     try {
                         Thread.sleep(1000 / TICK_RATE);
