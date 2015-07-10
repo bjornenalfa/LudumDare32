@@ -25,6 +25,7 @@ import network.PlayerDataList;
  * @author PastaPojken
  */
 public class Client {
+    static public long TIME_BEFORE_KEEPALIVE = 3000;
     static public long TIME_BEFORE_TIMEOUT = 5000;
     static public long TIME_BEFORE_CONNECTIONFAIL = 10000;
 
@@ -37,6 +38,7 @@ public class Client {
     private PlayerDataList srvPlayerDataList;
     private PlayerData bufferedPlayerData;
     private Long connectionAttemptStartTime, lastPacket, lastPacketTimeStamp;
+    private Long timeWhenLastDataSent = Long.MIN_VALUE;
     private int PACKAGE_SIZE, TICK_RATE;
 
     public Client(String ip, int port, String id) {
@@ -145,6 +147,9 @@ public class Client {
                             running = false;
                             disconnect();
                         }
+                        if (System.currentTimeMillis() - timeWhenLastDataSent >= TIME_BEFORE_KEEPALIVE) { //Make sure that the server don't think we disconnected!
+                            sendObj("keepAlive");
+                        }
                         try {
                             Thread.sleep((long) (1000 / TICK_RATE));
                         } catch (InterruptedException ex) {
@@ -163,6 +168,7 @@ public class Client {
     }
 
     private void sendObj(Object obj) {
+        timeWhenLastDataSent = System.currentTimeMillis();
 //        System.out.println("Sending: " + obj);
         ObjectOutputStream os = null;
         try {
