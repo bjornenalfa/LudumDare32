@@ -212,6 +212,7 @@ public class Client implements Runnable {
             String str = (String) obj;
             if (str.contains("keepalive-")) {
                 lastPacketTimeStamp = Long.parseLong(str.substring(str.indexOf("-") + 1, str.length()));
+                srvPlayerDataList = new PlayerDataList();
             } else {
                 System.out.println("Received: " + str);
             }

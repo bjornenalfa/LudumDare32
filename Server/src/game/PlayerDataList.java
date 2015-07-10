@@ -12,9 +12,9 @@ public class PlayerDataList implements Serializable {
         timeStamp = time;
     }
 
-    public PlayerDataList(long time) {
+    public PlayerDataList() {
         list = new PlayerData[0];
-        timeStamp = time;
+        timeStamp = 0;
     }
     
     public long getTime(){
