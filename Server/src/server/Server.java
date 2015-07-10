@@ -24,7 +24,7 @@ import network.PlayerDataList;
  *
  * @author bjodet982
  */
-public class Server implements Runnable {
+public class Server {
 
     static public int PACKAGE_SIZE = 4096;
     static public int TICK_RATE = 1;
@@ -47,7 +47,6 @@ public class Server implements Runnable {
         lastDataReceivedTime = new HashMap();
     }
 
-    @Override
     public void run() {
         boolean portErr = false;
         do {
