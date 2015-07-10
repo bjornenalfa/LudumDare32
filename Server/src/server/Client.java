@@ -203,6 +203,7 @@ public class Client implements Runnable {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        System.out.println("getObj is returning an empty string! Is client connected?: "+connected);
         return "";
     }
 
