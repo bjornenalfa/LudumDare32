@@ -44,7 +44,9 @@ public class LudumDare32 extends JFrame {
 
     static Client client = new Client(SERVER_IP, SERVER_PORT, CLIENT_ID);
     static PlayerDataList players = new PlayerDataList();
-
+    
+    static int worldWidth = 800, worldHeight=608;
+    
     BufferedImage image;
 
     public LudumDare32() {
@@ -176,7 +178,7 @@ public class LudumDare32 extends JFrame {
         MyThread thread = new MyThread();
 
         setContentPane(panel);
-        getContentPane().setPreferredSize(new Dimension(800, 608));
+        getContentPane().setPreferredSize(new Dimension(worldWidth, worldHeight));
         setResizable(false);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -303,7 +305,7 @@ public class LudumDare32 extends JFrame {
             }
             g2.drawImage(image, 0, 0, this);
             g2.setColor(Color.red);
-            g2.drawString("PING: "+client.getPing(), (float) (player.getX() + ((800-g2.getFontMetrics().stringWidth("PING: "+client.getPing())) - player.getX())-camera.translateX), (float) (player.getY() + (604 - player.getY())-camera.translateY));
+            g2.drawString("PING: "+client.getPing(), (float) (player.getX() + ((worldWidth-g2.getFontMetrics().stringWidth("PING: "+client.getPing())) - player.getX())-camera.translateX), (float) (player.getY() + (worldHeight - player.getY())-camera.translateY));
             g2.translate(-camera.translateX, -camera.translateY);
         }
 
