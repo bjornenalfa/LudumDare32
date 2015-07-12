@@ -241,6 +241,10 @@ public class Client {
         bufferedPlayerData = data;
     }
 
+    public int getPing() {
+        return (int) (lastPacket - lastPacketTimeStamp);
+    }
+
     /**
      * @param args the command line arguments
      */

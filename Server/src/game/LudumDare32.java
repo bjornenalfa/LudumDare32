@@ -238,7 +238,7 @@ public class LudumDare32 extends JFrame {
 
                 World.update(player);
                 Weather.update();
-                
+
                 if (Math.random() < 1.0 / 60.0) {
                     Particles.particleList.add(new WindParticle(Math.random() * World.pixelWidth, Math.random() * World.pixelHeight));
                 }
@@ -302,8 +302,9 @@ public class LudumDare32 extends JFrame {
                 g2.drawString(playerData.ID, playerData.x, playerData.y);
             }
             g2.drawImage(image, 0, 0, this);
+            g2.setColor(Color.red);
+            g2.drawString("PING: "+client.getPing(), (float) (player.getX() + ((800-g2.getFontMetrics().stringWidth("PING: "+client.getPing())) - player.getX())-camera.translateX), (float) (player.getY() + (604 - player.getY())-camera.translateY));
             g2.translate(-camera.translateX, -camera.translateY);
-
         }
 
         private void addKeyBindings() {
